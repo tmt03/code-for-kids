@@ -20,6 +20,7 @@
     "tw-animate-css": "^1.2.5"
   },
   "devDependencies": {
+    "@ljharb/tsconfig": "^0.3.2",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
