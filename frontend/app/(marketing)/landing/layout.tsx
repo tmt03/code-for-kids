@@ -5,8 +5,8 @@ type Props = {
 
 const LandingLayout = ({ children }: Props) => {
     return (
-        <div className="min-h-screen flex flex-col">
-            <main className="flex-1 flex flex-col items-center justify-center">
+        <div className="justify-center items-center">
+           <main className="justify-center items-center">
                 {children}
             </main>
         </div>
