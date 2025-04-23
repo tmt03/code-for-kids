@@ -2,9 +2,16 @@
 
 import ProgressBar from "@/components/progressbar";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 
 export default function FooterChapter() {
+    const router = useRouter();
+
+    // Hàm xử lý chuyển hướng khi nhấn nút
+    const handleButtonClick = (chapterId: number) => {
+        router.push(``);
+    };
 
     return (
         <div className="lg:block h-20 w-full border-slate-200 p-2">

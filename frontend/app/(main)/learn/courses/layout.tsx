@@ -1,6 +1,6 @@
 
 
-import HeaderChapter from "./chapters/header";
+import HeaderChapter from "../chapters/header";
 
 type Props = {
     children: React.ReactNode;

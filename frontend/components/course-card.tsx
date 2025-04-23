@@ -1,6 +1,16 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function CourseCard() {
+    const router = useRouter();
+
+    // Hàm xử lý chuyển hướng khi nhấn nút
+    const handleButtonClick = () => {
+        router.push(`/learn/chapters`);
+    };
+
     return (
         <div className="relative w-80 h-48 bg-[#1C2526] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000] overflow-hidden">
             {/* Background Image */}
@@ -35,6 +45,7 @@ export default function CourseCard() {
                 {/* Nút "Start" */}
                 <div className="mt-auto flex justify-end">
                     <Button
+                        onClick={() => handleButtonClick()} // Thêm sự kiện onClick
                         variant="default"
                         className="bg-[#FF4040] text-white font-bold px-3 py-1 rounded-sm shadow-[2px_2px_0px_0px_#000000] hover:bg-[#FF6666] transition-colors"
                     >

@@ -7,7 +7,7 @@ export default function HeaderChapter() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <header className="fixed w-full z-50 flex flex-row text-white bg-gradient-to-l from-[#2F5A8A] to-[#104A7A] backdrop-blur-md shadow-md items-center justify-between px-6 py-3">
+        <header className="w-full z-50 flex flex-row text-white bg-gradient-to-l from-[#2F5A8A] to-[#104A7A] backdrop-blur-md shadow-md items-center justify-between px-6 py-3">
             {/* Logo công ty */}
             <div className="flex items-center gap-4">
                 <img src="/assets/logo-non-bg.png" alt="Scriptbies Logo" className="h-10 w-auto" />

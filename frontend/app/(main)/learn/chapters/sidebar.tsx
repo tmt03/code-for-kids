@@ -1,18 +1,22 @@
 "use client";
 
+import ChallengePopup from "@/components/companion/challenge-popup";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronRight, MenuIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SidebarChapter() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [expandedChapters, setExpandedChapters] = useState<string[]>([]); // Theo dõi các chương được mở rộng
+    const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
+    const router = useRouter();
 
     // Danh sách các chương học (dữ liệu mẫu sau sẽ lấy dữ liệu từ DB)
     const chapters = [
         { section: "Hướng dẫn tân thủ", lessons: [] },
-        { section: "Chương 1", lessons: ["01. Nhiệm vụ 1", "02. Nhiệm vụ 2", "03. Nhiệm vụ 3", "04. Nhiệm vụ 4", "05. Nhiệm vụ 5", "CHALLENGE"] },
-        { section: "Chương 2", lessons: ["01. Nhiệm vụ 1",] },
+        { section: "Chương 1", lessons: ["01. Nhiệm vụ 1", "02. Nhiệm vụ 2", "03. Nhiệm vụ 3", "CHALLENGE"] },
+        { section: "Chương 2", lessons: ["01. Nhiệm vụ 1"] },
         { section: "Chương 3", lessons: [] },
         { section: "Chương 4", lessons: [] },
         { section: "Chương 5", lessons: [] },
@@ -27,6 +31,27 @@ export default function SidebarChapter() {
         } else {
             setExpandedChapters([...expandedChapters, section]);
         }
+    };
+
+    // Hàm xử lý chuyển hướng khi nhấn vào lesson (ngoại trừ CHALLENGE)
+    const handleLessonClick = (lesson: string, chapterIndex: number) => {
+        if (lesson === "CHALLENGE") {
+            // Mở popup khi nhấn vào CHALLENGE
+            handleChallengeClick(`Thử thách ${chapters[chapterIndex].section}`);
+        } else {
+            // Điều hướng cho các lesson khác
+            router.push(`/learn/chapters/${chapterIndex + 1}`);
+        }
+    };
+
+    // Hàm mở popup khi nhấn vào CHALLENGE
+    const handleChallengeClick = (challengeTitle: string) => {
+        setSelectedChallenge(challengeTitle);
+    };
+
+    // Hàm đóng popup
+    const closePopup = () => {
+        setSelectedChallenge(null);
     };
 
     return (
@@ -51,7 +76,6 @@ export default function SidebarChapter() {
                                 className="flex items-center justify-between cursor-pointer"
                                 onClick={() => toggleChapter(chapter.section)}
                             >
-
                                 <h3 className="text-md font-semibold">{chapter.section}</h3>
                                 {chapter.lessons.length > 0 && (
                                     expandedChapters.includes(chapter.section) ? (
@@ -68,8 +92,11 @@ export default function SidebarChapter() {
                                     {chapter.lessons.map((lesson, lessonIndex) => (
                                         <li
                                             key={lessonIndex}
-                                            className={`text-sm py-1 px-2 rounded-lg ${lesson === "01. Nhiệm vụ 1" ? "bg-yellow-500 text-black" : "hover:bg-gray-600"
+                                            className={`text-sm py-1 px-2 rounded-lg cursor-pointer ${lesson === "01. Nhiệm vụ 1"
+                                                    ? "bg-yellow-500 text-black"
+                                                    : "hover:bg-gray-600"
                                                 }`}
+                                            onClick={() => handleLessonClick(lesson, index)}
                                         >
                                             {lesson}
                                         </li>
@@ -79,6 +106,11 @@ export default function SidebarChapter() {
                         </div>
                     ))}
                 </div>
+            )}
+
+            {/* Hiển thị ChallengePopup khi selectedChallenge không null */}
+            {selectedChallenge && (
+                <ChallengePopup challengeTitle={selectedChallenge} onClose={closePopup} />
             )}
         </div>
     );
