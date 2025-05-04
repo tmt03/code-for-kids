@@ -13,7 +13,7 @@ export default function HomePage() {
             {/* Navbar */}
             <Navbar />
 
-            <div className="pt-14 bg-[#0a0a23] ">
+            <div className="pt-14 bg-[#0a0a23]">
                 {/* Welcome Section (Luôn ở đầu) */}
                 <section className="text-white py-6 px-4">
                     <div className="max-w-7xl mx-auto flex items-center gap-4">

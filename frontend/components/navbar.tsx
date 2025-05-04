@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import localFont from 'next/font/local';
 import { usePathname } from 'next/navigation';
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -8,10 +7,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
-
-const pixelFont = localFont({
-    src: '../app/fonts/SVNDeterminationSans.otf',
-});
+import Link from 'next/link';
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,7 +15,7 @@ export default function Navbar() {
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
 
     const pathname = usePathname();
-    const isLoggedIn = pathname === '/home';
+    const isLoggedIn = pathname === '/home' || '/profile';
 
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
@@ -54,20 +50,20 @@ export default function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center gap-4">
                         <img src="/assets/logo_scriptbies.png" alt="Scriptbies Logo" className="h-10 w-auto" />
-                        <a className={`${pixelFont.className} text-2xl`} href="/">Scriptbies</a>
+                        <a className="text-2xl" href="/">Scriptbies</a>
                     </div>
 
                     {/* Nav links */}
                     <ul className="hidden lg:flex gap-6">
-                        <li className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                            <a href="/learn/courses">Khóa học</a>
-                        </li>
-                        <li className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                            <a href="/">Cộng đồng</a>
-                        </li>
-                        <li className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                            <a href="/shop">Cửa hàng</a>
-                        </li>
+                        <Link href="/learn/courses" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                            Khóa học
+                        </Link>
+                        <Link href="/" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                            Cộng đồng
+                        </Link>
+                        <Link href="/shop" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                            Cửa hàng
+                        </Link>
                     </ul>
 
                     {/* Right-side buttons */}
@@ -93,7 +89,7 @@ export default function Navbar() {
 
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <a href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <a href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </a>
                                         <a href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
@@ -117,26 +113,23 @@ export default function Navbar() {
 
             {/* Main dropdown for mobile */}
             {isMenuOpen && (
-                // Thay items-center thành items-start trên div nếu muốn cả khối menu căn trái tuyệt đối
                 <div className="fixed top-14 left-0 w-full z-10 bg-[#28284f]/90 text-white flex flex-col items-start">
-                    {/* Thay items-center thành items-start trên ul */}
-                    <ul className="flex flex-col items-start w-full"> {/* Thay đổi ở đây */}
-                        {/* Thay text-center thành text-left và xóa justify-start khỏi <a> */}
-                        <li className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"> {/* Thay đổi ở đây */}
-                            <a href="/learn/courses">Khóa học</a> {/* Xóa justify-start */}
-                        </li>
-                        <li className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"> {/* Thay đổi ở đây */}
-                            <a href="/">Cộng đồng</a> {/* Xóa justify-start */}
-                        </li>
-                        <li className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"> {/* Thay đổi ở đây */}
-                            <a href="/shop">Cửa hàng</a> {/* Xóa justify-start */}
-                        </li>
+                    <ul className="flex flex-col items-start w-full">
+                        <Link href="/learn/courses" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            Khóa học
+                        </Link>
+                        <Link href="/" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            Cộng đồng
+                        </Link>
+                        <Link href="/shop" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            Cửa hàng
+                        </Link>
                         {!isLoggedIn ? (
                             <button className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
                                 Đăng nhập/Đăng ký
                             </button>
                         ) : (
-                            // Nút này đã dùng flex và justify-start đúng cách rồi
+
                             <button
                                 onClick={toggleMobileProfileDropdown}
                                 className="w-full flex items-center justify-start gap-2 px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"
@@ -168,7 +161,7 @@ export default function Navbar() {
                     </button>
 
                     {/* Profile Menu Items */}
-                    <a href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <a href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </a>
                     <a href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">

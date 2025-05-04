@@ -3,11 +3,6 @@
 import React from 'react';
 import Navbar from "@/components/navbar";
 import Footer from '@/components/footer';
-import localFont from 'next/font/local';
-
-const pixelFont = localFont({
-    src: '../fonts/SVNDeterminationSans.otf',
-});
 
 export default function Landing() {
     return (
@@ -16,7 +11,7 @@ export default function Landing() {
             <div className="relative h-screen w-full overflow-hidden">
                 <div className="absolute inset-0 flex flex-col items-center justify-center z-5 text-white text-center px-4 gap-2">
 
-                    <div className={`${pixelFont.className} flex flex-col gap-3`}>
+                    <div className="flex flex-col gap-3">
                         <p className="text-6xl [text-shadow:1px_1px_2px_black,0_0_1em_black,0_0_0.2em_black]">
                             Bạn đã sẵn sàng để phiêu lưu chưa?
                         </p>
@@ -53,7 +48,7 @@ export default function Landing() {
                     </div>
 
                     <div className="flex-1 text-center md:text-left">
-                        <h2 className={`${pixelFont.className} text-4xl mb-6 [text-shadow:1px_1px_2px_black]`}>
+                        <h2 className="text-4xl mb-6 [text-shadow:1px_1px_2px_black]|">
                             Học mà chơi - chơi mà học
                         </h2>
                         <p className="text-lg leading-relaxed [text-shadow:1px_1px_2px_black]">
@@ -68,7 +63,7 @@ export default function Landing() {
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
 
                     <div className="flex-1 text-center md:text-left">
-                        <h2 className={`${pixelFont.className} text-4xl mb-6 [text-shadow:1px_1px_2px_black]`}>
+                        <h2 className="text-4xl mb-6 [text-shadow:1px_1px_2px_black]">
                             Cơ hội nghề nghiệp tương lai
                         </h2>
                         <p className="text-lg leading-relaxed [text-shadow:1px_1px_2px_black]">
@@ -99,7 +94,7 @@ export default function Landing() {
                     </div>
 
                     <div className="flex-1 text-center md:text-left">
-                        <h2 className={`${pixelFont.className} text-4xl mb-6 [text-shadow:1px_1px_2px_black]`}>
+                        <h2 className="text-4xl mb-6 [text-shadow:1px_1px_2px_black]">
                             Giao lưu, kết nối đam mê
                         </h2>
                         <p className="text-lg leading-relaxed [text-shadow:1px_1px_2px_black]">
