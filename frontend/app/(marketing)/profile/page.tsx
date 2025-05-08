@@ -70,8 +70,8 @@ export default function ProfilePage() {
                             </div>
 
                             <div className="bg-[#1c1c2e] rounded p-4 border border-[#3a3a5a] shadow-sm">
-                                <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">Skills</h2>
-                                <p className="text-sm text-gray-400">Add skills from <a href="#" className="text-blue-400 hover:underline">settings</a>.</p>
+                                <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">Badges</h2>
+                                <p className="text-sm text-gray-400">Add badges from <a href="#" className="text-blue-400 hover:underline">settings</a>.</p>
                             </div>
                         </div>
 
