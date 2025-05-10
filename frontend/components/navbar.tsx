@@ -15,7 +15,7 @@ export default function Navbar() {
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
 
     const pathname = usePathname();
-    const isLoggedIn = pathname === '/home' || pathname === '/profile';
+    const isLoggedIn = pathname === '/home' || pathname === '/profile' || pathname === '/leaderboard';
 
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);

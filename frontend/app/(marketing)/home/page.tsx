@@ -75,9 +75,12 @@ export default function HomePage() {
                                 <p className="text-gray-400">Chuỗi ngày học tập</p>
                             </div>
                         </div>
-                        <button className="w-full bg-blue-600 hover:bg-blue-500 transition rounded-md py-1.5 font-semibold text-white">
+                        <Link
+                            href="/profile"
+                            className="w-full text-center bg-blue-600 hover:bg-blue-500 transition rounded-md py-1.5 font-semibold text-white block"
+                        >
                             Xem trang cá nhân
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Upcoming Events */}
