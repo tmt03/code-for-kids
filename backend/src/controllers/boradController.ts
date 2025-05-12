@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../utils/ApiError";
+import { boardService } from "../services/boardService";
 
 const createNew = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,11 +10,12 @@ const createNew = async (req: Request, res: Response, next: NextFunction) => {
     console.log("req.params", req.params);
 
     //Dieu huong du lieu sang tang service
+    const createdBoard = await boardService.createNew(req.body);
 
     throw new ApiError(StatusCodes.BAD_REQUEST, "API ERROR");
     //Co ket qua tra ve cho client
 
-    // res.status(StatusCodes.CREATED).json({ message: "Create new board" });
+    res.status(StatusCodes.CREATED).json(createdBoard);
   } catch (error: any) {
     next(error);
   }
