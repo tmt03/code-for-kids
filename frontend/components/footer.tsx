@@ -10,7 +10,7 @@ import { faFacebook, faGithub, faInstagram, faYoutube, faTiktok, faLinkedinIn } 
 export default function Footer() {
   return (
     <footer className="bg-[#0f1123] text-white px-8 py-12">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 text-sm">
+      <div className="mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 text-sm">
         <div>
           <h4 className="font-bold mb-4 text-gray-400">VỀ CÔNG TY</h4>
           <ul className="space-y-2">
