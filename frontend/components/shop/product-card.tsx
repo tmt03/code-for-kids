@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Plus, Minus } from 'lucide-react';
-import { useHistory } from 'react-router-dom'; // Import useHistory
 
 interface ProductCardProps {
     image: string;
@@ -8,42 +6,27 @@ interface ProductCardProps {
     quantity: number;
     price: number;
     description: string;
-    onQuantityChange: (value: number) => void;
-    currentQuantity: number;
-    error?: string;
 }
 
-export default function ProductCard({ 
-    image, 
-    name, 
-    quantity, 
-    price, 
-    description,
-    onQuantityChange,
-    currentQuantity,
-    error
-}: ProductCardProps) {
-    const history = useHistory(); // Khởi tạo useHistory
-
-    const handleIncrement = () => {
-        if (currentQuantity < quantity) {
-            onQuantityChange(currentQuantity + 1);
-        }
-    };
-
-    const handleBuy = () => {
-        history.push('/shop/order'); // Điều hướng đến trang order
-    };
-
+export default function ProductCard({ image, name, quantity, price, description }: ProductCardProps) {
     return (
-        <div>
-            <img src={image} alt={name} />
-            <h3>{name}</h3>
-            <p>{description}</p>
-            <p>Price: ${price}</p>
-            <Button onClick={handleIncrement}>+</Button>
-            <Button onClick={() => onQuantityChange(currentQuantity - 1)}>-</Button>
-            <Button onClick={handleBuy}>MUA</Button> {/* Nút MUA */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-black">
+            <div className="relative h-48">
+                <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-full object-cover"
+                />
+            </div>
+            <div className="p-4">
+                <h3 className="text-xl font-bold mb-2">{name}</h3>
+                <p className="text-gray-600 mb-2">Số lượng: {quantity}</p>
+                <p className="text-lg font-semibold text-blue-600 mb-2">{price.toLocaleString('vi-VN')} VNĐ</p>
+                <p className="text-gray-700 mb-4">{description}</p>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                    MUA
+                </Button>
+            </div>
         </div>
     );
-}
+} 

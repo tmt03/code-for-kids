@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Plus, Minus } from 'lucide-react';
 import ProductCard from "@/components/shop/product-card";
 import ConsultationForm from "@/components/shop/consultation-form";
 
