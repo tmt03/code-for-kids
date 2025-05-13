@@ -2,8 +2,8 @@ import exitHook from "exit-hook";
 import express, { Express } from "express";
 import { env } from "./config/environment";
 import { CLOSE_DB, CONNECT_DB } from "./config/mongoDB";
-import APIs_V1 from "./routes/v1";
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
+import APIs_V1 from "./routes/v1";
 
 // Start server
 const START_SERVER = async () => {

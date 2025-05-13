@@ -12,7 +12,6 @@ const createNew = async (req: Request, res: Response, next: NextFunction) => {
     //Dieu huong du lieu sang tang service
     const createdBoard = await boardService.createNew(req.body);
 
-    throw new ApiError(StatusCodes.BAD_REQUEST, "API ERROR");
     //Co ket qua tra ve cho client
 
     res.status(StatusCodes.CREATED).json(createdBoard);
