@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi, { date } from "joi";
 import { ObjectId } from "mongodb";
 import { GET_DB } from "../config/mongoDB";
 
@@ -15,11 +15,19 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
 
   createdAt: Joi.date().required(),
   updatedAt: Joi.date().required(),
-  _destroy: Joi.boolean().required(),
+  _destroy: Joi.boolean().default(false),
 });
+
+const validateBeforeCreate = async (data: any) => {
+  return await BOARD_COLLECTION_SCHEMA.validateAsync(data, {
+    abortEarly: false,
+  });
+};
 
 const createNew = async (data: any) => {
   try {
+    const validData = await validateBeforeCreate(data);
+
     const createBoard = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
       .insertOne(data);
