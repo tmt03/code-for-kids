@@ -24,7 +24,11 @@ export class GameScene extends Phaser.Scene {
     //Chap_1
     if (this.chapterId === 1) {
       // Floor - tạo platform
-      const floor = this.platforms.create(355, 360, "floor") as Phaser.Physics.Arcade.Sprite;
+      const floor = this.platforms.create(
+        355,
+        360,
+        "floor"
+      ) as Phaser.Physics.Arcade.Sprite;
       floor.setScale(0.25).refreshBody();
 
       // Rock
@@ -59,7 +63,11 @@ export class GameScene extends Phaser.Scene {
       this.add.image(-10, 345, "shrub").setOrigin(0, 1).setScale(0.07);
 
       // Floor - tạo platform
-      const floor = this.platforms.create(355, 360, "floor") as Phaser.Physics.Arcade.Sprite;
+      const floor = this.platforms.create(
+        355,
+        360,
+        "floor"
+      ) as Phaser.Physics.Arcade.Sprite;
       floor.setScale(0.25).refreshBody();
 
       // Player

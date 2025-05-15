@@ -20,8 +20,6 @@
     "clsx": "^2.1.1",
     "codemirror": "^6.0.1",
     "lucide-react": "^0.487.0",
-    "mongodb": "^6.15.0",
-    "mongoose": "^8.13.2",
     "next": "15.3.0",
     "phaser": "^3.88.2",
     "react": "^19.0.0",
