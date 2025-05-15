@@ -1,13 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+const pixelFont = localFont({
+    src: '../app/fonts/SVNDeterminationSans.otf',
+});
 import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
-import Link from 'next/link';
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,28 +53,30 @@ export default function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center gap-4">
                         <img src="/assets/logo_scriptbies.png" alt="Scriptbies Logo" className="h-10 w-auto" />
-                        <a className="text-2xl" href="/">Scriptbies</a>
+                        <Link href="/" className={`${pixelFont.className} text-2xl`}>Scriptbies</Link>
                     </div>
 
                     {/* Nav links */}
                     <ul className="hidden lg:flex gap-6">
-                        <Link href="/learn/courses" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                            Khóa học
-                        </Link>
-                        <Link href="/" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                            Cộng đồng
-                        </Link>
-                        <Link href="/shop" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                            Cửa hàng
-                        </Link>
+                        <li className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                            <Link href="/learn/courses">Khóa học</Link>
+                        </li>
+                        <li className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                            <Link href="/">Cộng đồng</Link>
+                        </li>
+                        <li className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                            <Link href="/shop">Cửa hàng</Link>
+                        </li>
                     </ul>
 
                     {/* Right-side buttons */}
                     <div className="flex items-center gap-4">
                         {!isLoggedIn && (
-                            <button className="hidden lg:block bg-blue-500 font-bold px-3 py-2 rounded hover:bg-blue-400 transition-colors">
-                                Đăng nhập
-                            </button>
+                            <Link href="/login">
+                                <button className="hidden lg:block bg-blue-500 font-bold px-3 py-2 rounded hover:bg-blue-400 transition-colors">
+                                    Đăng nhập
+                                </button>
+                            </Link>
                         )}
 
                         {isLoggedIn && (
@@ -91,10 +96,10 @@ export default function Navbar() {
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
                                         <a href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
-                                        </a>
-                                        <a href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        </Link>
+                                        <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faGear}/> Cài đặt
-                                        </a>
+                                        </Link>
                                         <button className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                                         </button>
@@ -115,27 +120,28 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="fixed top-14 left-0 w-full z-10 bg-[#28284f]/90 text-white flex flex-col items-start">
                     <ul className="flex flex-col items-start w-full">
-                        <Link href="/learn/courses" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                            Khóa học
-                        </Link>
-                        <Link href="/" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                            Cộng đồng
-                        </Link>
-                        <Link href="/shop" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                            Cửa hàng
-                        </Link>
+                        <li className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            <Link href="/learn/courses">Khóa học</Link>
+                        </li>
+                        <li className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            <Link href="/">Cộng đồng</Link>
+                        </li>
+                        <li className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            <Link href="/shop">Cửa hàng</Link>
+                        </li>
                         {!isLoggedIn ? (
-                            <button className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                                Đăng nhập/Đăng ký
-                            </button>
+                            <Link href="/login" className="w-full">
+                                <button className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                                    Đăng nhập/Đăng ký
+                                </button>
+                            </Link>
                         ) : (
-
                             <button
                                 onClick={toggleMobileProfileDropdown}
                                 className="w-full flex items-center justify-start gap-2 px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"
                             >
                                 <img
-                                    src="/assets/globe.svg" // Bạn có thể muốn dùng default_profile.png như ở trên
+                                    src="/assets/globe.svg"
                                     alt="User Avatar"
                                     className="h-6 w-6 rounded-full"
                                 />
@@ -163,10 +169,10 @@ export default function Navbar() {
                     {/* Profile Menu Items */}
                     <a href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
-                    </a>
-                    <a href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    </Link>
+                    <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faGear}/> Cài đặt
-                    </a>
+                    </Link>
                     <button className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                     </button>
