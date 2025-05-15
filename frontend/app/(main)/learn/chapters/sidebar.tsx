@@ -1,6 +1,5 @@
 "use client";
 
-import ChallengePopup from "@/components/companion/challenge-popup";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronRight, MenuIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -106,11 +105,6 @@ export default function SidebarChapter() {
                         </div>
                     ))}
                 </div>
-            )}
-
-            {/* Hiển thị ChallengePopup khi selectedChallenge không null */}
-            {selectedChallenge && (
-                <ChallengePopup challengeTitle={selectedChallenge} onClose={closePopup} />
             )}
         </div>
     );

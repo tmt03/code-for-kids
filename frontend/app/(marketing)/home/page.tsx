@@ -13,7 +13,7 @@ export default function HomePage() {
             {/* Navbar */}
             <Navbar />
 
-            <div className="pt-14 bg-[#0a0a23] ">
+            <div className="pt-14 bg-[#0a0a23]">
                 {/* Welcome Section (Luôn ở đầu) */}
                 <section className="text-white py-6 px-4">
                     <div className="max-w-7xl mx-auto flex items-center gap-4">
@@ -75,9 +75,12 @@ export default function HomePage() {
                                 <p className="text-gray-400">Chuỗi ngày học tập</p>
                             </div>
                         </div>
-                        <button className="w-full bg-blue-600 hover:bg-blue-500 transition rounded-md py-1.5 font-semibold text-white">
+                        <Link
+                            href="/profile"
+                            className="w-full text-center bg-blue-600 hover:bg-blue-500 transition rounded-md py-1.5 font-semibold text-white block"
+                        >
                             Xem trang cá nhân
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Upcoming Events */}

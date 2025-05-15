@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import React from 'react';
 
-export default function ChapterPage() {
+export default function ChapterPage({ params }: { params: { chapterId: string } }) {
     const [code, setCode] = React.useState("console.log('Hello from ChapterPage!');");
+    const chapterId = parseInt(params.chapterId);
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode);
@@ -24,10 +25,9 @@ export default function ChapterPage() {
                 </div>
                 <div className='h-4/5 pt-2'>
                     <GameCanvas
-                        chapterId={1}
+                        chapterId={chapterId}
                         baseCode=''
                         taskCode=''
-
                     />
                 </div>
             </div>

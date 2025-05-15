@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import localFont from 'next/font/local';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -8,11 +7,10 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faBars, faGear, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
-
 const pixelFont = localFont({
     src: '../app/fonts/SVNDeterminationSans.otf',
 });
+import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +18,7 @@ export default function Navbar() {
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
 
     const pathname = usePathname();
-    const isLoggedIn = pathname === '/home';
+    const isLoggedIn = pathname === '/home' || pathname === '/profile' || pathname === '/leaderboard';
 
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
@@ -96,7 +94,7 @@ export default function Navbar() {
 
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <a href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
                                         <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
@@ -169,7 +167,7 @@ export default function Navbar() {
                     </button>
 
                     {/* Profile Menu Items */}
-                    <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <a href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </Link>
                     <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">

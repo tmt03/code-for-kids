@@ -3,7 +3,7 @@ import SearchBar from "@/components/searchbar";
 
 export default function LearnPage() {
     return (
-        <div className="w-full flex flex-col">
+        <div className="mx-auto justify-center items-center flex flex-col">
             {/* Header Background */}
             <div
                 className="w-full h-86 flex flex-row justify-center items-center bg-cover bg-center text-white relative"
@@ -32,7 +32,7 @@ export default function LearnPage() {
             </div>
 
             {/* Main Content */}
-            <div className="w-full min-h-[calc(100vh-344px)] flex flex-col px-4 py-4">
+            <div className="max-w-8xl min-h-[calc(100vh-344px)] flex flex-col px-4 py-4">
                 <div className="flex flex-row justify-between py-6">
                     <div className="text-3xl font-bold text-[#104A7A] tracking-wide shadow-[0px_3px_0px_0px_#000000]">
                         Các Khóa Học

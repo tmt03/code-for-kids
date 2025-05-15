@@ -1,34 +1,59 @@
-import React from "react";
+"use client";
+
+import { useEffect, useRef } from "react";
+import * as Phaser from "phaser";
+import { GameScene } from "../game/game-scene";
+import { Preloader } from "../game/preloader";
 
 interface GameCanvasProps {
-    chapterId: number; //id cua chapter
-    baseCode: string; //base code ban dau khoi tao
-    taskCode: string; //code nhiem vu cua tre
-    width?: number;
-    height?: number;
+  chapterId: number;
+  baseCode: string;
+  taskCode: string;
+  width?: number;
+  height?: number;
 }
 
-const GameCanvas: React.FC<GameCanvasProps> = ({
-    chapterId,
-    baseCode,
-    taskCode,
-    width,
-    height,
-}) => {
+const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId }) => {
+  const canvasRef = useRef<HTMLDivElement>(null);
 
-    return (
-        <div
-            className="w-full h-full max-w-[1200px] mx-auto border-2 border-gray-500 rounded-lg bg-white"
-            style={{
-                aspectRatio: '5/3', // Tỷ lệ 800:480, có thể đổi thành 16:9 nếu muốn
-            }}
-        >
-            {/* Placeholder cho khung game */}
-            <div className="w-full h-full flex items-center justify-center text-gray-500">
-                Khung game Chương {chapterId}
-            </div>
-        </div>
-    );
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const config: Phaser.Types.Core.GameConfig = {
+      type: Phaser.AUTO,
+      width: 800,
+      height: 480,
+      parent: canvasRef.current,
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: '100%',
+        height: '100%',
+      },
+      physics: {
+        default: "arcade",
+        arcade: { 
+          gravity: {
+            y: 600,
+            x: 0
+          }, 
+          debug: false 
+        },
+      },
+      scene: [new Preloader(chapterId), new GameScene(chapterId)],
+    };
+
+    const game = new Phaser.Game(config);
+    return () => game.destroy(true);
+  }, [chapterId]);
+
+  return (
+    <div
+      ref={canvasRef}
+      className="w-full h-full max-w-[1200px] mx-auto border-2 border-gray-500 bg-white"
+      style={{ aspectRatio: "5 / 3", width: "100%", height: "100%", borderRadius: "10px", overflow: "hidden" }}
+    />
+  );
 };
 
 export default GameCanvas;

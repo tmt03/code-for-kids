@@ -19,6 +19,7 @@
     "@uiw/react-codemirror": "^4.23.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "codemirror": "^6.0.1",
     "lucide-react": "^0.487.0",
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.2",
