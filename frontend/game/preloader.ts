@@ -85,4 +85,4 @@ export class Preloader extends Phaser.Scene {
 
     this.scene.start("GameScene");
   }
-} 
+}

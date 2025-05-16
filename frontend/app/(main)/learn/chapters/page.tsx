@@ -105,20 +105,22 @@ export default function ChapterPage() {
                 style={{ backgroundImage: "url('/assets/learn-page-bg.png')" }}
             ></div>
 
-            <main className="w-full flex flex-col lg:flex-row flex-1 px-4 py-6 bg-gray-50">
-                {/* Phần hiển thị các chapter */}
-                <div className="w-full lg:w-4/5">
-                    <ChapterList chapters={chapters} />
-                </div>
+            <main className="w-full px-4 py-6 bg-gray-50">
+                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row flex-1 w-full">
+                    {/* Phần hiển thị các chapter */}
+                    <div className="w-full lg:w-4/5">
+                        <ChapterList chapters={chapters} />
+                    </div>
 
-                {/* Phần CourseProgress và CourseBadges */}
-                <div className="w-full lg:w-1/5 mt-6 lg:mt-0 lg:pl-6">
-                    <div className="sticky top-6 flex flex-col gap-6">
-                        <div>
-                            <CourseProgress chapters={chapters} />
-                        </div>
-                        <div>
-                            <CourseBadges chapters={chapters} />
+                    {/* Phần CourseProgress và CourseBadges */}
+                    <div className="w-full lg:w-1/5 mt-6 lg:mt-0 lg:pl-6">
+                        <div className="sticky top-6 flex flex-col gap-6">
+                            <div>
+                                <CourseProgress chapters={chapters} />
+                            </div>
+                            <div>
+                                <CourseBadges chapters={chapters} />
+                            </div>
                         </div>
                     </div>
                 </div>
