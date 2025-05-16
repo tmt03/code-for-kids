@@ -179,6 +179,4 @@ export default function Navbar() {
     );
 }
 
-function localFont(arg0: { src: string; }) {
-    throw new Error('Function not implemented.');
-}
+
