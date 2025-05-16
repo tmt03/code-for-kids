@@ -7,9 +7,6 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const pixelFont = localFont({
-    src: '../app/fonts/SVNDeterminationSans.otf',
-});
 import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 
 export default function Navbar() {
@@ -53,7 +50,7 @@ export default function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center gap-4">
                         <img src="/assets/logo_scriptbies.png" alt="Scriptbies Logo" className="h-10 w-auto" />
-                        <Link href="/" className={`${pixelFont.className} text-2xl`}>Scriptbies</Link>
+                        <Link href="/" className={`text-2xl`}>Scriptbies</Link>
                     </div>
 
                     {/* Nav links */}
@@ -94,7 +91,7 @@ export default function Navbar() {
 
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <a href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <Link href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
                                         <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
@@ -167,7 +164,7 @@ export default function Navbar() {
                     </button>
 
                     {/* Profile Menu Items */}
-                    <a href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <Link href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </Link>
                     <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
