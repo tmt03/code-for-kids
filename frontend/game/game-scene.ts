@@ -7,6 +7,12 @@ export class GameScene extends Phaser.Scene {
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
   private canJump: boolean = true;
   private wasOnGround: boolean = true;
+  private bg!: Phaser.GameObjects.Image;
+  private castle!: Phaser.GameObjects.Image;
+  private tree!: Phaser.GameObjects.Image;
+  private rock!: Phaser.GameObjects.Image;
+  private shrub!: Phaser.GameObjects.Image;
+  private floor!: Phaser.Physics.Arcade.Sprite;
 
   constructor(chapterId: number) {
     super("GameScene");
@@ -14,73 +20,83 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Background
-    const bg = this.add.image(0, 0, "background").setOrigin(0);
-    bg.setScale(750 / bg.width, 380 / bg.height);
+    // Set background
+    if (this.chapterId !== 3) {
+      this.bg = this.add.image(0, 0, "background").setOrigin(0).setScale(0.44);
+    }
 
-    // Tạo platforms group
+    // Setup platforms
     this.platforms = this.physics.add.staticGroup();
 
-    //Chap_1
     if (this.chapterId === 1) {
-      // Floor - tạo platform
-      const floor = this.platforms.create(355, 360, "floor") as Phaser.Physics.Arcade.Sprite;
-      floor.setScale(0.25).refreshBody();
+      // Add floor
+      this.floor = this.platforms.create(410, 365, "floor") as Phaser.Physics.Arcade.Sprite;
+      this.floor.setScale(0.27).refreshBody();
 
-      // Rock
-      this.add.image(383, 335, "rock").setOrigin(0, 1).setScale(0.08);
+      // Add scenery
+      this.rock = this.add.image(383, 340, "rock").setOrigin(0, 1).setScale(0.08);
+      this.castle = this.add.image(600, 370, "castle").setOrigin(0.5, 1).setScale(0.35);
+      this.tree = this.add.image(-50, 338, "tree").setOrigin(0, 1).setScale(0.2);
+      this.shrub = this.add.image(700, 340, "shrub").setOrigin(0, 1).setScale(0.07);
+    } 
+    else if (this.chapterId === 2) {
+      // Add scenery
+      this.castle = this.add.image(455, 383, "castle").setOrigin(0.5, 1).setScale(0.466);
+      this.rock = this.add.image(-60, 413, "rock").setOrigin(0, 1).setScale(0.2);
+      this.tree = this.add.image(20, 390, "tree").setOrigin(0, 1).setScale(0.23);
+      this.shrub = this.add.image(-10, 378, "shrub").setOrigin(0, 1).setScale(0.07);
 
-      // Castle
-      this.add.image(600, 365, "castle").setOrigin(0.5, 1).setScale(0.35);
+      // Add floor
+      this.floor = this.platforms.create(410, 395, "floor") as Phaser.Physics.Arcade.Sprite;
+      this.floor.setScale(0.27).refreshBody();
 
-      // Tree
-      this.add.image(-50, 335, "tree").setOrigin(0, 1).setScale(0.2);
-
-      // Shrub
-      this.add.image(700, 333, "shrub").setOrigin(0, 1).setScale(0.07);
-
-      // Player
-      this.player = this.physics.add.sprite(200, 480 - 300, "player_idle");
-      this.player.setScale(1);
-      this.player.setCollideWorldBounds(true);
-
-      //Chap_2
-    } else if (this.chapterId === 2) {
-      // Castle - đặt ở giữa phải
-      this.add.image(432, 348, "castle").setOrigin(0.5, 1).setScale(0.47);
-
-      // Rock - đặt ở giữa trái
-      this.add.image(-60, 380, "rock").setOrigin(0, 1).setScale(0.2);
-
-      // Tree - đặt ở góc phải
-      this.add.image(20, 347, "tree").setOrigin(0, 1).setScale(0.2);
-
-      // Shrub - đặt ở góc trái
-      this.add.image(-10, 345, "shrub").setOrigin(0, 1).setScale(0.07);
-
-      // Floor - tạo platform
-      const floor = this.platforms.create(355, 360, "floor") as Phaser.Physics.Arcade.Sprite;
-      floor.setScale(0.25).refreshBody();
-
-      // Player
+      // Setup player
       this.player = this.physics.add.sprite(100, 480 - 300, "player_idle");
       this.player.setScale(1);
       this.player.setCollideWorldBounds(true);
+      this.physics.add.collider(this.player, this.platforms);
+    } else if (this.chapterId === 3) {
+      // Setup chapter 3
+      this.bg = this.add.image(0, 0, "background").setOrigin(0).setScale(0.45);
+
+      // Add invisible platforms
+      const redPlatform1 = this.add.rectangle(620, 340, 296, 60, 0xff0000);
+      redPlatform1.setAlpha(0);
+      this.physics.add.existing(redPlatform1, true);
+      this.platforms.add(redPlatform1);
+
+      const redPlatform2 = this.add.rectangle(100, 298, 214, 60, 0xff0000);
+      redPlatform2.setAlpha(0);
+      this.physics.add.existing(redPlatform2, true);
+      this.platforms.add(redPlatform2);
+
+      const redPlatform3 = this.add.rectangle(345, 370, 214, 60, 0xff0000);
+      redPlatform3.setAlpha(0);
+      this.physics.add.existing(redPlatform3, true);
+      this.platforms.add(redPlatform3);
+
+      // Setup player
+      if (this.textures.exists('player_idle')) {
+        this.player = this.physics.add.sprite(100, 200, "player_idle");
+        this.player.setScale(1);
+        this.player.setCollideWorldBounds(true);
+        this.physics.add.collider(this.player, this.platforms);
+        this.player.anims.play("idle", true);
+      } else {
+        console.error("Player texture not found!");
+      }
     }
 
-    // Thêm va chạm giữa player và platforms
-    this.physics.add.collider(this.player, this.platforms);
-
-    // Khởi tạo bàn phím
+    // Setup controls
     if (this.input && this.input.keyboard) {
       this.cursors = this.input.keyboard.createCursorKeys();
     }
   }
 
   update() {
-    if (!this.player) return;
+    if (!this.player || !this.player.anims) return;
 
-    // Xử lý di chuyển
+    // Left/Right movement
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-160);
       if (this.player.body && this.player.body.touching.down) {
@@ -100,15 +116,15 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Kiểm tra trạng thái chạm đất
+    // Ground check
     const onGround = this.player.body && this.player.body.touching.down;
 
-    // Nếu vừa nhảy lên (từ chạm đất sang trên không)
+    // Jump animation
     if (!onGround && this.wasOnGround) {
       this.player.anims.play("jump", true);
     }
 
-    // Nếu vừa tiếp đất (từ trên không sang chạm đất)
+    // Land animation
     if (onGround && !this.wasOnGround) {
       if (this.player.body && this.player.body.velocity.x !== 0) {
         this.player.anims.play("run", true);
@@ -119,14 +135,13 @@ export class GameScene extends Phaser.Scene {
 
     this.wasOnGround = !!onGround;
 
-    // Xử lý nhảy
+    // Jump control
     if ((this.cursors.up.isDown || this.cursors.space.isDown) && this.canJump) {
       this.player.setVelocityY(-300);
       this.canJump = false;
-      // Không cần play jump ở đây nữa!
     }
 
-    // Reset canJump khi player chạm đất
+    // Reset jump
     if (onGround) {
       this.canJump = true;
     }
