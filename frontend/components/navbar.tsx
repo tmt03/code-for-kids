@@ -95,7 +95,7 @@ export default function Navbar() {
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
                                         <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
-                                            <FontAwesomeIcon icon={faGear}/> Cài đặt
+                                            <FontAwesomeIcon icon={faGear} /> Cài đặt
                                         </Link>
                                         <button className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
@@ -168,7 +168,7 @@ export default function Navbar() {
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </Link>
                     <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                        <FontAwesomeIcon icon={faGear}/> Cài đặt
+                        <FontAwesomeIcon icon={faGear} /> Cài đặt
                     </Link>
                     <button className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
@@ -178,3 +178,5 @@ export default function Navbar() {
         </div>
     );
 }
+
+
