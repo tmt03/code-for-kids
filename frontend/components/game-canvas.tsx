@@ -1,10 +1,12 @@
 "use client";
 
-import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from "react";
+import dynamic from 'next/dynamic';
 
 // Import types only
 import type * as Phaser from "phaser";
+import type { GameScene } from "../game/game-scene";
+import type { Preloader } from "../game/preloader";
 
 interface GameCanvasProps {
   chapterId: number;
@@ -43,12 +45,12 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId }) => {
         },
         physics: {
           default: "arcade",
-          arcade: {
+          arcade: { 
             gravity: {
               y: 600,
               x: 0
-            },
-            debug: false
+            }, 
+            debug: false 
           },
         },
         scene: [new Preloader(chapterId), new GameScene(chapterId)],
