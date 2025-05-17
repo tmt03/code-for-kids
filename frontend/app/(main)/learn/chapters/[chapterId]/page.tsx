@@ -3,6 +3,7 @@
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
+import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import React from 'react';
@@ -18,7 +19,6 @@ export default function ChapterPage({ params }: { params: { chapterId: string } 
 
     return (
         <div className='w-full h-full flex gap-2'>
-
             <div className='w-3/5 h-full flex flex-col'>
                 <div className='h-1/5'>
                     <InteractionBox message="Chúc mừng bạn đã hoàn thành!" />

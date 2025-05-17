@@ -2,7 +2,7 @@ import { SearchIcon } from "lucide-react";
 
 export default function SearchBar() {
     return (
-        <div className="relative w-64 sm:w-80">
+        <div className="relative w-full sm:w-80">
             <input
                 type="text"
                 placeholder="Tìm kiếm khóa học..."

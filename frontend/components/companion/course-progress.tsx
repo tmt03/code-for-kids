@@ -31,7 +31,7 @@ export default function CourseProgress({ chapters }: CourseProgressProps) {
     return (
         <div className="mt-4 p-4 bg-[#1C6CA8] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
             {/* Tiêu đề */}
-            <h3 className="text-lg font-bold text-white tracking-wide shadow-[0px_2px_0px_0px_#000000] mb-4">
+            <h3 className="text-lg font-bold text-white tracking-wide mb-4">
                 Tiến độ học tập
             </h3>
 

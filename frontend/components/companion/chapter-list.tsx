@@ -44,7 +44,7 @@ export default function ChapterList({ chapters }: ChapterListProps) {
 
     return (
         <div className="w-full">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#104A7A] tracking-wide shadow-[0px_3px_0px_0px_#000000]">
+            <h2 className="text-3xl font-bold text-[#104A7A]">
                 Chọn Chapter Để Học
             </h2>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

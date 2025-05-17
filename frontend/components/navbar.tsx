@@ -6,7 +6,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faBars, faGear, faGears, faHome, faHomeAlt, faHomeUser, faHouse, faHouseChimney, faSignOut, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 
 export default function Navbar() {
@@ -15,7 +15,9 @@ export default function Navbar() {
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
 
     const pathname = usePathname();
-    const isLoggedIn = pathname === '/home' || pathname === '/profile' || pathname === '/leaderboard';
+    const isLoggedIn = pathname === '/home' 
+    || pathname === '/profile' || pathname === '/leaderboard'
+    || pathname.startsWith('/learn/chapters');
 
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
@@ -55,6 +57,11 @@ export default function Navbar() {
 
                     {/* Nav links */}
                     <ul className="hidden lg:flex gap-6">
+                        {isLoggedIn && (
+                            <Link href="/home" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                                <FontAwesomeIcon icon={faHouse} className='pr-1'/> Trang chủ
+                            </Link>
+                        )}
                         <Link href="/learn/courses" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
                             Khóa học
                         </Link>
@@ -115,6 +122,11 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="fixed top-14 left-0 w-full z-10 bg-[#28284f]/90 text-white flex flex-col items-start">
                     <ul className="flex flex-col items-start w-full">
+                        {isLoggedIn && (
+                            <Link href="/home" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                                <FontAwesomeIcon icon={faHouse} className='pr-1'/> Trang chủ
+                            </Link>
+                        )}
                         <Link href="/learn/courses" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
                             Khóa học
                         </Link>
