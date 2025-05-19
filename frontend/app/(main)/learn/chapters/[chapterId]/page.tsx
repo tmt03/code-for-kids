@@ -3,14 +3,13 @@
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
-import Navbar from '@/components/navbar';
 import { Button } from '@/components/ui/button';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import React from 'react';
 
 export default function ChapterPage({ params }: { params: { chapterId: string } }) {
     const [code, setCode] = React.useState("console.log('Hello from ChapterPage!');");
-    const chapterId = React.useMemo(() => parseInt(params.chapterId), [params.chapterId]);
+    const chapterId = parseInt(params.chapterId);
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode);
