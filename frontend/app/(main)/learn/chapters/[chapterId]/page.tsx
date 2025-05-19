@@ -10,7 +10,7 @@ import React from 'react';
 
 export default function ChapterPage({ params }: { params: { chapterId: string } }) {
     const [code, setCode] = React.useState("console.log('Hello from ChapterPage!');");
-    const chapterId = parseInt(params.chapterId);
+    const chapterId = React.useMemo(() => parseInt(params.chapterId), [params.chapterId]);
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode);

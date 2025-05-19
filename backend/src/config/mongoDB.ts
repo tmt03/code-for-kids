@@ -1,12 +1,9 @@
 import { Db, MongoClient, ServerApiVersion } from "mongodb";
+import { env } from "./environment";
 
-// const uri = process.env.MONGODB_URI;
-const uri =
-  "mongodb+srv://tmt03:tmt03@cluster0-scriptbies.13edc5x.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0-Scriptbies";
-const databaseName = process.env.DATABASE_NAME;
 let scriptbiesDatabaseInstance: Db | null = null;
 
-const mongoClientInstance = new MongoClient(uri, {
+const mongoClientInstance = new MongoClient(env.MONGODB_URI as string, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -20,7 +17,9 @@ export const CONNECT_DB = async () => {
   await mongoClientInstance.connect();
 
   //Kêt nối thành công, lấy database theo tên và gán lại scriptbiesDatabaseInstance
-  scriptbiesDatabaseInstance = mongoClientInstance.db(databaseName);
+  scriptbiesDatabaseInstance = mongoClientInstance.db(
+    env.MONGODB_NAME as string
+  );
 };
 
 //Export ra Scriptbies Database Instance sau khi connect thành công để sử dung ở nhiều nơi khác trong code
@@ -32,5 +31,6 @@ export const GET_DB = () => {
 };
 
 export const CLOSE_DB = async () => {
+  console.log("Closing database connection...");
   await mongoClientInstance.close();
 };
