@@ -67,7 +67,7 @@ export default function SidebarChapter() {
             {/* Sidebar */}
             {isSidebarOpen && (
                 <div className="absolute bottom-20 left-0 w-64 bg-[#1C2526] text-white rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000] z-50 p-4 max-h-[70vh] overflow-y-auto">
-                    <h2 className="text-lg font-bold mb-2">Book 1: Phưu Lưu Ở Thế Giới Coder</h2>
+                    <h2 className="text-lg font-bold mb-2">Book 1: Phiêu Lưu Ở Thế Giới Coder</h2>
                     {chapters.map((chapter, index) => (
                         <div key={index} className="mb-2">
                             {/* Tiêu đề chương với nút toggle */}

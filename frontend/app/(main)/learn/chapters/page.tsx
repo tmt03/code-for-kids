@@ -1,7 +1,8 @@
 import ChapterList from "@/components/companion/chapter-list";
 import CourseBadges from "@/components/companion/course-badges";
 import CourseProgress from "@/components/companion/course-progress";
-import HeaderChapter from "./header";
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
 
 export default function ChapterPage() {
     // Dữ liệu mẫu cho các chapter
@@ -95,9 +96,7 @@ export default function ChapterPage() {
 
     return (
         <div className="w-full flex flex-col min-h-screen">
-            <div className="w-full bg-gradient-to-r from-[#4682B4] to-[#1C6CA8]">
-                <HeaderChapter />
-            </div>
+            <Navbar />
 
             {/* Header Background */}
             <div
@@ -126,7 +125,8 @@ export default function ChapterPage() {
                 </div>
             </main>
             <div className="w-full h-40 bg-gradient-to-r from-[#4682B4] to-[#1C6CA8]">
-                {/* <Footer/> */}
+
+            <Footer />
             </div>
         </div>
     );

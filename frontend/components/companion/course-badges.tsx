@@ -20,7 +20,7 @@ export default function CourseBadges({ chapters }: CourseBadgesProps) {
         <div className="mt-4 p-4 bg-[#1C6CA8] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
             {/* Tiêu đề */}
             <div className="flex justify-between items-center mb-2">
-                <h3 className="text-lg font-bold text-white tracking-wide shadow-[0px_2px_0px_0px_#000000]">
+                <h3 className="text-lg font-bold text-white">
                     Huy Hiệu
                 </h3>
                 <span className="text-sm text-white">
@@ -29,9 +29,8 @@ export default function CourseBadges({ chapters }: CourseBadgesProps) {
             </div>
 
             {/* Mô tả */}
-            <p className="text-sm text-white mb-4">
-                Hoàn thành các Chapter để nhận
-                <br /> được tất cả các huy hiệu
+            <p className="text-1sm text-white mb-4">
+                Hoàn thành các Chapter để nhận được tất cả các huy hiệu
             </p>
 
             {/* Danh sách huy hiệu */}

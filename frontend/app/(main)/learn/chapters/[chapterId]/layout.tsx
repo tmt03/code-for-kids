@@ -1,7 +1,7 @@
 'use client';
 
+import Navbar from '@/components/navbar';
 import FooterChapter from '../footer';
-import HeaderChapter from '../header';
 import SidebarChapter from '../sidebar';
 
 type Props = {
@@ -11,9 +11,10 @@ type Props = {
 const ChapterLayout = ({ children }: Props) => {
     return (
         <div className="h-dvh text-gray-800 flex flex-col bg-gradient-to-r from-[#87CEFA] to-[#40C4FF]">
-            <div className="w-full shadow-md top-0 z-10">
-                <HeaderChapter />
+            <div className='pb-14'>
+                <Navbar />
             </div>
+
             <main className="flex-1 w-full overflow-hidden pt-2 pb-2">
                 {children}
             </main>
