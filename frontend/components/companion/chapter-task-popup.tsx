@@ -1,109 +1,138 @@
-// src/components/companion/ChapterTaskPopup.tsx
-import React from 'react';
+"use client";
 
-// Định nghĩa kiểu dữ liệu cho Task và Chapter (có thể import từ nơi khác nếu đã định nghĩa chung)
+import React, { useEffect } from "react";
+
 interface Task {
-    id: number;
-    title: string;
-    isChallenge?: boolean;
+  id: number;
+  title: string;
+  isChallenge?: boolean;
 }
 
 interface Chapter {
-    id: number;
-    title: string;
-    description: string; // Mặc dù không dùng trong popup nhưng giữ để nhất quán
-    status: string; // Mặc dù không dùng trong popup nhưng giữ để nhất quán
-    isSpecial?: boolean; // Mặc dù không dùng trong popup nhưng giữ để nhất quán
-    tasks: Task[];
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  isSpecial?: boolean;
+  tasks: Task[];
 }
 
-// Định nghĩa props cho component Popup
 interface ChapterTaskPopupProps {
-    chapter: Chapter | null; // Chapter cần hiển thị, hoặc null nếu ẩn
-    onClose: () => void; // Hàm để đóng popup
+  chapter: Chapter | null;
+  onClose: () => void;
 }
 
-export default function ChapterTaskPopup({ chapter, onClose }: ChapterTaskPopupProps) {
-    // Nếu không có chapter nào được chọn thì không hiển thị gì cả
-    if (!chapter) {
-        return null;
+export default function ChapterTaskPopup({
+  chapter,
+  onClose,
+}: ChapterTaskPopupProps) {
+  useEffect(() => {
+    // Disable body scroll when popup is open
+    if (chapter) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
 
-    // Hàm xử lý khi click vào lớp phủ nền (overlay) để đóng popup
-    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        // Chỉ đóng nếu click trực tiếp vào overlay, không phải vào content bên trong
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
+    return () => {
+      document.body.style.overflow = "";
     };
+  }, [chapter]);
 
-    return (
-        <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={handleOverlayClick} // Click ra ngoài popup để đóng
-            role="dialog" // Vai trò cho accessibility
-            aria-modal="true" // Đánh dấu là modal
-            aria-labelledby="popup-title" // Liên kết với tiêu đề
+  if (!chapter) return null;
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="popup-title"
+    >
+      <div
+        className="bg-[#E6F0FA] border-2 border-black rounded-lg shadow-[6px_6px_0px_0px_#000000] p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto relative animate-popup-appear mx-4 sm:mx-8 custom-scrollbar"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Nút đóng */}
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-3xl font-bold text-gray-500 hover:text-black transition-colors p-1"
+          aria-label="Đóng popup"
         >
-            <div
-                className="bg-[#E6F0FA] border-2 border-black rounded-lg shadow-[6px_6px_0px_0px_#000000] p-6 max-w-md w-full relative animate-popup-appear" // Thêm animation nếu muốn
-                onClick={(e) => e.stopPropagation()} // Ngăn click bên trong popup đóng popup
-            >
-                {/* Nút đóng popup */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-2 right-2 text-3xl leading-none font-bold text-gray-500 hover:text-black transition-colors p-1"
-                    aria-label="Đóng popup"
-                >
-                    &times; {/* Ký tự X */}
-                </button>
+          &times;
+        </button>
 
-                {/* Nội dung popup */}
-                <h3
-                    id="popup-title" // ID cho aria-labelledby
-                    className="text-xl font-bold text-[#104A7A] mb-4 text-center pr-6" // Thêm padding phải để không bị đè bởi nút X
-                >
-                    Nhiệm Vụ - {chapter.title}
-                </h3>
-                <ul className="w-full text-sm text-gray-800 space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar"> {/* Thêm scroll nếu quá dài và class scrollbar tùy chỉnh */}
-                    {chapter.tasks.map((task) => (
-                        <li
-                            key={task.id}
-                            className={`flex items-center gap-2 p-2 rounded border border-gray-300 ${
-                                task.isChallenge ? "bg-[#FFF0F5] text-[#FF1493] font-semibold" : "bg-white"
-                            }`}
-                        >
-                            <span className={`w-4 h-4 rounded-full border-2 ${task.isChallenge ? 'border-[#FF1493]' : 'border-black'} flex-shrink-0`}></span>
-                            {task.isChallenge ? <span className="font-bold">CHALLENGE:</span> : ""}
-                            <span className="flex-1">{task.title}</span> {/* Cho text tự xuống dòng */}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            {/* Thêm CSS cho animation và scrollbar nếu muốn */}
-            <style jsx global>{`
-                @keyframes popup-appear {
-                    from { opacity: 0; transform: scale(0.9); }
-                    to { opacity: 1; transform: scale(1); }
-                }
-                .animate-popup-appear {
-                    animation: popup-appear 0.2s ease-out forwards;
-                }
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                    border-radius: 3px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #bdbdbd;
-                    border-radius: 3px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #a5a5a5;
-                }
-            `}</style>
-        </div>
-    );
+        {/* Tiêu đề */}
+        <h3
+          id="popup-title"
+          className="text-2xl font-bold text-[#104A7A] mb-6 text-center pr-6"
+        >
+          Nhiệm Vụ - {chapter.title}
+        </h3>
+
+        {/* Danh sách nhiệm vụ */}
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {chapter.tasks.map((task) => (
+            <li key={task.id} className="flex flex-col items-center">
+              <div
+                className={`w-52 h-64 rounded-xl border-2 px-4 py-4 shadow-md flex flex-col items-center justify-center text-center ${
+                  task.isChallenge
+                    ? "border-[#FF1493] bg-[#FFF0F5] text-[#FF1493] font-semibold"
+                    : "border-black bg-white"
+                }`}
+              >
+                {task.isChallenge && <span className="mb-1">CHALLENGE</span>}
+                <span>{task.title}</span>
+              </div>
+              <button
+                className={`mt-4 bg-black text-white text-base px-4 py-2 rounded-full w-40 ${
+                  task.isChallenge
+                    ? "bg-pink-600 hover:bg-pink-700"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                ▶ Play
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Scrollbar + animation */}
+      <style jsx global>{`
+        @keyframes popup-appear {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-popup-appear {
+          animation: popup-appear 0.2s ease-out forwards;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #bbb;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #888;
+        }
+      `}</style>
+    </div>
+  );
 }
