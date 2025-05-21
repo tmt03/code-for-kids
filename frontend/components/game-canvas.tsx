@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState } from "react";
 
 // Import types only
 import type * as Phaser from "phaser";
-import type { GameScene } from "../game/game-scene";
-import type { Preloader } from "../game/preloader";
 
 interface GameCanvasProps {
   chapterId: number;
-  baseCode: string;
-  taskCode: string;
-  width?: number;
-  height?: number;
+  quest: {
+    id: string;
+    name: string;
+    baseCode: string;
+    mode: "guided" | "free";
+  }
 }
 
-const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId }) => {
+const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId, quest }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -31,6 +31,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId }) => {
       const Phaser = (await import('phaser')).default;
       const { GameScene } = await import('../game/game-scene');
       const { Preloader } = await import('../game/preloader');
+      const { Game_Scene } = await import('../game/gameScene')
 
       const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
@@ -45,15 +46,16 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId }) => {
         },
         physics: {
           default: "arcade",
-          arcade: { 
+          arcade: {
             gravity: {
               y: 600,
               x: 0
-            }, 
-            debug: false 
+            },
+            debug: false
           },
         },
-        scene: [new Preloader(chapterId), new GameScene(chapterId)],
+        // scene: [new Preloader(chapterId, quest), new GameScene(chapterId, quest)],
+        scene: new Game_Scene(chapterId, quest)
       };
 
       const game = new Phaser.Game(config);
@@ -64,7 +66,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId }) => {
     return () => {
       cleanup.then(cleanupFn => cleanupFn?.());
     };
-  }, [isClient, chapterId]);
+  }, [isClient, chapterId, quest]);
 
   return (
     <div

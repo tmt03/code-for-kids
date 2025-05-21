@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Chương 1: Xây dựng lại lâu đài pha lê",
+    "description": "Khôi phục lâu đài, trồng cây và sáng tạo vương quốc.",
+    "status": "published",
+    "_destroy": false,
+    "quests": [
+      {
+        "id": "C01_T01",
+        "name": "Xây dựng và tô màu lâu đài",
+        "description": "Khôi phục lại màu sắc cho lâu đài để xua tan bóng tối!",
+        "point": 10,
+        "baseCode": "setColor(\"castle\", ___);",
+        "solution": "\"blue\"",
+        "type": "quest",
+        "hint": "Gõ \"blue\" vào chỗ ___ để tô màu lâu đài.",
+        "imageUrl": "/images/c01_t01.png",
+        "videoUrl": "",
+        "_destroy": false
+      },
+      {
+        "id": "C01_T02",
+        "name": "Đặt tòa lâu đài về vị trí",
+        "description": "Đặt lâu đài vào trung tâm bản đồ.",
+        "point": 10,
+        "baseCode": "spawn(\"castle\", ___, ___);",
+        "solution": "400, 300",
+        "type": "quest",
+        "hint": "Gõ 400 và 300 lần lượt vào 2 vị trí.",
+        "imageUrl": "/images/c01_t02.png",
+        "videoUrl": "https://youtu.be/example2",
+        "_destroy": false
+      }
+    ]
+  },
+  {
+    "name": "Chương 2: Triệu hồi anh hùng Tí Tẹo",
+    "description": "Tạo anh hùng, di chuyển và thiết lập hành động.",
+    "status": "published",
+    "_destroy": false,
+    "quests": [
+      {
+        "id": "C02_Q01",
+        "name": "Đặt tên anh hùng",
+        "description": "Đặt tên cho anh hùng và hiển thị trên màn hình.",
+        "point": 10,
+        "baseCode": "spawn(\"knight\", 250, 200);\nsetName(\"knight\", \"___\");",
+        "solution": "\"anh hùng Tí Tẹo\"",
+        "type": "quest",
+        "hint": "Gõ tên vào dấu ngoặc kép.",
+        "imageUrl": "/images/c02_t01.png",
+        "videoUrl": "https://youtu.be/example3",
+        "_destroy": false
+      }
+    ]
+  }
+]

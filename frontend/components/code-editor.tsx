@@ -2,20 +2,25 @@
 
 import { javascript } from '@codemirror/lang-javascript';
 import CodeMirror from '@uiw/react-codemirror';
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
 interface CodeEditorProps {
     initialValue?: string;
-    onChange?: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue = '', onChange }) => {
-    const [value, setValue] = React.useState(initialValue);
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
+    const [value, setValue] = useState(initialValue);
 
-    const handleChange = React.useCallback((val: string) => {
+    // Khi nhiệm vụ (quest) đổi → cập nhật lại editor
+    useEffect(() => {
+        setValue(initialValue);
+    }, [initialValue]);
+
+    const handleChange = (val: string) => {
         setValue(val);
-        if (onChange) onChange(val);
-    }, [onChange]);
+        onChange(val);
+    };
 
     return (
         <div className='w-full h-full min-h-[300px]'>

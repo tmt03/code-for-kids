@@ -1,5 +1,12 @@
 import * as Phaser from "phaser";
 
+interface Quest {
+  id: string;
+  name: string;
+  baseCode: string;
+  mode: "guided" | "free";
+}
+
 export class Preloader extends Phaser.Scene {
   private chapterId: number;
 
