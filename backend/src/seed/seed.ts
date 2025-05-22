@@ -10,7 +10,7 @@ async function seedChapters() {
     const db = GET_DB();
 
     // B2: Đọc file JSON
-    const jsonPath = path.join(__dirname, "chapters.json");
+    const jsonPath = path.join(__dirname, "chapter.json");
     const chapters = JSON.parse(readFileSync(jsonPath, "utf-8"));
 
     // B3: Ghi vào collection `chapters`
