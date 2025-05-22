@@ -1,5 +1,6 @@
 // GameScene.ts
-import Phaser from "phaser";
+import { getBaseCodeForQuest } from "@/features/quests/questMap";
+import * as Phaser from "phaser";
 
 interface Quest {
   id: string;
@@ -12,6 +13,10 @@ export class Game_Scene extends Phaser.Scene {
   private chapterId: number;
   private quest: Quest;
   private userLayer!: Phaser.GameObjects.Layer;
+  private boss!: Phaser.Physics.Arcade.Sprite;
+  private platforms!: Phaser.Physics.Arcade.StaticGroup;
+  private bg!: Phaser.GameObjects.Image;
+  private floor!: Phaser.Physics.Arcade.Sprite;
 
   constructor(chapterId: number, quest: Quest) {
     super("Game_Scene");
@@ -19,54 +24,63 @@ export class Game_Scene extends Phaser.Scene {
     this.quest = quest;
   }
 
-  preload() {}
+  preload() {
+    // this.load.setPath(""); //Set path rỗng
+    this.load.image("floor_ground_1", "/chapters_game/grounds/ground_1.png");
+    this.load.image(
+      "bg_mountain_1",
+      "/chapters_game/backgrounds/mountain_1.png"
+    );
+    this.load.image(
+      "bg_mountain_2",
+      "/chapters_game/backgrounds/mountain_2.png"
+    );
+    this.load.spritesheet(
+      "monitaur_idle",
+      "/chapters_game/boss/monitaur_1/monitaur_idle.png",
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      }
+    );
+  }
 
   create() {
     // Tạo layer riêng cho code học sinh
     this.userLayer = this.add.layer();
 
-    // Nếu quest dạng hướng dẫn → chạy preview
-    if (this.quest.mode === "guided") {
-      this.runPreviewCode(this.quest.baseCode); //chạy code preview của từng quests
+    try {
+      const idd = "C01_Q01"; //Giả lập chuyển id cho chapter 1 - quest
+      const previewCode = getBaseCodeForQuest(idd); //Idd chuyển vào sẽ đổi thành this.quest.id (lấy id từ DB)
+      this.runPreviewCode(previewCode);
+    } catch (error) {
+      console.log("Lỗi r");
     }
 
     // Lắng nghe code học sinh khi ấn RUN
     window.addEventListener("run-user-code", (e: any) => {
       this.userLayer.removeAll(true); // Xoá nội dung cũ
-      this.runUserCode(e.detail.code);
+      this.runUserCode(e.detail.code); // chạy code vừa nhập
     });
-  }
-
-  runPreviewCode(code: string) {
-    try {
-      const sandbox = this.getSandbox(false);
-      new Function("game", code)(sandbox);
-    } catch (err) {
-      console.error("Preview error:", err);
-    }
   }
 
   runUserCode(code: string) {
     try {
-      const sandbox = this.getSandbox(true);
-      new Function("game", code)(sandbox);
+      // Thực thi code trực tiếp trong ngữ cảnh GameScene
+      new Function(code).call(this);
     } catch (err) {
-      console.error("User code error:", err);
+      console.error("Lỗi khi chạy user code:", err);
     }
   }
 
-  // Trả về môi trường cho code chạy, phân biệt preview/user bằng useUserLayer
-  getSandbox(useUserLayer: boolean) {
-    const layer = useUserLayer ? this.userLayer : this.add.layer();
-
-    return {
-      spawn: (key: string, x: number, y: number) => {
-        const sprite = this.add.sprite(x, y, key);
-        layer.add(sprite);
-        return sprite;
-      },
-
-      // Thêm các API khác nếu cần
-    };
+  runPreviewCode(code: string) {
+    try {
+      // Tạo function mới với tham số 'scene' để code có thể truy cập scene
+      const fn = new Function("scene", code);
+      // Gọi hàm với this = scene hiện tại
+      fn(this);
+    } catch (err) {
+      console.error("Lỗi khi chạy preview code:", err);
+    }
   }
 }

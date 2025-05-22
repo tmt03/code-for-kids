@@ -9,10 +9,12 @@ interface Quest {
 
 export class Preloader extends Phaser.Scene {
   private chapterId: number;
+  private quest: Quest;
 
-  constructor(chapterId: number) {
+  constructor(chapterId: number, quest: Quest) {
     super("Preloader");
     this.chapterId = chapterId;
+    this.quest = quest;
   }
 
   preload() {
