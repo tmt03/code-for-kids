@@ -1,5 +1,7 @@
 // GameScene.ts
 import { getBaseCodeForQuest } from "@/features/quests/questMap";
+import { createStudentAPI } from "@/game/api/learning-api";
+
 import * as Phaser from "phaser";
 
 interface Quest {
@@ -64,10 +66,16 @@ export class Game_Scene extends Phaser.Scene {
     });
   }
 
+  //Thực thi code của trẻ nhập vào
   runUserCode(code: string) {
+    const sandbox = createStudentAPI(this);
     try {
-      // Thực thi code trực tiếp trong ngữ cảnh GameScene
-      new Function(code).call(this);
+      const wrapped = `
+      with (sandbox) {
+        ${code}
+      }
+    `;
+      new Function("sandbox", wrapped)(sandbox);
     } catch (err) {
       console.error("Lỗi khi chạy user code:", err);
     }
