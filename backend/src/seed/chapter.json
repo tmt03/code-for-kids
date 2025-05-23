@@ -1,8 +1,10 @@
 [
   {
-    "name": "Chương 1: Xây dựng lại lâu đài pha lê",
+    "id": "C01",
+    "name": "Xây dựng lại lâu đài pha lê",
     "description": "Khôi phục lâu đài, trồng cây và sáng tạo vương quốc.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": false,
     "_destroy": false,
     "quests": [
       {
@@ -13,8 +15,7 @@
         "baseCode": "setColor(\"castle\", ___);",
         "solution": "\"blue\"",
         "type": "quest",
-        "hint": "Gõ \"blue\" vào chỗ ___ để tô màu lâu đài.",
-        "imageUrl": "/images/c01_t01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -24,11 +25,9 @@
         "description": "Đặt lâu đài vào trung tâm bản đồ.",
         "point": 10,
         "baseCode": "spawn(\"castle\", ___, ___);",
-        "solution": "400, 300",
         "type": "quest",
-        "hint": "Gõ 400 và 300 lần lượt vào 2 vị trí.",
         "imageUrl": "/images/c01_t02.png",
-        "videoUrl": "https://youtu.be/example2",
+        "videoUrl": "",
         "_destroy": false
       },
       {
@@ -37,10 +36,8 @@
         "description": "Trồng một cây xanh gần lâu đài.",
         "point": 10,
         "baseCode": "spawn(\"tree\", ___, ___);",
-        "solution": "500, 350",
         "type": "quest",
-        "hint": "Gõ 500 vào chỗ ___ đầu tiên (x). Gõ 350 vào chỗ ___ thứ hai (y).",
-        "imageUrl": "/images/c01_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -50,19 +47,19 @@
         "description": "Tự sáng tạo một vương quốc riêng của mình với đầy đủ lâu đài và cây cối.",
         "point": 20,
         "baseCode": "setBackground(\"___\")\nsetFloor(\"___\");\nspawn(\"castle\", ___, ___);\nspawn(\"tree\", ___, ___);",
-        "solution": "setBackground(\"sky_1\")\nsetFloor(\"ground_1\");\nspawn(\"castle\", 400, 300);\nspawn(\"tree\", 500, 350);",
         "type": "challenge",
-        "hint": "Thử kết hợp nhiều câu lệnh lại với nhau, và đừng quên sáng tạo bất cứ thứ gì bạn muốn.",
-        "imageUrl": "/images/c01_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }
     ]
   },
   {
-    "name": "Chương 2: Triệu hồi anh hùng Tí Tẹo",
+    "id": "C02",
+    "name": "Triệu hồi anh hùng Tí Tẹo",
     "description": "Tạo anh hùng, di chuyển và thiết lập hành động.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": false,
     "_destroy": false,
     "quests": [
       {
@@ -71,11 +68,9 @@
         "description": "Đặt tên cho anh hùng và hiển thị trên màn hình.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 250, 200);\nsetName(\"knight\", \"___\");",
-        "solution": "\"anh hùng Tí Tẹo\"",
         "type": "quest",
-        "hint": "Gõ tên vào dấu ngoặc kép.",
-        "imageUrl": "/images/c02_t01.png",
-        "videoUrl": "https://youtu.be/example3",
+        "imageUrl": "",
+        "videoUrl": "",
         "_destroy": false
       },
       {
@@ -84,10 +79,8 @@
         "description": "Đưa anh hùng đến gần lâu đài (x=400, y=300).",
         "point": 10,
         "baseCode": "spawn(\"knight\", 250, 200);\nmove(\"knight\", ___, ___);",
-        "solution": "150, 100",
         "type": "quest",
-        "hint": "Gõ 150 vào chỗ ___ đầu tiên (x). Gõ 100 vào chỗ ___ thứ hai (y).",
-        "imageUrl": "/images/c02_t02.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -97,10 +90,8 @@
         "description": "Khiến anh hùng trở lên to hơn.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 400, 300);\nscale(\"knight\", ___);",
-        "solution": "1.5",
         "type": "quest",
-        "hint": "Gõ 1.5 vào chỗ ___.",
-        "imageUrl": "/images/c02_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -110,19 +101,19 @@
         "description": "Tạo anh hùng, đặt tỉ lệ 1.5, vị trí x=350, y=350, với tên tùy chọn.",
         "point": 20,
         "baseCode": "spawn(\"hunter\", 350, 350);\nscale(\"hunter\", 1.5);\nsetName(\"hunter\", \"___\");",
-        "solution": "spawn(\"hunter\", 350, 350);\nscale(\"hunter\", 1.5);\nsetName(\"hunter\", \"Anh Hùng Của Tôi\");",
         "type": "challenge",
-        "hint": "Đưa con trỏ chuột vào vị trí (“___”) và ấn tổ hợp phím ctrl + space trên bàn phím để có nhiều lựa chọn anh hùng xin sò khác, đừng quên là tùy chỉnh kích thước anh hùng bạn muốn.",
-        "imageUrl": "/images/c02_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }
     ]
   },
   {
-    "name": "Chương 3: Luyện tập bước đi của anh hùng",
+    "id": "C03",
+    "name": "Luyện tập bước đi của anh hùng",
     "description": "Thiết lập điều khiển di chuyển cho anh hùng.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": false,
     "_destroy": false,
     "quests": [
       {
@@ -131,10 +122,8 @@
         "description": "Làm anh hùng đi phải khi nhấn phím mũi tên phải.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 250, 200, { animation: \"walk\" });\nonKey(\"right\", \"move\", \"knight\", ___, 0);",
-        "solution": "10",
         "type": "quest",
-        "hint": "Gõ 10 vào chỗ ___.",
-        "imageUrl": "/images/c03_t01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -143,11 +132,8 @@
         "name": "Thiết lập điều khiển di chuyển sang trái",
         "description": "Làm anh hùng đi trái khi nhấn phím mũi tên trái.",
         "point": 10,
-        "baseCode": "spawn(\"knight\", 300, 200, { animation: \"walk\" });\nonKey(\"left\", \"move\", \"knight\", ___, 0);",
-        "solution": "-10",
         "type": "quest",
-        "hint": "Gõ -10 vào chỗ ___.",
-        "imageUrl": "/images/c03_t02.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -157,10 +143,8 @@
         "description": "Làm anh hùng nhảy lên khi nhấn phím mũi tên lên.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 250, 200, { animation: \"jump\" });\nonKey(\"up\", \"jump\", \"knight\", ___);",
-        "solution": "150",
         "type": "quest",
-        "hint": "Gõ 150 vào chỗ ___.",
-        "imageUrl": "/images/c03_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -170,19 +154,19 @@
         "description": "Thiết lập điều khiển cơ bản cho anh hùng. Sau đó điều khiển anh hùng đi đến vị trí lá cờ.",
         "point": 20,
         "baseCode": "spawn(\"knight\", 250, 200, { animation: \"jump\" });\nonKey(\"D\", \"move\", \"hunter\", ___, 0);\nonKey(\"A\", \"move\", \"hunter\", ___, 0);\nonKey(\"W\", \"jump\", \"hunter\", ___);",
-        "solution": "spawn(\"knight\", 250, 200, { animation: \"jump\" });\nonKey(\"D\", \"move\", \"hunter\", 10, 0);\nonKey(\"A\", \"move\", \"hunter\", -10, 0);\nonKey(\"W\", \"jump\", \"hunter\", 100);",
         "type": "challenge",
-        "hint": "Ngoài việc dùng phím mũi tên bạn cũng có thể dùng các phím khác.",
-        "imageUrl": "/images/c03_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }
     ]
   },
   {
-    "name": "Chương 4: Đối đầu Yêu Tinh",
+    "id": "C04",
+    "name": "Đối đầu Yêu Tinh",
     "description": "Triệu hồi yêu tinh lỗi và né tránh chúng.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": false,
     "_destroy": false,
     "quests": [
       {
@@ -191,10 +175,8 @@
         "description": "Thêm yêu tinh vào vương quốc.",
         "point": 10,
         "baseCode": "spawn(\"monster_1\", ___, 200);",
-        "solution": "400",
         "type": "quest",
-        "hint": "Gõ 400 vào chỗ ___.",
-        "imageUrl": "/images/c04_t01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -204,10 +186,8 @@
         "description": "Làm quái vật di chuyển ngẫu nhiên.",
         "point": 10,
         "baseCode": "spawn(\"monster_1\", 400, 200);\nmoveRandom(\"monster_1\", ___, 400);",
-        "solution": "0",
         "type": "quest",
-        "hint": "Gõ 0 vào chỗ ___.",
-        "imageUrl": "/images/c04_t02.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -217,10 +197,8 @@
         "description": "Quái vật trở lên nguy hiểm và khó lường trước hơn.",
         "point": 10,
         "baseCode": "spawn(\"monster_1\", 400, 200);\njumpRandom(\"monster_1\", ___);\nscale(\"monter_1\", ___);",
-        "solution": "100, 1.2",
         "type": "quest",
-        "hint": "Gõ 100 vào chỗ ___ của jumpRandom(\"monster\", ___);. Gõ 1.2 vào chỗ ___ của scale(\"goblin\", ___);.",
-        "imageUrl": "/images/c04_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -230,19 +208,19 @@
         "description": "Điều khiển hiệp sĩ né quái vật trong 30 giây.",
         "point": 20,
         "baseCode": "spawn(\"hunter\", ___, 200, { animation: \"idle\" });\nonKey(\"right\", \"move\", \"hunter\", ___, 0);\nonKey(\"left\", \"move\", \"hunter\", ___, 0);\nonKey(\"up\", \"jump\", \"hunter\", ___);\nspawn(\"monster_1\", ___, 200);\nmoveRandom(\"monster_1\", ___);",
-        "solution": "spawn(\"hunter\", 200, 200, { animation: \"idle\" });\nonKey(\"right\", \"move\", \"hunter\", 10, 0);\nonKey(\"left\", \"move\", \"hunter\", -10, 0);\nonKey(\"up\", \"jump\", \"hunter\", 150);\nspawn(\"monster_1\", 400, 200);\nmoveRandom(\"monster_1\", 0, 400);",
         "type": "challenge",
-        "hint": "Để chơi được game trước tiên hãy hoàn thành đoạn code sau. Sau đó nhấn nút “chơi” để bắt đầu trải nghiệm chơi game do chính bạn tạo.",
-        "imageUrl": "/images/c04_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }
     ]
   },
   {
-    "name": "Chương 5: Rèn vũ khí ánh sáng",
+    "id": "C05",
+    "name": "Rèn vũ khí ánh sáng",
     "description": "Tạo vũ khí, thu thập sức mạnh và đánh bại yêu tinh lỗi.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": false,
     "_destroy": false,
     "quests": [
       {
@@ -251,10 +229,8 @@
         "description": "Đặt thanh kiếm vào vương quốc.",
         "point": 10,
         "baseCode": "spawn(\"sword\", ___, 200);",
-        "solution": "300",
         "type": "quest",
-        "hint": "Gõ 300 vào chỗ ___.",
-        "imageUrl": "/images/c05_t01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -264,10 +240,8 @@
         "description": "Thêm nhiều cây rìu (x=350) để anh hùng có lựa chọn.",
         "point": 10,
         "baseCode": "spawnRandom(\"axe\", ___, 500, 300);",
-        "solution": "100",
         "type": "quest",
-        "hint": "Gõ 100 vào chỗ ___.",
-        "imageUrl": "/images/c05_t02.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -277,10 +251,8 @@
         "description": "Nhặt kiếm ngẫu nhiên để tăng sức mạnh.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 200, 200);\nspawnRandom(\"sword\", 100, 500, 200);\ncollect(\"knight\", \"sword\", \"power\", ___);",
-        "solution": "1",
         "type": "quest",
-        "hint": "Gõ 1 vào chỗ ___.",
-        "imageUrl": "/images/c05_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -290,10 +262,8 @@
         "description": "Thiết lập phím tấn công cho anh hùng.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 200, 200);\nonKey( ___ , \"attack\", \"knight\");",
-        "solution": "\"A\"",
         "type": "quest",
-        "hint": "Gõ \"A\" vào chỗ ___.",
-        "imageUrl": "/images/c05_t04.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -303,19 +273,19 @@
         "description": "Nhặt kiếm để tăng sức mạnh và tiêu diệt quái vật.",
         "point": 20,
         "baseCode": "spawn(\"hunter\", ___, 200, { animation: \"idle\" });\nonKey(\"right\", \"move\", \"hunter\", ___, 0);\nonKey(\"left\", \"move\", \"hunter\", ___, 0);\nonKey(\"up\", \"jump\", \"hunter\", ___);\nonKey(\"A\", \"attack\", \"hunter\");\ncollect(\"hunter\", \"sword\", \"power\", ___);\nspawnRandom(\"sword\", 100, 500, 200);\nspawn(\"monster_2\", ___, 200);\nmoveRandom(\"monster_1\", ___);",
-        "solution": "spawn(\"hunter\", 200, 200, { animation: \"idle\" });\nonKey(\"right\", \"move\", \"hunter\", 10, 0);\nonKey(\"left\", \"move\", \"hunter\", -10, 0);\nonKey(\"up\", \"jump\", \"hunter\", 150);\nonKey(\"A\", \"attack\", \"hunter\");\ncollect(\"hunter\", \"sword\", \"power\", 1);\nspawnRandom(\"sword\", 100, 500, 200);\nspawn(\"monster_2\", 400, 200);\nmoveRandom(\"monster_1\", 0, 400);",
         "type": "challenge",
-        "hint": "Để chơi được game trước tiên hãy hoàn thành đoạn code sau. Sau đó nhấn nút “chơi” để bắt đầu trải nghiệm chơi game do chính bạn tạo.",
-        "imageUrl": "/images/c05_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }
     ]
   },
   {
-    "name": "Chương 6: Đối đầu Rồng Hắc Ám",
+    "id": "C06",
+    "name": "Đối đầu Rồng Hắc Ám",
     "description": "Đối mặt với rồng hắc ám, né tránh đòn và giữ sức mạnh.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": false,
     "_destroy": false,
     "quests": [
       {
@@ -324,10 +294,8 @@
         "description": "Đặt kỳ lân vào vương quốc.",
         "point": 10,
         "baseCode": "spawn(\"boss\", ___, 200);",
-        "solution": "400",
         "type": "quest",
-        "hint": "Gõ 400 vào chỗ ___.",
-        "imageUrl": "/images/c06_t01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -337,10 +305,8 @@
         "description": "Làm con trùm bắn tia năng lượng ngẫu nhiên.",
         "point": 10,
         "baseCode": "spawn(\"boss\", 400, 200);\nattackRandom(\"boss\", ___, 100);",
-        "solution": "\"circle\"",
         "type": "quest",
-        "hint": "Gõ \"circle\" vào chỗ ___.",
-        "imageUrl": "/images/c06_t02.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -350,10 +316,8 @@
         "description": "Làm anh hùng mất máu khi chạm tia năng lượng của con trùm.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 200, 200);\nspawn(\"boss\", 400, 200);\nattackRandom(\"boss\", \"straight\", 500);\ncollide(\"knight\", \"boss_beam\", \"loseHealth\", ___);",
-        "solution": "1",
         "type": "quest",
-        "hint": "Gõ 1 vào chỗ ___.",
-        "imageUrl": "/images/c06_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -363,19 +327,19 @@
         "description": "Né tia của con trùm trong 30 giây, và nhặt máu để hồi phục.",
         "point": 20,
         "baseCode": "spawn(\"hunter\", ___, 200, { animation: \"idle\" });\nonKey(\"right\", \"move\", \"hunter\", ___, 0);\nonKey(\"left\", \"move\", \"hunter\", ___, 0);\nonKey(\"up\", \"jump\", \"hunter\", ___);\nonKey(\"A\", \"attack\", \"hunter\");\ncollect(\"hunter\", \"sword\", \"power\", ___);\nspawnRandom(\"sword\", 100, 500, 200);\nspawn(\"monster_2\", ___, 200);\nmoveRandom(\"monster_1\", ___);",
-        "solution": "spawn(\"hunter\", 200, 200, { animation: \"idle\" });\nonKey(\"right\", \"move\", \"hunter\", 10, 0);\nonKey(\"left\", \"move\", \"hunter\", -10, 0);\nonKey(\"up\", \"jump\", \"hunter\", 150);\nonKey(\"A\", \"attack\", \"hunter\");\ncollect(\"hunter\", \"sword\", \"power\", 1);\nspawnRandom(\"sword\", 100, 500, 200);\nspawn(\"monster_2\", 400, 200);\nmoveRandom(\"monster_1\", 0, 400);",
         "type": "challenge",
-        "hint": "Để chơi được game trước tiên hãy hoàn thành đoạn code sau. Sau đó nhấn nút “Chơi” để bắt đầu trải nghiệm chơi game do chính bạn tạo.",
-        "imageUrl": "/images/c06_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }
     ]
   },
   {
-    "name": "Chương 7: Tạo trò chơi huyền thoại",
+    "id": "C07",
+    "name": "Tạo trò chơi huyền thoại",
     "description": "Kết hợp các kiến thức đã học để tạo ra một trò chơi hoàn chỉnh và đánh bại rồng hắc ám.",
-    "status": "published",
+    "imageUrl": "",
+    "isSpecial": true,
     "_destroy": false,
     "quests": [
       {
@@ -384,10 +348,8 @@
         "description": "Tạo ra một vương quốc của riêng bạn với đầy đủ cảnh nền, lâu đài, cây cối, ….",
         "point": 10,
         "baseCode": "setBackground(\"sky_7\")\nsetFloor(\"ground_1\");\nspawn(\"castle\", 500, 200);\nspawn(\"tree\", 350, 200);",
-        "solution": "setBackground(\"sky_7\")\nsetFloor(\"ground_1\");\nspawn(\"castle\", 500, 200);\nspawn(\"tree\", 350, 200);",
         "type": "quest",
-        "hint": "Gõ code mẫu vào ô nhập code. Nhấn “chạy” để cảnh xuất hiện.",
-        "imageUrl": "/images/c07_t01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -397,10 +359,8 @@
         "description": "Sáng tạo anh hùng riêng của bạn.",
         "point": 10,
         "baseCode": "spawn(\"Knight\", 200, 200);\nscale(\"knight\", 1.5);",
-        "solution": "spawn(\"Knight\", 200, 200);\nscale(\"knight\", 1.5);",
         "type": "quest",
-        "hint": "Gõ code mẫu vào ô nhập code. Nhấn “chạy” để anh hùng xuất hiện.",
-        "imageUrl": "/images/c07_t02.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -410,10 +370,8 @@
         "description": "Làm anh hùng di chuyển, nhảy và tấn công qua việc điều khiển.",
         "point": 10,
         "baseCode": "spawn(\"knight\", 200, 200, { animation: \"walk\" });\nonKey(\"right\", \"move\", \"knight\", 10, 0);\nonKey(\"left\", \"move\", \"knight\", -10, 0);\nonKey(\"up\", \"jump\", \"knight\", 150);\nonKey(\"a\", \"attack\", \"knight\");",
-        "solution": "spawn(\"knight\", 200, 200, { animation: \"walk\" });\nonKey(\"right\", \"move\", \"knight\", 10, 0);\nonKey(\"left\", \"move\", \"knight\", -10, 0);\nonKey(\"up\", \"jump\", \"knight\", 150);\nonKey(\"a\", \"attack\", \"knight\");",
         "type": "quest",
-        "hint": "Gõ đoạn code mẫu vào ô nhập code. Nhấn “chạy” và thử phím D, A, W.",
-        "imageUrl": "/images/c07_t03.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -423,10 +381,8 @@
         "description": "Tạo ra những con tiểu quái.",
         "point": 10,
         "baseCode": "spawn(\"monster_1\", 300, 200);\nmoveRandom(\"monster_1\", 0, 400);",
-        "solution": "spawn(\"monster_1\", 300, 200);\nmoveRandom(\"monster_1\", 0, 400);",
         "type": "quest",
-        "hint": "Gõ code mẫu vào ô nhập code. Nhấn “chạy” để yêu tinh xuất hiện và di chuyển.",
-        "imageUrl": "/images/c07_t04.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -436,10 +392,8 @@
         "description": "Tạo ra con trùm độc ác.",
         "point": 10,
         "baseCode": "spawn(\"monitaur_1\", 500, 200);\nattackRandom(\"boss\", \"circle\", 500);",
-        "solution": "spawn(\"monitaur_1\", 500, 200);\nattackRandom(\"boss\", \"circle\", 500);",
         "type": "quest",
-        "hint": "Gõ code mẫu vào ô nhập code. Nhấn “chạy” và nhấn phím A gần rồng.",
-        "imageUrl": "/images/c07_t05.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -449,10 +403,8 @@
         "description": "Tạo hiệu ứng pháo hoa khi máu con trùm về 0.",
         "point": 10,
         "baseCode": "spawn(\"monitaur_1\", 500, 200);\nwhen(\"bossHealth\", 0, \"effect\", \"victory_1\");",
-        "solution": "spawn(\"monitaur_1\", 500, 200);\nwhen(\"bossHealth\", 0, \"effect\", \"victory_1\");",
         "type": "quest",
-        "hint": "Nhập code mẫu vào ô nhập code. Nhấn “chạy” để thử hiệu ứng (giả định máu trùm = 0).",
-        "imageUrl": "/images/c07_t06.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       },
@@ -462,10 +414,8 @@
         "description": "Đánh con trùm trong 1 phút, tùy chỉnh màu con trùm và hiệu ứng chiến thắng.",
         "point": 20,
         "baseCode": "setBackground(\"sky_7\")\nsetFloor(\"ground_1\");\nspawn(\"castle\", 500, 200);\nspawn(\"tree\", 350, 200);\nspawn(\"Knight\", 200, 200);\nscale(\"knight\", 1.5);\nonKey(\"right\", \"move\", \"knight\", 10, 0);\nonKey(\"left\", \"move\", \"knight\", -10, 0);\nonKey(\"up\", \"jump\", \"knight\", 150);\nonKey(\"a\", \"attack\", \"knight\");\nspawn(\"monster_1\", 300, 200);\nmoveRandom(\"monster_1\", 0, 400);\nspawn(\"monitaur_1\", 500, 200);\nattackRandom(\"boss\", \"circle\", 500);\nwhen(\"bossHealth\", 0, \"effect\", \"victory_1\");",
-        "solution": "setBackground(\"sky_7\")\nsetFloor(\"ground_1\");\nspawn(\"castle\", 500, 200);\nspawn(\"tree\", 350, 200);\nspawn(\"Knight\", 200, 200);\nscale(\"knight\", 1.5);\nonKey(\"right\", \"move\", \"knight\", 10, 0);\nonKey(\"left\", \"move\", \"knight\", -10, 0);\nonKey(\"up\", \"jump\", \"knight\", 150);\nonKey(\"a\", \"attack\", \"knight\");\nspawn(\"monster_1\", 300, 200);\nmoveRandom(\"monster_1\", 0, 400);\nspawn(\"monitaur_1\", 500, 200);\nattackRandom(\"boss\", \"circle\", 500);\nwhen(\"bossHealth\", 0, \"effect\", \"victory_1\");",
         "type": "challenge",
-        "hint": "Hãy ghép các đoạn code bạn đã gõ từ nhiệm vụ 1 tới nhiệm vụ 6 của chương 7 để tạo lên 1 game hoàn chỉnh.",
-        "imageUrl": "/images/c07_th01.png",
+        "imageUrl": "",
         "videoUrl": "",
         "_destroy": false
       }

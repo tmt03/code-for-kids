@@ -2,30 +2,36 @@
 
 import React, { useEffect } from "react";
 
-interface Task {
-  id: number;
-  title: string;
-  isChallenge?: boolean;
-}
-
-interface Chapter {
-  id: number;
-  title: string;
+type Quest = {
+  id: string;
+  name: string;
   description: string;
-  status: string;
-  isSpecial?: boolean;
-  tasks: Task[];
-}
+  point: number;
+  baseCode?: string;
+  solution?: string;
+  type: string;
+  imageUrl?: string;
+  videoUrl?: string;
+};
 
-interface ChapterTaskPopupProps {
+type Chapter = {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  isSpecial: boolean;
+  quests: Quest[];
+};
+
+type Props = {
   chapter: Chapter | null;
   onClose: () => void;
-}
+};
 
 export default function ChapterTaskPopup({
   chapter,
   onClose,
-}: ChapterTaskPopupProps) {
+}: Props) {
   useEffect(() => {
     // Disable body scroll when popup is open
     if (chapter) {
@@ -73,29 +79,27 @@ export default function ChapterTaskPopup({
           id="popup-title"
           className="text-2xl font-bold text-[#104A7A] mb-6 text-center pr-6"
         >
-          Nhiệm Vụ - {chapter.title}
+          Nhiệm Vụ - {chapter.name}
         </h3>
 
         {/* Danh sách nhiệm vụ */}
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {chapter.tasks.map((task) => (
-            <li key={task.id} className="flex flex-col items-center">
+          {chapter.quests.map((quests) => (
+            <li key={quests.id} className="flex flex-col items-center">
               <div
-                className={`w-52 h-64 rounded-xl border-2 px-4 py-4 shadow-md flex flex-col items-center justify-center text-center ${
-                  task.isChallenge
-                    ? "border-[#FF1493] bg-[#FFF0F5] text-[#FF1493] font-semibold"
-                    : "border-black bg-white"
-                }`}
+                className={`w-52 h-64 rounded-xl border-2 px-4 py-4 shadow-md flex flex-col items-center justify-center text-center ${quests.type === "challenge"
+                  ? "border-[#FF1493] bg-[#FFF0F5] text-[#FF1493] font-semibold"
+                  : "border-black bg-white"
+                  }`}
               >
-                {task.isChallenge && <span className="mb-1">CHALLENGE</span>}
-                <span>{task.title}</span>
+                {quests.type === "challenge" && <span className="mb-1">CHALLENGE</span>}
+                <span>{quests.name}</span>
               </div>
               <button
-                className={`mt-4 bg-black text-white text-base px-4 py-2 rounded-full w-40 ${
-                  task.isChallenge
-                    ? "bg-pink-600 hover:bg-pink-700"
-                    : "hover:bg-gray-800"
-                }`}
+                className={`mt-4 bg-black text-white text-base px-4 py-2 rounded-full w-40 ${quests.type === "challenge"
+                  ? "bg-pink-600 hover:bg-pink-700"
+                  : "hover:bg-gray-800"
+                  }`}
               >
                 ▶ Play
               </button>
