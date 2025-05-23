@@ -12,7 +12,6 @@ interface Quest {
 }
 
 export class Game_Scene extends Phaser.Scene {
-  private chapterId: number;
   private quest: Quest;
   private userLayer!: Phaser.GameObjects.Layer;
   private boss!: Phaser.Physics.Arcade.Sprite;
@@ -20,9 +19,8 @@ export class Game_Scene extends Phaser.Scene {
   private bg!: Phaser.GameObjects.Image;
   private floor!: Phaser.Physics.Arcade.Sprite;
 
-  constructor(chapterId: number, quest: Quest) {
+  constructor(quest: Quest) {
     super("Game_Scene");
-    this.chapterId = chapterId;
     this.quest = quest;
   }
 
