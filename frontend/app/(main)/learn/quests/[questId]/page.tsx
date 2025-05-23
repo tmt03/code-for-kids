@@ -6,17 +6,19 @@ import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
-export default function ChapterPage({ params }: { params: { questId: string } }) {
-    const { questId } = params;
+export default function ChapterPage({ params }: { params: Promise<{ questId: string }> }) {
+    const { questId } = use(params);
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
     const [userCode, setUserCode] = useState<string>("");
 
     // Lấy chương và chọn nhiệm vụ đầu tiên
     useEffect(() => {
         fetchQuestDetails(questId).then((quest) => {
+            console.log(quest)
             setSelectedQuest(quest);
+            console.log(quest)
         });
     }, [questId]);
 
@@ -63,12 +65,12 @@ export default function ChapterPage({ params }: { params: { questId: string } })
                 </div>
             </div>
             <div className="w-2/5 h-full relative flex flex-col">
-                {/* {selectedQuest && ( */}
-                <CodeEditor
-                    initialValue={selectedQuest.baseCode}
-                    onChange={setUserCode}
-                />
-                {/* )} */}
+                {selectedQuest && (
+                    <CodeEditor
+                        initialValue={selectedQuest.baseCode}
+                        onChange={setUserCode}
+                    />
+                )}
                 <div className="absolute bottom-6 right-4 z-10 flex gap-2">
                     <Button onClick={testRunCode} variant="pixelGreen" size="lg">
                         <PlayIcon className="w-4 h-4" />

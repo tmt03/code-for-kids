@@ -2,22 +2,20 @@ import { GET_DB } from "../config/mongoDB";
 
 const CHAPTER_COLLECTION_NAME = "chapters";
 
-const getQuestDetails = async (questId: string) => {
+const getAllChapters = async () => {
   try {
     const result = await GET_DB()
       .collection(CHAPTER_COLLECTION_NAME)
-      .aggregate([
-        { $unwind: "$quests" },
-        { $match: { "quests.id": questId } },
-        { $project: { _id: 0, quest: "$quests" } },
-      ])
+      .find({ _destroy: false })
+      .project({ _id: 0 })
       .toArray();
+
     return result;
   } catch (error) {
     throw Error(error as string);
   }
 };
 
-export const questModel = {
-  getQuestDetails,
+export const chapterModel = {
+  getAllChapters,
 };
