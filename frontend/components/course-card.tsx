@@ -23,10 +23,10 @@ export default function CourseCard() {
             <div className="relative z-10 flex flex-col h-full p-4 text-white">
                 <div className="flex items-center justify-between gap-2">
                     <Button variant="pixelDanger" size="sm" className="bg-[#FF4040] shadow-[2px_2px_0px_0px_#000000]">
-                        Book 1
+                        Sách 01
                     </Button>
                     <Button variant="pixelYellow" size="sm" className="shadow-[2px_2px_0px_0px_#000000]">
-                        Độ khó: Dễ
+                        Độ khó: Làm quen
                     </Button>
                 </div>
                 <h3 className="mt-2 text-xl font-bold tracking-wide">Phiêu lưu ở thế giới code</h3>
@@ -37,7 +37,7 @@ export default function CourseCard() {
                         variant="default"
                         className="bg-[#FF4040] text-white font-bold px-3 py-1 rounded-sm shadow-[2px_2px_0px_0px_#000000] hover:bg-[#FF6666] transition-colors"
                     >
-                        Start
+                        Bắt đầu
                     </Button>
                 </div>
             </div>
