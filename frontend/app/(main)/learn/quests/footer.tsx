@@ -18,6 +18,16 @@ type Quest = {
     videoUrl?: string;
 };
 
+type Chapter = {
+    id: string;
+    name: string;
+    description: string;
+    imageUrl: string;
+    isSpecial: boolean;
+    _destroy?: boolean;
+    quests: Quest[];
+};
+
 export default function FooterChapter() {
     const router = useRouter();
     const params = useParams(); // Lấy params từ URL
@@ -29,14 +39,21 @@ export default function FooterChapter() {
     useEffect(() => {
         const fetchQuests = async () => {
             try {
-                fetchAllChapters().then((quest) => {
-                    setQuests(quest);
-                })
-                // Tìm index của questId hiện tại
-                const index = quests.findIndex((quest: any) => quest.id === questId);
-                setCurrentIndex(index);
-            } catch (error) {
-                console.error("Lỗi khi fetch quests:", error);
+                const chapters = await fetchAllChapters();
+                if (!Array.isArray(chapters)) {
+                    throw new Error("Dữ liệu từ API không phải là mảng chapters");
+                }
+
+                //flatMap lấy các mảng (bao gồm các quests) của từng chapter gộp lại thành 1 mảng
+                const allQuests = chapters.flatMap((chapter: Chapter) => chapter.quests);
+                setQuests(allQuests);
+
+
+                //Tìm vị trí của questId hiện tại
+                const index = allQuests.findIndex((quest: Quest) => quest.id === questId);
+                setCurrentIndex(index >= 0 ? index : null);
+            } catch (error: any) {
+                console.error("Lỗi khi fetch chapters:", error);
             }
         };
         fetchQuests();
@@ -44,7 +61,7 @@ export default function FooterChapter() {
 
     // Hàm xử lý chuyển hướng khi nhấn nút
     const handleButtonClick = (direction: "prev" | "next") => {
-        if (currentIndex === null) return;
+        if (currentIndex === null || quests.length === 0) return;
 
         let newIndex;
         if (direction === "prev") {
@@ -58,6 +75,7 @@ export default function FooterChapter() {
             router.push(`/learn/quests/${newQuestId}`);
         }
     };
+
     return (
         <div className="lg:block h-20 w-full border-slate-200 p-2">
             <div className="max-w-screen-lg flex items-center justify-around h-full mx-auto">
