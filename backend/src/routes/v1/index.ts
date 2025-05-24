@@ -1,7 +1,7 @@
 import express from "express";
 import { questRoute } from "./questRoute";
 import { chapterRoute } from "./chapterRoute";
-import { codeRoute } from "./codeRoute";
+import { codeRoute } from "./submissionRoute";
 const Router = express.Router();
 
 /** Quest APIs */

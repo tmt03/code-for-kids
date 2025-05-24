@@ -1,3 +1,5 @@
+import { codeCheckService } from "./codeCheckService";
+
 const submitCode = async () => {
   // Gọi codeCheckService cử lí kiểm tra code user nhập vào và trả về kết qua
   // Thực hiện bất đồng bọ tăng điểm cho user hoàn thành check code và cập nhật đánh giá xếp hạng
