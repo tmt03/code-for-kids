@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import type * as Phaser from "phaser";
 
 interface GameCanvasProps {
-  chapterId: number;
   quest: {
     id: string;
     name: string;
@@ -16,7 +15,7 @@ interface GameCanvasProps {
   }
 }
 
-const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId, quest }) => {
+const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -55,7 +54,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId, quest }) => {
           },
         },
         // scene: [new Preloader(chapterId, quest), new GameScene(chapterId, quest)],
-        scene: new Game_Scene(chapterId, quest)
+        scene: new Game_Scene(quest)
       };
 
       const game = new Phaser.Game(config);
@@ -66,7 +65,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId, quest }) => {
     return () => {
       cleanup.then(cleanupFn => cleanupFn?.());
     };
-  }, [isClient, chapterId, quest]);
+  }, [isClient, quest]);
 
   return (
     <div

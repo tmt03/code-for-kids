@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import Login from '../../components/Login';
+import { fetchCheckLogin } from '../apis';
 
 export default function LoginPage() {
   return (

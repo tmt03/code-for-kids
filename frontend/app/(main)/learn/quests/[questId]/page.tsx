@@ -1,38 +1,24 @@
 "use client"
 
+import { fetchQuestDetails } from '@/app/apis';
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
-import { use, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
-export default function ChapterPage({ params }: { params: Promise<{ chapterId: string }> }) {
-    const resolvedParams = use(params); // Giải nén Promise
-    const chapterId = parseInt(resolvedParams.chapterId); // Truy cập chapterId sau khi giải nén
-
-    const [quests, setQuests] = useState<any[]>([]);
+export default function ChapterPage({ params }: { params: Promise<{ questId: string }> }) {
+    const { questId } = use(params);
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
-    const [userCode, setUserCode] = useState("");      // học sinh nhập
+    const [userCode, setUserCode] = useState<string>("");
 
     // Lấy chương và chọn nhiệm vụ đầu tiên
-    // useEffect(() => {
-    //     fetch(`/api/chapters/${chapterId}`)
-    //         .then(res => {
-    //             if (!res.ok) throw new Error('Lỗi khi lấy dữ liệu chương');
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             const firstQuest = data.quests[0];
-    //             setQuests(data.quests);
-    //             setSelectedQuest(firstQuest);
-    //             setUserCode(firstQuest?.baseCode || "");
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //             alert("Không thể tải dữ liệu chương!");
-    //         });
-    // }, [chapterId]);
+    useEffect(() => {
+        fetchQuestDetails(questId).then((quest) => {
+            setSelectedQuest(quest);
+        });
+    }, [questId]);
 
     // RUN code
     // const handleRun = async () => {
@@ -46,7 +32,7 @@ export default function ChapterPage({ params }: { params: Promise<{ chapterId: s
     //     const result = await res.json();
     //     if (result.passed) {
     //         // chạy phần code hoàn chỉnh bên GameCanvas
-    //         window.dispatchEvent(
+    //         window.dispatchEvent( 
     //             new CustomEvent("run-user-code", {
     //                 detail: { code: result.filledCode },
     //             })
@@ -72,20 +58,17 @@ export default function ChapterPage({ params }: { params: Promise<{ chapterId: s
                 </div>
                 <div className='h-4/5 pt-2'>
                     <GameCanvas
-                        // chapterId={chapterId}
-                        chapterId={6}
                         quest={selectedQuest}
                     />
                 </div>
             </div>
             <div className="w-2/5 h-full relative flex flex-col">
-                {/* {selectedQuest && ( */}
-                <CodeEditor
-                    // initialValue={selectedQuest.baseCode}
-                    initialValue={`const knight = spawn("knight", 250, 200);\nshowNameAbove(knight, "Test");`}
-                    onChange={setUserCode}
-                />
-                {/* )} */}
+                {selectedQuest && (
+                    <CodeEditor
+                        initialValue={selectedQuest.baseCode}
+                        onChange={setUserCode}
+                    />
+                )}
                 <div className="absolute bottom-6 right-4 z-10 flex gap-2">
                     <Button onClick={testRunCode} variant="pixelGreen" size="lg">
                         <PlayIcon className="w-4 h-4" />

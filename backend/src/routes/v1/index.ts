@@ -1,13 +1,11 @@
 import express from "express";
-import { StatusCodes } from "http-status-codes";
-import { boardRoute } from "./boardRoute";
+import { questRoute } from "./questRoute";
+import { chapterRoute } from "./chapterRoute";
 const Router = express.Router();
 
-/**Check APIs v1/status */
-Router.get("/status", (req, res) => {
-  res.status(StatusCodes.OK).json({ message: "APIs v1 are ready to use" });
-});
+/** Quest APIs */
+Router.use("/quests", questRoute);
 
-Router.use("/boards", boardRoute);
+Router.use("/chapters", chapterRoute);
 
 export default Router;

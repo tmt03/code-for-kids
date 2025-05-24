@@ -12,7 +12,7 @@ export function getBaseCodeForQuest(questId: string): string {
         .setOrigin(0)
         .setScale(0.55);
 
-    scene.boss = scene.add.sprite(400, 100, "monitaur_idle");
+    scene.boss = scene.add.sprite(400, 100, "monitaur_idle"); 
     scene.boss.setScale(2);
         
     scene.floor = scene.physics.add.staticImage(0, 400, "floor_ground_1")

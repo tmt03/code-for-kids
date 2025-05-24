@@ -1,12 +1,12 @@
 import CourseCard from "@/components/course-card";
-import SearchBar from "@/components/searchbar";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+import SearchBar from "@/components/searchbar";
 
 export default function LearnPage() {
     return (
         <div className="w-full overflow-x-hidden">
-            <div className="mx-auto justify-center items-center flex flex-col">
+            <div className="mx-auto justify-center items-center flex flex-col ">
                 {/* Header Background */}
                 <div
                     className="w-full pt-12 h-86 flex flex-row justify-center items-center bg-cover bg-center text-white relative"
@@ -34,7 +34,7 @@ export default function LearnPage() {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex flex-col px-4 py-4 w-full max-w-7xl mx-auto">
+                <div className="flex flex-col px-4 py-4 w-full max-w-7xl mx-auto ">
                     {/* Header + Search Bar */}
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 py-6 text-center sm:text-left">
                         <div className="text-4xl font-bold text-[#104A7A]">
@@ -44,10 +44,11 @@ export default function LearnPage() {
                             <SearchBar />
                         </div>
                     </div>
-
-                    {/* Course Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
-                        <CourseCard />
+                    <div className="w-full p-4 bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] rounded-lg">
+                        {/* Course Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
+                            <CourseCard />
+                        </div>
                     </div>
                 </div>
             </div>

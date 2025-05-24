@@ -3,30 +3,27 @@ interface CourseProgressProps {
         id: number;
         title: string;
         description: string;
-        status: "completed" | "in-progress" | "not-started";
+        imageUrl: string;
         isSpecial?: boolean;
-        tasks: Array<{ id: number; title: string; isChallenge?: boolean }>;
+        quests: Array<{ id: number; title: string; isChallenge?: boolean }>;
     }>;
 }
 
+
+
 export default function CourseProgress({ chapters }: CourseProgressProps) {
     // Tính toán số Nhiệm Vụ (SỬA SAU)
-    const totalExercises = chapters.reduce((total, chapter) => total + (chapter.tasks.length - 1), 0); //Tính tổng Nhiệm Vụ
-    const completedExercises = chapters
-        .filter((chapter) => chapter.status === "completed")
-        .reduce((total, chapter) => total + (chapter.tasks.length - 1), 0); // 2 chapters hoàn thành × 4 tasks = 8
+    const totalExercises = chapters.reduce((total, chapter) => total + (chapter.quests.length - 1), 0); //Tính tổng Nhiệm Vụ
+    const completedExercises = 2; // 2 chapters hoàn thành × 4 tasks = 8
 
     // Tính toán số Thử Thách (SỬA SAU)
     const totalChallenge = 10; // Chapter 4 và Chapter 7
-    const completedProjects = chapters.filter(
-        (chapter) => (chapter.id === 4 || chapter.id === 7) && chapter.status === "completed"
-    ).length; // Chapter 4 hoàn thành, Chapter 7 chưa hoàn thành
+    const completedProjects = 1; // Chapter 4 hoàn thành, Chapter 7 chưa hoàn thành
 
     // Tính toán XP - Giả sử: 5 XP/task, 50 XP/chapter hoàn thành
     const totalXP = 605; // Tổng XP tối đa
-    const earnedXP =
-        completedExercises * 5 + // XP từ tasks
-        chapters.filter((chapter) => chapter.status === "completed").length * 50; // XP từ chapters
+    const earnedXP = 100;
+
 
     return (
         <div className="mt-4 p-4 bg-[#1C6CA8] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
