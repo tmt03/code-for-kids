@@ -16,9 +16,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     // Lấy chương và chọn nhiệm vụ đầu tiên
     useEffect(() => {
         fetchQuestDetails(questId).then((quest) => {
-            console.log(quest)
             setSelectedQuest(quest);
-            console.log(quest)
         });
     }, [questId]);
 
