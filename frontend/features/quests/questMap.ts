@@ -7,21 +7,642 @@
 
 export function getBaseCodeForQuest(questId: string): string {
   const baseCodes: Record<string, string> = {
-    C01_Q01: `
-    scene.bg = scene.add.image(0, 0, "bg_mountain_1")
-        .setOrigin(0)
-        .setScale(0.55);
+    //     C00_Q01: `
+    //     scene.bg = scene.add.image(0, 0, "background_no_color")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+    //     `,
 
-    scene.boss = scene.add.sprite(400, 100, "monitaur_idle"); 
-    scene.boss.setScale(2);
-        
-    scene.floor = scene.physics.add.staticImage(0, 400, "floor_ground_1")
+    // C00_Q02: `
+    // scene.bg = scene.add.image(0, 0, "sky_1")
+    //     .setOrigin(0)
+    //     .setScale(0.51);
+    // `,
+
+    // C01_Q01: `
+    // scene.bg = scene.add.image(0, 0, "sky_1")
+    //     .setOrigin(0)
+    //     .setScale(0.51);
+
+    // scene.floor = scene.add.image(425, 453, "ground_2")
+    // .setScale(0.67);
+
+    // const castle = scene.add.image(410, 293, "castle")
+    // .setOrigin(0.5)
+    // .setScale(0.3);
+    // scene["castle"] = castle; // Gán refName để dùng được setColor("castle", "red")
+    // sandbox["castle"] = castle;
+    // `,
+
+    // C01_Q02: `
+    // scene.bg = scene.add.image(0, 0, "sky_1")
+    //     .setOrigin(0)
+    //     .setScale(0.51);
+
+    // scene.floor = scene.add.image(425, 453, "ground_2")
+    // .setScale(0.67);
+
+    // const castle = scene.add.image(640, 130, "castle")
+    // .setOrigin(0.5)
+    // .setScale(0.3);
+    // scene["castle"] = castle; // Gán refName để dùng được setColor("castle", "red")
+    // sandbox["castle"] = castle;
+
+    // `,
+
+    // C01_Q03: `
+    // scene.bg = scene.add.image(0, 0, "sky_1")
+    //     .setOrigin(0)
+    //     .setScale(0.51);
+
+    // scene.floor = scene.add.image(425, 453, "ground_2")
+    // .setScale(0.67);
+
+    // const castle = scene.add.image(410, 293, "castle")
+    // .setOrigin(0.5)
+    // .setScale(0.3);
+    // scene["castle"] = castle; // Gán refName để dùng được setColor("castle", "red")
+    // sandbox["castle"] = castle;
+    // `,
+
+    // C01_CL: `
+    // scene.bg = scene.add.image(0, 0, "sky_1")
+    //     .setOrigin(0)
+    //     .setScale(0.51);
+
+    // scene.floor = scene.add.image(425, 453, "ground_2")
+    // .setScale(0.67);
+
+    // const castle = scene.add.image(410, 293, "castle")
+    // .setOrigin(0.5)
+    // .setScale(0.3);
+    // scene["castle"] = castle; // Gán refName để dùng được setColor("castle", "red")
+    // sandbox["castle"] = castle;
+    // `,
+
+    //     C02_Q01: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const castle = scene.add.image(410, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C02_Q02: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const castle = scene.add.image(410, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C02_Q03: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const castle = scene.add.image(410, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C02_CL: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const castle = scene.add.image(410, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C03_Q01: `
+    //     scene.bg = scene.add.image(0, 0, "mountain_4")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C03_Q02: `
+    //     scene.bg = scene.add.image(0, 0, "mountain_4")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C03_Q03: `
+    //     scene.bg = scene.add.image(0, 0, "mountain_4")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C03_CL: `
+    //     scene.bg = scene.add.image(0, 0, "mountain_4")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const win_flag = scene.physics.add.staticImage(250, 80, "win_flag")
+    //         .setScale(0.2)
+    //     scene.win_flag = win_flag;
+    //     sandbox["win_flag"] = win_flag;
+
+    //     const fly_ground_1 = scene.physics.add.staticImage(600, 130, "fly_ground")
+    //         .setScale(0.15)
+    //         .refreshBody();
+    //     scene.fly_ground_1 = fly_ground_1;
+    //     sandbox["fly_ground_1"] = fly_ground_1;
+
+    //     const fly_ground_2 = scene.physics.add.staticImage(800, 230, "fly_ground")
+    //         .setScale(0.15)
+    //         .refreshBody();
+    //     scene.fly_ground_2 = fly_ground_2;
+    //     sandbox["fly_ground_2"] = fly_ground_2;
+
+    //     const fly_ground_3 = scene.physics.add.staticImage(670, 300, "fly_ground")
+    //         .setScale(0.15)
+    //         .refreshBody();
+    //     scene.fly_ground_3 = fly_ground_3;
+    //     sandbox["fly_ground_3"] = fly_ground_3;
+
+    //     const fly_ground_4 = scene.physics.add.staticImage(540, 370, "fly_ground")
+    //         .setScale(0.15)
+    //         .refreshBody();
+    //     scene.fly_ground_4 = fly_ground_4;
+    //     sandbox["fly_ground_4"] = fly_ground_4;
+
+    //     const fly_ground_5 = scene.physics.add.staticImage(300, 130, "fly_ground")
+    //         .setScale(0.15)
+    //         .refreshBody();
+    //     scene.fly_ground_5 = fly_ground_5;
+    //     sandbox["fly_ground_5"] = fly_ground_5;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    //     scene.physics.add.collider(player, fly_ground_1);
+    //     scene.physics.add.collider(player, fly_ground_2);
+    //     scene.physics.add.collider(player, fly_ground_3);
+    //     scene.physics.add.collider(player, fly_ground_4);
+    //     scene.physics.add.collider(player, fly_ground_5);
+    // `,
+
+    //     C04_Q01: `
+    //     scene.bg = scene.add.image(0, 0, "sky_6")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const monster = scene.physics.add.sprite(100, 100, "monster_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["monster"] = monster;
+
+    //     scene.physics.add.collider(monster, floor);
+    // `,
+
+    //     C04_Q02: `
+    //     scene.bg = scene.add.image(0, 0, "sky_6")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const monster = scene.physics.add.sprite(100, 100, "monster_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["monster"] = monster;
+
+    //     scene.physics.add.collider(monster, floor);
+    // `,
+
+    //     C04_Q03: `
+    //     scene.bg = scene.add.image(0, 0, "sky_6")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const monster = scene.physics.add.sprite(100, 100, "monster_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["monster"] = monster;
+
+    //     scene.physics.add.collider(monster, floor);
+    // `,
+
+    //     C04_CL: `
+    //     scene.bg = scene.add.image(0, 0, "mountain_2")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 470, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C05_Q01: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const castle = scene.add.image(660, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C05_Q02: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const castle = scene.add.image(660, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const sword = scene.add.image(660, 293, "sword")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["sword"] = sword;
+    //     sandbox["sword"] = sword;
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C05_Q02: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const castle = scene.add.image(660, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const sword = scene.add.image(260, 380, "sword")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["sword"] = sword;
+    //     sandbox["sword"] = sword;
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C05_Q03: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const castle = scene.add.image(660, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C05_Q04: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const castle = scene.add.image(660, 293, "castle")
+    //         .setOrigin(0.5)
+    //         .setScale(0.3);
+    //     scene["castle"] = castle;
+    //     sandbox["castle"] = castle;
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C05_CL: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C06_Q01: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true); // Giới hạn trong màn hình
+
+    //     sandbox["player"] = player;
+
+    //     scene.physics.add.collider(player, floor);
+    // `,
+
+    //     C06_Q02: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true);
+
+    //     const boss = scene.physics.add.sprite(600, 100, "boss_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true);
+
+    //     sandbox["player"] = player;
+    //     sandbox["boss"] = boss;
+
+    //     scene.physics.add.collider(player, floor);
+    //     scene.physics.add.collider(boss, floor);
+    // `,
+
+    //     C06_Q03: `
+    //     scene.bg = scene.add.image(0, 0, "sky_1")
+    //         .setOrigin(0)
+    //         .setScale(0.51);
+
+    //     const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+    //         .setScale(0.67)
+    //         .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    //     scene.floor = floor;
+    //     sandbox["floor"] = floor;
+
+    //     const player = scene.physics.add.sprite(100, 100, "player_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true);
+
+    //     const boss = scene.physics.add.sprite(600, 100, "boss_idle")
+    //         .setScale(1.5)
+    //         .setCollideWorldBounds(true);
+
+    //     sandbox["player"] = player;
+    //     sandbox["boss"] = boss;
+
+    //     scene.physics.add.collider(player, floor);
+    //     scene.physics.add.collider(boss, floor);
+    // `,
+
+    C01_Q01: `
+    scene.bg = scene.add.image(0, 0, "sky_1")
         .setOrigin(0)
-        .setScale(0.5);
+        .setScale(0.51);
+
+    const floor = scene.physics.add.staticImage(425, 453, "ground_2")
+        .setScale(0.67)
+        .refreshBody(); // Bắt buộc gọi để vật lý hoạt động
+    scene.floor = floor;
+    sandbox["floor"] = floor;
+
+    const player = scene.physics.add.sprite(100, 100, "player_idle")
+        .setScale(1.5)
+        .setCollideWorldBounds(true);
+
+    const boss = scene.physics.add.sprite(600, 100, "boss_idle")
+        .setScale(1.5)
+        .setCollideWorldBounds(true);
         
-    scene.floor = scene.physics.add.staticImage(400, 400, "floor_ground_1")
-        .setOrigin(0)
-        .setScale(0.5);`,
+    sandbox["player"] = player;
+    sandbox["boss"] = boss;
+
+    scene.physics.add.collider(player, floor);
+    scene.physics.add.collider(boss, floor);
+`,
 
     C01_Q02: ``,
 
