@@ -196,8 +196,7 @@ export class Game_Scene extends Phaser.Scene {
     this.userLayer = this.add.layer();
 
     try {
-      const idd = "C01_Q01"; //Giả lập chuyển id cho chapter 1 - quest
-      const previewCode = getBaseCodeForQuest(idd); //Idd chuyển vào sẽ đổi thành this.quest.id (lấy id từ DB)
+      const previewCode = getBaseCodeForQuest(this.quest.id);
       this.runPreviewCode(previewCode);
     } catch (error) {
       console.log("Lỗi r");
