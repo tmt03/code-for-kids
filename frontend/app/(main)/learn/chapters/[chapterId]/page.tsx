@@ -82,7 +82,7 @@ export default function ChapterPage({ params }: { params: Promise<{ chapterId: s
                 {/* {selectedQuest && ( */}
                 <CodeEditor
                     // initialValue={selectedQuest.baseCode}
-                    initialValue={`const knight = spawn("knight", 250, 200);\nshowNameAbove(knight, "Test");`}
+                    initialValue={`Nhập code vô đây nè !!`}
                     onChange={setUserCode}
                 />
                 {/* )} */}

@@ -29,8 +29,6 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ chapterId, quest }) => {
 
     const initPhaser = async () => {
       const Phaser = (await import('phaser')).default;
-      const { GameScene } = await import('../game/game-scene');
-      const { Preloader } = await import('../game/preloader');
       const { Game_Scene } = await import('../game/gameScene')
 
       const config: Phaser.Types.Core.GameConfig = {
