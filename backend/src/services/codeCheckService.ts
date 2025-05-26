@@ -3,12 +3,16 @@ import {
   VALID_ANIMATIONS,
   VALID_GAME_COMMANDS,
 } from "../utils/constants";
+import { VM } from "vm2";
+import { createBackendSandbox } from "../utils/learning-api.backend";
 
 //Service để kiểm tra code
 export type CheckResult = {
   passed: boolean;
   error?: string;
   hint?: string;
+  refs?: any; // Thông tin các object mà học sinh tạo ra
+  events?: any; // Nếu có hệ thống events (khi máu = 0, win...)
 };
 
 type ValidCommand = (typeof VALID_GAME_COMMANDS)[number];
@@ -38,16 +42,19 @@ const ContentCheck = async (
       quest.baseCode
         ?.match(/[a-zA-Z]+\(/g)
         ?.map((cmd: string) => cmd.slice(0, -1)) || [];
+
     const userCommands =
       userCode.match(/[a-zA-Z]+\(/g)?.map((cmd) => cmd.slice(0, -1)) || [];
 
     // Kiểm tra xem tất cả lệnh yêu cầu có trong userCode không
-    if (!requiredCommands.every((cmd: string) => userCommands.includes(cmd))) {
-      result.hint = "Thiếu lệnh yêu cầu!";
-      return result;
+    for (const cmd of requiredCommands) {
+      if (!userCommands.includes(cmd)) {
+        result.hint = `Thiếu lệnh ${cmd}(). Gợi ý: hãy sử dụng ${cmd}(...) như trong đề bài.`;
+        return result;
+      }
     }
 
-    // Trích xuất lệnh và kiểm tra rằng mọi lệnh trong userCode đều thuộc danh sách VALID_GAME_COMMANDS.
+    // Trích xuất lệnh và kiểm tra rằng mọi lệnh trong userCode đều thuộc danh sách VALID_GAME_COMMANDS. (cleancode)
     const commandMatches = userCode.match(/([a-zA-Z]+)\((.*?)\)/g) || [];
     for (const match of commandMatches) {
       const command = match.match(/[a-zA-Z]+/)?.[0] || "";
@@ -56,7 +63,7 @@ const ContentCheck = async (
         return result;
       }
 
-      // Kiểm tra tham số animation nếu có
+      // Kiểm tra tham số animation nếu có (cleancode)
       const params = match.match(/\((.*?)\)/)?.[1] || "";
       const animationMatch = params.match(/{.*?animation\s*:\s*["'](.*?)["']/);
       if (animationMatch) {
@@ -81,29 +88,33 @@ const logicCheck = async (
 ): Promise<CheckResult> => {
   const result: CheckResult = { passed: false };
 
-  // try {
-  //   const vm = new VM({
-  //     timeout: 1000,
-  //     sandbox: {},
-  //     eval: false,
-  //     wasm: false,
-  //   });
+  try {
+    const sandbox = createBackendSandbox(); // cung cấp API backend như spawn, move...
 
-  //   if (quest.solution) {
-  //     const expectedCode = quest.baseCode.replace("___", quest.solution);
-  //     const expectedOutput = vm.run(expectedCode);
-  //     const userOutput = vm.run(userCode);
+    const vm = new VM({
+      timeout: 1000,
+      sandbox: sandbox,
+      eval: false,
+      wasm: false,
+    });
 
-  //     if (userOutput !== expectedOutput) {
-  //       result.hint = `Gợi ý: Kết quả mong đợi là "${quest.solution}".`;
-  //       return result;
-  //     }
-  //   }
+    // ✅ Chạy code học sinh trong sandbox
+    vm.run(userCode);
 
-  //   result.passed = true;
-  // } catch (error: any) {
-  //   result.error = `Lỗi kiểm tra logic: ${error.message}`;
-  // }
+    // ✅ Lấy trạng thái game sau khi chạy
+    const state = sandbox.getRefs?.() || {};
+    const events = sandbox.getEvents?.() || [];
+
+    // 🔍 Tùy theo logic quest mà bạn có thể thêm điều kiện tự động chấm
+    // (tùy hệ thống bạn, ví dụ so sánh toạ độ object, số lượng, tên...)
+
+    result.passed = true;
+    result.refs = state;
+    result.events = events;
+  } catch (error: any) {
+    result.error = `Lỗi khi chạy code: ${error.message}`;
+  }
+
   return result;
 };
 
