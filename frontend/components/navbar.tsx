@@ -1,8 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
@@ -13,12 +11,8 @@ export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
-
-    const pathname = usePathname();
-    const isLoggedIn = pathname === '/home'
-        || pathname === '/profile' || pathname === '/leaderboard'
-        || pathname.startsWith('/learn/chapters');
-
+    
+    const isLoggedIn = null;
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
         setIsMobileProfileDropdownOpen(false); // Close mobile profile dropdown when toggling menu
@@ -76,10 +70,8 @@ export default function Navbar() {
                     {/* Right-side buttons */}
                     <div className="flex items-center gap-4">
                         {!isLoggedIn && (
-                            <Link href="/login">
-                                <button className="hidden lg:block bg-blue-500 font-bold px-3 py-2 rounded hover:bg-blue-400 transition-colors">
-                                    Đăng nhập
-                                </button>
+                            <Link href="/login" className="hidden lg:block bg-blue-500 font-bold px-3 py-2 rounded hover:bg-blue-400 transition-colors">
+                                Đăng nhập
                             </Link>
                         )}
 
@@ -139,10 +131,8 @@ export default function Navbar() {
                             Cửa hàng
                         </Link>
                         {!isLoggedIn ? (
-                            <Link href="/login" className="w-full">
-                                <button className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                                    Đăng nhập/Đăng ký
-                                </button>
+                            <Link href="/login" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                                Đăng nhập
                             </Link>
                         ) : (
                             <button
