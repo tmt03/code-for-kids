@@ -10,12 +10,12 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
-    const [value, setValue] = useState(initialValue);
+    const [value, setValue] = useState(initialValue || "");
 
-    // Khi nhiệm vụ (quest) đổi → cập nhật lại editor
     useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
+        setValue(initialValue || "");
+        onChange(initialValue || ""); // Gọi onChange với giá trị ban đầu
+    }, [initialValue, onChange]);
 
     const handleChange = (val: string) => {
         setValue(val);

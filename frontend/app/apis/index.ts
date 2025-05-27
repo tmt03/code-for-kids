@@ -11,6 +11,27 @@ export const fetchAllChapters = async () => {
   return res.data;
 };
 
+
+// Hàm mới: Gửi code lên server
+export const submitCode = async (userCode: string) => {
+  try {
+    const res = await axios.post(
+      `${API_ROOT}/v1/submissions/submit`,
+      {
+        userCode,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.data; // Trả về dữ liệu từ server (beResult)
+  } catch (error: any) {
+    throw new Error(`Lỗi khi gửi code: ${error.message}`);
+  }
+};
+
 export const fetchCheckLogin = async (username: string, password: string) => {
   const res = await axios.post(`${API_ROOT}/v1/login/`,
     {
@@ -20,3 +41,4 @@ export const fetchCheckLogin = async (username: string, password: string) => {
   );
   return res.data;
 };
+

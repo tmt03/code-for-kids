@@ -1,10 +1,11 @@
 "use client"
 
-import { fetchQuestDetails } from '@/app/apis';
+import { fetchQuestDetails, submitCode } from '@/app/apis';
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
+import { FrontendCodeValidator } from '@/utils/codeValidatior';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 
@@ -12,6 +13,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const { questId } = use(params);
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
     const [userCode, setUserCode] = useState<string>("");
+    const [beResult, setBeResult] = useState<any>(null);
 
     // Lấy chương và chọn nhiệm vụ đầu tiên
     useEffect(() => {
@@ -21,34 +23,33 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     }, [questId]);
 
     // RUN code
-    // const handleRun = async () => {
-    //     if (!selectedQuest) return;
-    //     const res = await fetch("/api/code/validate", {
-    //         method: "POST",
-    //         body: JSON.stringify({ questId: selectedQuest.id, code: userCode }),
-    //         headers: { "Content-Type": "application/json" },
-    //     });
+    const handleRun = async () => {
 
-    //     const result = await res.json();
-    //     if (result.passed) {
-    //         // chạy phần code hoàn chỉnh bên GameCanvas
-    //         window.dispatchEvent( 
-    //             new CustomEvent("run-user-code", {
-    //                 detail: { code: result.filledCode },
-    //             })
-    //         );
-    //     } else {
-    //         alert("Sai rồi hãy thử lại!");
-    //     }
-    // };
+        const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
+        if (!feResult.passed) {
+            alert(feResult.error + "ở đây"); //sau sẽ sử dung smart hint
+            return;
+        }
 
-    const testRunCode = async () => {
-        window.dispatchEvent(
-            new CustomEvent("run-user-code", {
-                detail: { code: userCode }, // đoạn code bạn vừa nhập
-            })
-        );
-    }
+        // Gửi code lên BE
+        const result = await submitCode(userCode);
+        if (!result.passed) {
+            alert("Sai rồi hãy thử lại!"); //sau sẽ sử dung smart hint
+            return;
+        }
+        setBeResult(result); // Lưu kết quả từ BE
+
+        if (beResult.passed) {
+            // chạy phần code hoàn chỉnh bên GameCanvas
+            window.dispatchEvent(
+                new CustomEvent("run-user-code", {
+                    detail: { code: userCode },
+                })
+            );
+        } else {
+            alert("Sai rồi hãy thử lại!");
+        }
+    };
 
     return (
         <div className='w-full h-full flex gap-2'>
@@ -70,7 +71,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     />
                 )}
                 <div className="absolute bottom-6 right-4 z-10 flex gap-2">
-                    <Button onClick={testRunCode} variant="pixelGreen" size="lg">
+                    <Button onClick={handleRun} variant="pixelGreen" size="lg">
                         <PlayIcon className="w-4 h-4" />
                         Chạy
                     </Button>

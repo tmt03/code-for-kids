@@ -1,4 +1,3 @@
-// game/api/student-apis.ts
 import * as Phaser from "phaser";
 
 export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
@@ -6,16 +5,16 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
 
   // === Core APIs from BOOK 1 ===
 
-  //Set backround
+  // 1. Set background
   sandbox.setBackground = (bgKey: string) => {
     scene.add.image(0, 0, bgKey).setOrigin(0).setScale(0.51);
   };
 
-  //Set floor
-  sandbox.setFloor = (floorKey: string) => {  
-    const floor = scene.physics.add.staticSprite(430, 450, floorKey);
-    floor.setScale(0.67).refreshBody();
-  };
+
+  // 2. Set floor
+  sandbox.setFloor = (floorKey: string, x: number, y: number) => {
+    const floor = scene.physics.add.staticSprite(x, y, floorKey);
+    floor.setScale(0.5).refreshBody();
 
   // Set màu cho đối tượng dựa trên key và màu định danh
   sandbox.setColor = (refName: string, colorName: string) => {
@@ -45,166 +44,195 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     sprite.setTint(tint);
   };
 
-  //Create character assign to a variable with animation or not
+  // 4. Spawn character with animation (optional)
   sandbox.spawn = (
-    key: string,
+    spriteKey: string,
     x: number,
     y: number,
-    refName: string,
-    options?: any
+    options: { animation?: string },
+    refName: string
   ) => {
-    const sprite = scene.add.sprite(x, y, key);
+    const sprite = scene.physics.add.sprite(
+      x,
+      y,
+      spriteKey
+    ) as Phaser.GameObjects.Sprite;
     sandbox[refName] = sprite;
-    if (options?.animation) sprite.anims.play(options.animation, true);
+    if (options?.animation) {
+      const animationKey = `${spriteKey}_${options.animation}`;
+      sprite.anims.play(animationKey, true);
+    }
     return sprite;
   };
 
-  // Create random character assign to a variable with animation or not
+  // 5. Spawn random character
   sandbox.spawnRandom = (
-    key: string,
-    minX: number,
-    maxX: number,
-    y: number
+    spriteKey: string,
+    xMin: number,
+    xMax: number,
+    y: number,
+    refName: string,
+    interval: number
   ) => {
-    const x = Phaser.Math.Between(minX, maxX);
-    return scene.physics.add.sprite(x, y, key);
-  };
-
-  //Set name  for character
-  sandbox.setName = (refName: string, name: string) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
-    scene.add.text(sprite.x, sprite.y - 50, name, {
-      font: "20px Arial",
-      color: "#ffffff",
+    const spawnItem = () => {
+      const x = Phaser.Math.Between(xMin, xMax);
+      const sprite = scene.physics.add.sprite(
+        x,
+        y,
+        spriteKey
+      ) as Phaser.GameObjects.Sprite;
+      sandbox[refName] = sprite;
+    };
+    scene.time.addEvent({
+      delay: interval,
+      loop: true,
+      callback: spawnItem,
     });
+    spawnItem(); // Spawn ngay lần đầu
   };
 
-  //Set size
-  sandbox.scale = (refName: string, factor: number) => {
-    const sprite = sandbox[refName];
+  // 6. Set name
+  sandbox.setName = (refName: string, name: string) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
     if (!sprite) return;
+    scene.add
+      .text(sprite.x, sprite.y - 50, name, {
+        font: "20px Arial",
+        color: "#ffffff",
+      })
+      .setOrigin(0.5);
+  };
+
+  // 7. Scale
+  sandbox.scale = (refName: string, factor: number) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!sprite || factor < 0.5 || factor > 2) return;
     sprite.setScale(factor);
   };
 
-  //support when controls onKey
-  sandbox.move = (refName: string, dx: number, dy: number) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
-    sprite.x += dx;
-    sprite.y += dy;
+  // 8. Move
+  sandbox.move = (refName: string, deltaX: number, deltaY: number) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!sprite || Math.abs(deltaX) > 50 || Math.abs(deltaY) > 50) return;
+    sprite.x += deltaX;
+    sprite.y += deltaY;
   };
 
-  //Go to new location
-  sandbox.goto = (refName: string, x: number, y: number) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
-    sprite.x = x;
-    sprite.y = y;
+  // 9. Move random
+  sandbox.moveRandom = (
+    refName: string,
+    xMin: number,
+    xMax: number,
+    timeMs: number
+  ) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!sprite || timeMs > 10000) return;
+    scene.time.addEvent({
+      delay: timeMs,
+      loop: true,
+      callback: () => {
+        sprite.x = Phaser.Math.Between(xMin, xMax);
+      },
+    });
   };
 
-  //Set up controls
+  // 10. On key
   sandbox.onKey = (
     key: string,
-    action: string,
+    options: { animation?: string },
     refName: string,
-    ...params: any[]
+    valueX: number,
+    valueY: number
   ) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!sprite || Math.abs(valueX) > 50 || Math.abs(valueY) > 50) return;
+    const spriteKey = sprite.texture.key; // Lấy trực tiếp từ sprite
     scene.input.keyboard?.on("keydown-" + key.toUpperCase(), () => {
-      if (action === "move") sandbox.move(refName, ...params);
-      if (action === "jump") sprite.setVelocityY(-params[0]);
-      if (action === "attack") {
-        scene.events.emit("attack", refName);
+      if (options?.animation) {
+        const animationKey = `${spriteKey}_${options.animation}`;
+        sprite.anims.play(animationKey, true);
+      }
+      sprite.x += valueX;
+      sprite.y += valueY;
+    });
+  };
+
+  // 11. Interact
+  sandbox.interact = (
+    refName1: string,
+    refName2: string,
+    action: string,
+    attribute: string,
+    value: number
+  ) => {
+    const sprite1 = sandbox[refName1] as Phaser.GameObjects.Sprite;
+    const sprite2 = sandbox[refName2] as Phaser.GameObjects.Sprite;
+    if (!sprite1 || !sprite2 || Math.abs(value) > 10) return;
+    scene.physics.add.overlap(sprite1, sprite2, () => {
+      if (action === "gain" && attribute === "power") {
+        scene.events.emit("stat-upgrade", { stat: "power", value });
+      }
+      if (action === "lose" && attribute === "hp") {
+        scene.events.emit("lose-health", value);
       }
     });
   };
 
-  sandbox.jump = (refName: string, height: number) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
-    sprite.setVelocityY(-height);
-  };
-
-  sandbox.moveRandom = (refName: string, minX: number, maxX: number) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
-    scene.time.addEvent({
-      delay: 1000,
-      loop: true,
-      callback: () => {
-        sprite.x = Phaser.Math.Between(minX, maxX);
-      },
-    });
-  };
-
-  sandbox.jumpRandom = (refName: string, height: number) => {
-    const sprite = sandbox[refName];
-    if (!sprite) return;
-    scene.time.addEvent({
-      delay: 1500,
-      loop: true,
-      callback: () => {
-        sprite.setVelocityY(-height);
-      },
-    });
-  };
-
-  sandbox.collect = (
-    playerName: string,
-    itemName: string,
-    stat: string,
-    value: number
-  ) => {
-    const player = sandbox[playerName];
-    const item = sandbox[itemName];
-    if (!player || !item) return;
-    scene.physics.add.overlap(player, item, () => {
-      item.destroy();
-      scene.events.emit("stat-upgrade", { stat, value });
-    });
-  };
-
-  sandbox.attackRandom = (refName: string, pattern: string, range: number) => {
-    const sprite = sandbox[refName];
+  // 12. Auto attack
+  sandbox.autoAttack = (refName: string, xMin: number, xMax: number) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
     if (!sprite) return;
     scene.time.addEvent({
       delay: 2000,
       loop: true,
       callback: () => {
         const beam = scene.physics.add.sprite(sprite.x, sprite.y, "boss_beam");
-        beam.setVelocityX(pattern === "circle" ? 100 : -100);
+        beam.setVelocityX(Phaser.Math.Between(xMin, xMax));
         scene.time.delayedCall(3000, () => beam.destroy());
       },
     });
   };
 
-  sandbox.collide = (
-    target: string,
-    hazard: string,
-    effect: string,
-    value: number
+  // 13. When
+  sandbox.when = (
+    condition: string,
+    value: number,
+    action: string,
+    effect: string
   ) => {
-    const t = sandbox[target];
-    const h = scene.physics.add.group({ key: hazard });
-    if (!t) return;
-    scene.physics.add.overlap(t, h, () => {
-      if (effect === "loseHealth") {
-        scene.events.emit("lose-health", value);
+    scene.events.on("check-condition", () => {
+      const health = (scene as any)[condition] || 0;
+      if (health === value) {
+        if (action === "effect" && effect === "victory") {
+          scene.add.sprite(400, 240, "victory_effect");
+        }
+        if (action === "effect" && effect === "lose") {
+          scene.add.sprite(400, 240, "lose_effect");
+        }
       }
     });
   };
 
-  sandbox.when = (
-    condition: string,
-    value: number,
-    effectType: string,
-    effectName: string
-  ) => {
-    scene.events.on("check-condition", () => {
-      if ((scene as any)[condition] === value) {
-        scene.add.sprite(400, 240, effectName);
+  // 14. Set health
+  sandbox.setHealth = (refName: string, health: number) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!sprite || health > 100) return;
+    (scene as any)[`${refName}.health`] = health;
+    scene.events.emit("update-health", { refName, health });
+  };
+
+  // 15. Start timer
+  sandbox.startTimer = (duration: number) => {
+    if (duration > 600000) return; // Giới hạn 10 phút
+    scene.time.delayedCall(duration, () => {
+      scene.events.emit("check-condition");
+      if (
+        !scene.children.list.some(
+          (c) =>
+            (c as Phaser.GameObjects.Sprite).texture.key === "victory_effect"
+        )
+      ) {
+        scene.add.sprite(400, 240, "game_over");
       }
     });
   };
