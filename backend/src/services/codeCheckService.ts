@@ -18,6 +18,10 @@ export type CheckResult = {
 type ValidCommand = (typeof VALID_GAME_COMMANDS)[number];
 type ValidAnimation = (typeof VALID_ANIMATIONS)[number];
 
+// Cache regex patterns
+const COMMAND_REGEX = /([a-zA-Z]+)\((.*?)\)/g;
+const ANIMATION_REGEX = /{.*?animation\s*:\s*["'](.*?)["']/;
+
 const syntaxCheck = async (userCode: string): Promise<CheckResult> => {
   const result: CheckResult = { passed: false };
 
@@ -55,7 +59,7 @@ const ContentCheck = async (
     }
 
     // Trích xuất lệnh và kiểm tra rằng mọi lệnh trong userCode đều thuộc danh sách VALID_GAME_COMMANDS. (cleancode)
-    const commandMatches = userCode.match(/([a-zA-Z]+)\((.*?)\)/g) || [];
+    const commandMatches = userCode.match(COMMAND_REGEX) || [];
     for (const match of commandMatches) {
       const command = match.match(/[a-zA-Z]+/)?.[0] || "";
       if (!VALID_GAME_COMMANDS.includes(command as ValidCommand)) {
@@ -65,7 +69,7 @@ const ContentCheck = async (
 
       // Kiểm tra tham số animation nếu có (cleancode)
       const params = match.match(/\((.*?)\)/)?.[1] || "";
-      const animationMatch = params.match(/{.*?animation\s*:\s*["'](.*?)["']/);
+      const animationMatch = params.match(ANIMATION_REGEX);
       if (animationMatch) {
         const animationValue = animationMatch[1];
         if (!VALID_ANIMATIONS.includes(animationValue as ValidAnimation)) {
