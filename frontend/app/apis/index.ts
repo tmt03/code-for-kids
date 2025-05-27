@@ -11,6 +11,7 @@ export const fetchAllChapters = async () => {
   return res.data;
 };
 
+
 // Hàm mới: Gửi code lên server
 export const submitCode = async (userCode: string) => {
   try {
@@ -30,3 +31,14 @@ export const submitCode = async (userCode: string) => {
     throw new Error(`Lỗi khi gửi code: ${error.message}`);
   }
 };
+
+export const fetchCheckLogin = async (username: string, password: string) => {
+  const res = await axios.post(`${API_ROOT}/v1/login/`,
+    {
+      username,
+      password
+    }
+  );
+  return res.data;
+};
+

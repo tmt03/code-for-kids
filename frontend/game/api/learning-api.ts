@@ -7,20 +7,41 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
 
   // 1. Set background
   sandbox.setBackground = (bgKey: string) => {
-    scene.add.image(0, 0, bgKey).setOrigin(0).setScale(0.5);
+    scene.add.image(0, 0, bgKey).setOrigin(0).setScale(0.51);
   };
+
 
   // 2. Set floor
   sandbox.setFloor = (floorKey: string, x: number, y: number) => {
     const floor = scene.physics.add.staticSprite(x, y, floorKey);
     floor.setScale(0.5).refreshBody();
-  };
 
-  // 3. Set color
-  sandbox.setColor = (refName: string, color: string) => {
-    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite) return;
-    sprite.setTint(Phaser.Display.Color.HexStringToColor(color).color);
+  // Set màu cho đối tượng dựa trên key và màu định danh
+  sandbox.setColor = (refName: string, colorName: string) => {
+    const sprite = sandbox[refName];
+    if (!sprite) {
+      console.warn(`Không tìm thấy đối tượng với key '${refName}'`);
+      return;
+    }
+    const colorMap: Record<string, number> = {
+      green: 0x00ff00,
+      blue: 0x0000ff,
+      red: 0xff0000,
+      yellow: 0xffff00,
+      purple: 0x800080,
+      orange: 0xffa500,
+      pink: 0xff69b4,
+      white: 0xffffff,
+      black: 0x000000,
+      gray: 0x808080,
+    };
+    const key = colorName.toLowerCase().replace(/\s/g, "");
+    const tint = colorMap[key];
+    if (!tint) {
+      console.warn(`Màu '${colorName}' không hợp lệ. Các màu hợp lệ là: ${Object.keys(colorMap).join(", ")}`);
+      return;
+    }
+    sprite.setTint(tint);
   };
 
   // 4. Spawn character with animation (optional)
