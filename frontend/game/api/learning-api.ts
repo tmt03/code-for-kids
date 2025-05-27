@@ -10,11 +10,11 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     scene.add.image(0, 0, bgKey).setOrigin(0).setScale(0.51);
   };
 
-
   // 2. Set floor
   sandbox.setFloor = (floorKey: string, x: number, y: number) => {
     const floor = scene.physics.add.staticSprite(x, y, floorKey);
     floor.setScale(0.5).refreshBody();
+  };
 
   // Set màu cho đối tượng dựa trên key và màu định danh
   sandbox.setColor = (refName: string, colorName: string) => {
@@ -38,7 +38,11 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     const key = colorName.toLowerCase().replace(/\s/g, "");
     const tint = colorMap[key];
     if (!tint) {
-      console.warn(`Màu '${colorName}' không hợp lệ. Các màu hợp lệ là: ${Object.keys(colorMap).join(", ")}`);
+      console.warn(
+        `Màu '${colorName}' không hợp lệ. Các màu hợp lệ là: ${Object.keys(
+          colorMap
+        ).join(", ")}`
+      );
       return;
     }
     sprite.setTint(tint);

@@ -23,7 +23,7 @@
     "joi": "^17.13.3",
     "mongodb": "^6.15.0",
     "vm2": "^3.9.19",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.2"
 
   },
   "devDependencies": {
