@@ -12,7 +12,22 @@ import { StatusCodes } from "http-status-codes";
 import { submissionServiceService } from "../services/submissionService";
 
 const submitCode = async (req: Request, res: Response, next: NextFunction) => {
-  const result = await submissionServiceService.submitCode();
+  const { userCode } = req.body;
+
+  console.log(1);
+  console.log(userCode);
+
+  // 2. Kiểm tra dữ liệu đầu vào
+  if (!userCode) {
+    return res.status(400).json({
+      passed: false,
+      error: "Thiếu code!",
+      hint: "Hãy đảm bảo bạn đã chọn quest và nhập code nhé! 📝",
+    });
+  }
+
+  const result = await submissionServiceService.submitCode(userCode);
+  res.status(StatusCodes.OK).json(result);
 };
 
 export const submissionController = {
