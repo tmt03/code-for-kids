@@ -1,11 +1,13 @@
-import { VALID_ANIMATIONS, VALID_GAME_COMMANDS } from "../utils/constants";
+import {
+  API_PARAM_COUNTS,
+  VALID_ANIMATIONS,
+  VALID_GAME_COMMANDS,
+} from "../utils/constants";
 
 export type CheckResult = {
   passed: boolean;
   error?: string;
-  hint?: string;
-  progress?: number;
-  completedSteps?: string[];
+  smartHints?: string;
 };
 
 export type QuestConfig = {
@@ -26,23 +28,17 @@ export class FrontendCodeValidator {
     "Function",
   ];
 
-  // Định nghĩa số lượng tham số yêu cầu cho từng API
-  private static readonly API_PARAM_COUNTS: { [key: string]: number } = {
-    setBackground: 1,
-    setFloor: 3,
-    setColor: 2,
-    spawn: 4 | 5,
-    spawnRandom: 4 | 5,
-    setName: 2,
-    scale: 2,
-    move: 3,
-    moveRandom: 4,
-    onKey: 5,
-    interact: 5,
-    autoAttack: 3,
-    when: 4,
-    setHealth: 2,
-    startTimer: 1,
+  private static readonly HINT_MAP: {
+    [key: string]: string | ((...args: any[]) => string);
+  } = {
+    dangerous: "Hãy bỏ vòng lặp hoặc lệnh nguy hiểm nhé!",
+    syntax: "Kiểm tra dấu ngoặc hoặc cú pháp lệnh nhé!",
+    missingCommand: (cmd: string) => `Hãy thêm lệnh ${cmd}() nhé!`,
+    invalidCommand: (cmd: string) => `Chỉ dùng các lệnh trong bài học nhé!`,
+    invalidAnimation: (anim: string) =>
+      `Hãy thử animation: ${VALID_ANIMATIONS.join(", ")} nhé!`,
+    wrongParamCount: (cmd: string, expected: number, actual: number) =>
+      `Hãy truyền đúng ${expected} tham số cho ${cmd} nhé!`,
   };
 
   static async validate(
@@ -56,7 +52,8 @@ export class FrontendCodeValidator {
       userCode.includes(pattern)
     );
     if (dangerousPattern) {
-      result.error = `⚠️ Code có thể gây vấn đề: "${dangerousPattern}". Hãy thử cách khác nhé!`;
+      result.error = `Lệnh nguy hiểm: ${dangerousPattern}`;
+      result.smartHints = this.HINT_MAP.dangerous as string;
       return result;
     }
 
@@ -64,7 +61,8 @@ export class FrontendCodeValidator {
     try {
       new Function(userCode);
     } catch (error: any) {
-      result.error = `🤔 Có lỗi cú pháp: ${error.message}. Kiểm tra dấu ngoặc hoặc spelling nhé!`;
+      result.error = "Sai cú pháp";
+      result.smartHints = this.HINT_MAP.syntax as string;
       return result;
     }
 
@@ -84,7 +82,11 @@ export class FrontendCodeValidator {
       (api) => !userCommands.includes(api)
     );
     if (missingAPIs.length > 0) {
-      result.error = `💡 Bạn cần sử dụng lệnh: ${missingAPIs[0]}(). Hãy thử thêm nhé!`;
+      const missingCmd = missingAPIs[0];
+      result.error = `Thiếu lệnh ${missingCmd}()`;
+      result.smartHints = (
+        this.HINT_MAP.missingCommand as (cmd: string) => string
+      )(missingCmd);
       return result;
     }
 
@@ -93,7 +95,11 @@ export class FrontendCodeValidator {
       (api) => !VALID_GAME_COMMANDS.includes(api as string)
     );
     if (invalidAPIs.length > 0) {
-      result.error = `🚫 Lệnh không được phép: ${invalidAPIs[0]}. Chỉ dùng các lệnh trong bài học nhé!`;
+      const invalidCmd = invalidAPIs[0];
+      result.error = `Lệnh không hợp lệ: ${invalidCmd}`;
+      result.smartHints = (
+        this.HINT_MAP.invalidCommand as (cmd: string) => string
+      )(invalidCmd);
       return result;
     }
 
@@ -105,9 +111,10 @@ export class FrontendCodeValidator {
       if (animationMatch) {
         const animationValue = animationMatch[1];
         if (!VALID_ANIMATIONS.includes(animationValue as string)) {
-          result.error = `🎬 Animation "${animationValue}" không hợp lệ! Thử dùng: ${VALID_ANIMATIONS.join(
-            ", "
-          )}`;
+          result.error = `Sai animation: ${animationValue}`;
+          result.smartHints = (
+            this.HINT_MAP.invalidAnimation as (anim: string) => string
+          )(animationValue);
           return result;
         }
       }
@@ -118,25 +125,22 @@ export class FrontendCodeValidator {
       const command = match[1];
       const params = match[2];
       const paramCount = params ? params.split(",").length : 0;
-      const expectedCount = this.API_PARAM_COUNTS[command] || 0;
+      const expectedCount = API_PARAM_COUNTS[command] || 0;
 
       if (paramCount !== expectedCount) {
-        result.error = `📝 Lệnh ${command} cần ${expectedCount} tham số, nhưng bạn chỉ truyền ${paramCount}!`;
+        result.error = `Sai số tham số: ${command}`;
+        result.smartHints = (
+          this.HINT_MAP.wrongParamCount as (
+            cmd: string,
+            expected: number,
+            actual: number
+          ) => string
+        )(command, expectedCount, paramCount);
         return result;
       }
     }
 
-    // 7. Theo dõi tiến độ
-    const progress = Math.round(
-      ((quest.baseCode.length - missingAPIs.length) / quest.baseCode.length) *
-        100
-    );
     result.passed = true;
-    result.progress = progress;
-    result.completedSteps = requiredCommands.filter((api) =>
-      userCommands.includes(api)
-    );
-    result.hint = `🎉 Tuyệt! Bạn đã hoàn thành ${progress}% bài tập!`;
     return result;
   }
 }
