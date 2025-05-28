@@ -1,8 +1,8 @@
 import express from "express";
-import { questRoute } from "./questRoute";
 import { chapterRoute } from "./chapterRoute";
-import { codeRoute } from "./submissionRoute";
 import { loginRoute } from "./loginRoute";
+import { questRoute } from "./questRoute";
+import { submissionRoute } from "./submissionRoute";
 
 const Router = express.Router();
 
@@ -11,7 +11,8 @@ Router.use("/quests", questRoute);
 
 Router.use("/chapters", chapterRoute);
 
-Router.use("/submissions", codeRoute);
+console.log(1);
+Router.use("/submissions", submissionRoute);
 
 Router.use("/login", loginRoute);
 

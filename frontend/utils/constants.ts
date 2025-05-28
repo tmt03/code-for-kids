@@ -21,7 +21,6 @@ export const VALID_GAME_COMMANDS = [
 
 // Danh sách animation hợp lệ
 export const VALID_ANIMATIONS = [
-  "tên_animation",
   "run",
   "jump",
   "idle",

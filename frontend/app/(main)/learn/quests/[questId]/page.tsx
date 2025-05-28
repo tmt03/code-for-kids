@@ -24,30 +24,33 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
     // RUN code
     const handleRun = async () => {
+        try {
+            // 1. Kiểm tra frontend trước
+            const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
+            if (!feResult.passed) {
+                alert(feResult.error);
+                return;
+            }
 
-        const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
-        if (!feResult.passed) {
-            alert(feResult.error + "ở đây"); //sau sẽ sử dung smart hint
-            return;
-        }
+            // 2. Gửi lên backend
+            const result = await submitCode(userCode);
+            if (!result.passed) {
+                alert(result.error || result.hint || "Sai rồi hãy thử lại! hẹ hẹ");
+                return;
+            }
+            setBeResult(result);
 
-        // Gửi code lên BE
-        const result = await submitCode(userCode);
-        if (!result.passed) {
-            alert("Sai rồi hãy thử lại!"); //sau sẽ sử dung smart hint
-            return;
-        }
-        setBeResult(result); // Lưu kết quả từ BE
-
-        if (beResult.passed) {
-            // chạy phần code hoàn chỉnh bên GameCanvas
-            window.dispatchEvent(
-                new CustomEvent("run-user-code", {
-                    detail: { code: userCode },
-                })
-            );
-        } else {
-            alert("Sai rồi hãy thử lại!");
+            // 3. Nếu backend pass thì chạy code trong game
+            if (result.passed) {
+                console.log("game hẹ hẹ")
+                window.dispatchEvent(
+                    new CustomEvent("run-user-code", {
+                        detail: { code: userCode },
+                    })
+                );
+            }
+        } catch (error: any) {
+            alert(`Lỗi: ${error.message}`);
         }
     };
 

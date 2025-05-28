@@ -8,26 +8,20 @@
 // Gọi ProgressService để đánh dấu hoàn thành quest nếu đủ điểm
 
 import { NextFunction, Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { submissionServiceService } from "../services/submissionService";
+import { codeCheckService } from "../services/codeCheckService";
 
 const submitCode = async (req: Request, res: Response, next: NextFunction) => {
-  const { userCode } = req.body;
+  console.log("\n=== YÊU CẦU SUBMIT CODE ĐÃ ĐẾN CONTROLLER ===");
+  console.log("Body của yêu cầu:", req.body);
 
-  console.log(1);
-  console.log(userCode);
+  const { code } = req.body;
 
-  // 2. Kiểm tra dữ liệu đầu vào
-  if (!userCode) {
-    return res.status(400).json({
-      passed: false,
-      error: "Thiếu code!",
-      hint: "Hãy đảm bảo bạn đã chọn quest và nhập code nhé! 📝",
-    });
+  try {
+    const result = await codeCheckService.logicCheck(code);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
   }
-
-  const result = await submissionServiceService.submitCode(userCode);
-  res.status(StatusCodes.OK).json(result);
 };
 
 export const submissionController = {

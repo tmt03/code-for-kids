@@ -48,12 +48,33 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     sprite.setTint(tint);
   };
 
+  // // 4. Spawn character with animation (optional)
+  // sandbox.spawn = (
+  //   spriteKey: string,
+  //   x: number,
+  //   y: number,
+  //   options: { animation?: string },
+  //   refName: string
+  // ) => {
+  //   const sprite = scene.physics.add.sprite(
+  //     x,
+  //     y,
+  //     spriteKey
+  //   ) as Phaser.GameObjects.Sprite;
+  //   sandbox[refName] = sprite;
+  //   if (options?.animation) {
+  //     const animationKey = `${spriteKey}_${options.animation}`;
+  //     sprite.anims.play(animationKey, true);
+  //   }
+  //   return sprite;
+  // };
+
   // 4. Spawn character with animation (optional)
   sandbox.spawn = (
     spriteKey: string,
     x: number,
     y: number,
-    options: { animation?: string },
+    options: { animation?: string }, // Tham số options là tùy chọn
     refName: string
   ) => {
     const sprite = scene.physics.add.sprite(
@@ -63,7 +84,7 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     ) as Phaser.GameObjects.Sprite;
     sandbox[refName] = sprite;
     if (options?.animation) {
-      const animationKey = `${spriteKey}_${options.animation}`;
+      const animationKey = `${options.animation}`;
       sprite.anims.play(animationKey, true);
     }
     return sprite;
