@@ -1,10 +1,11 @@
 import { VM } from "vm2";
 import { createBackendSandbox } from "../utils/learning-api.backend";
+import { hintService } from "./hintService";
 
 export type CheckResult = {
   passed: boolean;
   error?: string;
-  hint?: string;
+  smartHints?: string;
 };
 
 const logicCheck = async (userCode: string): Promise<CheckResult> => {
@@ -59,39 +60,19 @@ const logicCheck = async (userCode: string): Promise<CheckResult> => {
 
     // Nếu chạy đến đây mà không có lỗi, code đã chạy thành công
     result.passed = true;
-    result.hint = "🎉 Code chạy tốt! Bạn làm rất tuyệt!";
+    result.smartHints = "Code chạy tốt! Bạn làm rất tuyệt";
   } catch (error: any) {
     console.error("\n=== LỖI PHÁT SINH ===");
     console.error("Loại lỗi:", error.name);
     console.error("Thông báo lỗi:", error.message);
     console.error("Stack trace:", error.stack);
 
-    // Xử lý các lỗi cụ thể
-    if (error.message.includes("timeout")) {
-      result.error =
-        "⏰ Code chạy quá lâu! Kiểm tra xem có vòng lặp vô hạn không?";
-      result.hint = "Đảm bảo code của bạn không có vòng lặp vô hạn";
-    } else if (error.message.includes("Cannot read properties of undefined")) {
-      result.error =
-        "❌ Không tìm thấy đối tượng! Hãy chắc chắn rằng bạn đã tạo đối tượng trước khi sử dụng";
-      result.hint =
-        "Kiểm tra xem bạn đã gọi spawn() trước khi sử dụng các lệnh khác chưa";
-    } else if (error.message.includes("spawn")) {
-      result.error = "🖼️ Lỗi khi tạo sprite: " + error.message;
-      result.hint =
-        "Kiểm tra lại tham số của lệnh spawn. Ví dụ: spawn('castle', 200, 200, {}, 'castle_1')";
-    } else if (error.message.includes("is not defined")) {
-      result.error = "🔍 Lệnh không tồn tại: " + error.message;
-      result.hint = "Chỉ sử dụng các lệnh đã được học trong bài";
-    } else if (error.message.includes("Không có sprite nào được tạo")) {
-      result.error = "🎯 " + error.message;
-      result.hint =
-        "Hãy sử dụng lệnh spawn() để tạo sprite. Ví dụ: spawn('castle', 200, 200, {}, 'castle_1')";
-    } else {
-      result.error = `🐛 Có lỗi khi chạy code: ${error.message}`;
-      result.hint =
-        "Kiểm tra xem bạn có gọi lệnh đúng không nhé! Nếu vẫn gặp lỗi, hãy thử lại với cú pháp đơn giản hơn.";
-    }
+    const hintResult = await hintService.generateHint({
+      code: userCode,
+      error,
+    });
+    result.error = error.message;
+    result.smartHints = hintResult.smartHints;
   }
 
   console.log("\n=== KẾT QUẢ CUỐI CÙNG ===");

@@ -22,7 +22,7 @@ export function getBaseCodeForQuest(questId: string): string {
     C01_Q01: `
     scene.bg = scene.add.image(0, 0, "sky_1")
         .setOrigin(0)
-        .setScale(0.51);
+        .setScale(0.6);
 
     scene.floor = scene.add.image(425, 453, "ground_2")
     .setScale(0.67);

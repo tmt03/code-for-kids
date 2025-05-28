@@ -11,7 +11,6 @@ Router.use("/quests", questRoute);
 
 Router.use("/chapters", chapterRoute);
 
-console.log(1);
 Router.use("/submissions", submissionRoute);
 
 Router.use("/login", loginRoute);

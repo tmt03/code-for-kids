@@ -6,6 +6,7 @@ import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
 import { FrontendCodeValidator } from '@/utils/codeValidatior';
+import { speak } from '@/utils/speak';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 
@@ -14,6 +15,10 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
     const [userCode, setUserCode] = useState<string>("");
     const [beResult, setBeResult] = useState<any>(null);
+    const [hintMessage, setHintMessage] = useState<
+        string | { error?: string; smartHints?: string }
+    >("");
+    const [showHint, setShowHint] = useState(false);
 
     // Lấy chương và chọn nhiệm vụ đầu tiên
     useEffect(() => {
@@ -24,21 +29,31 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
     // RUN code
     const handleRun = async () => {
+        setShowHint(true);
         try {
             // 1. Kiểm tra frontend trước
             const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
             if (!feResult.passed) {
-                alert(feResult.error);
+                // playSound("error");
+                speak(`${feResult.error}. ${feResult.smartHints}`);
+                setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
                 return;
             }
 
             // 2. Gửi lên backend
             const result = await submitCode(userCode);
             if (!result.passed) {
-                alert(result.error || result.hint || "Sai rồi hãy thử lại! hẹ hẹ");
+                // playSound("error");
+                speak(`${result.error}. ${result.smartHints}`);
+                setHintMessage({ error: result.error, smartHints: result.smartHints });
                 return;
             }
             setBeResult(result);
+            setHintMessage({ smartHints: "Code chạy tốt! Bạn làm rất tuyệt!" });
+
+            // Nếu thành công:
+            // playSound("success");
+            speak("Code chạy tốt! Bạn làm rất tuyệt!");
 
             // 3. Nếu backend pass thì chạy code trong game
             if (result.passed) {
@@ -50,15 +65,42 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 );
             }
         } catch (error: any) {
-            alert(`Lỗi: ${error.message}`);
+            setHintMessage({ error: "Lỗi hệ thống", smartHints: "Hãy thử lại nhé!" });
         }
     };
+
+    const handleHelp = async () => {
+        setShowHint(true);
+        const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
+        setHintMessage({
+            error: feResult.error,
+            smartHints: feResult.smartHints || "Hãy thử viết code và kiểm tra nhé! hẹ hẹ",
+        });
+    };
+
+    useEffect(() => {
+        if (showHint) {
+            const timer = setTimeout(() => {
+                setShowHint(false);
+                setHintMessage("");
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [showHint]);
 
     return (
         <div className='w-full h-full flex gap-2'>
             <div className='w-3/5 h-full flex flex-col'>
                 <div className='h-1/5'>
-                    <InteractionBox message="Chúc mừng bạn đã hoàn thành!" />
+                    <InteractionBox
+                        message={hintMessage || "Anh hùng nhỏ cùng học nhé!"}
+                        showHint={showHint}
+                        onClose={() => {
+                            setShowHint(false);
+                            setHintMessage("");
+                        }}
+                        onHelp={handleHelp}
+                    />
                 </div>
                 <div className='h-4/5 pt-2'>
                     <GameCanvas
@@ -78,7 +120,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                         <PlayIcon className="w-4 h-4" />
                         Chạy
                     </Button>
-                    <Button variant="pixel" size="lg">
+                    <Button onClick={handleHelp} variant="pixel" size="lg">
                         <CopyIcon className="w-4 h-4" />
                         Trợ giúp
                     </Button>
