@@ -38,6 +38,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                     lineNumbers: true,
                     highlightActiveLine: true,
                     autocompletion: true,
+                    tabSize: 2, // Đảm bảo tabSize được đặt để xử lý dấu cách đúng cách
                 }}
                 className="border-2 border-gray-500 rounded-lg overflow-hidden"
                 style={{
@@ -45,6 +46,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     flexGrow: 1,
+                    fontSize: '18px'
                 }}
             />
         </div>
