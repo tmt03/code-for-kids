@@ -39,8 +39,12 @@ export function getBaseCodeForQuest(questId: string): string {
         .setOrigin(0)
         .setScale(0.51);
 
-    scene.floor = scene.add.image(425, 453, "ground_2")
-    .setScale(0.67);
+    const floor = scene.physics.add.staticSprite(425, 453, "ground_2")
+            .setScale(0.67)
+            .refreshBody();
+        scene.floor = floor;
+        sandbox["floor"] = floor; // Ghi đè refName "floor"
+        sandbox.platforms.add(floor); // Thêm vào platforms qua sandbox
 
     const castle = scene.add.image(640, 130, "castle")
     .setOrigin(0.5)
