@@ -19,6 +19,8 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         string | { error?: string; smartHints?: string }
     >("");
     const [showHint, setShowHint] = useState(false);
+    const [codeHelp, setCodeHelp] = useState<string>('');
+    const [helpIndex, setHelpIndex] = useState<number>(0);
 
     // Lấy chương và chọn nhiệm vụ đầu tiên
     useEffect(() => {
@@ -71,11 +73,39 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
     const handleHelp = async () => {
         setShowHint(true);
-        const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
-        setHintMessage({
-            error: feResult.error,
-            smartHints: feResult.smartHints || "Hãy thử viết code và kiểm tra nhé! hẹ hẹ",
-        });
+        if (!selectedQuest?.codeHelp) {
+            setHintMessage({
+                smartHints: 'Không có gợi ý code cho nhiệm vụ này. Hãy thử viết code và kiểm tra nhé!',
+            });
+            return;
+        }
+
+        if (selectedQuest.type === 'challenge') {
+            const codeLines = selectedQuest.codeHelp.split('\n');
+            const startIndex = helpIndex * 2;
+            const accumulatedLines = codeLines.slice(0, startIndex + 2).join('\n');
+            if (startIndex < codeLines.length) {
+                setCodeHelp(accumulatedLines);
+                setHelpIndex((prev) => prev + 1);
+                setHintMessage({
+                    smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
+                });
+                if (startIndex + 2 >= codeLines.length) {
+                    setHelpIndex(0); // Reset khi hết gợi ý
+                }
+            } else {
+                setCodeHelp('');
+                setHintMessage({
+                    smartHints: 'Hết gợi ý rồi! Hãy thử lại từ đầu nhé!',
+                });
+                setHelpIndex(0);
+            }
+        } else {
+            setCodeHelp(selectedQuest.codeHelp);
+            setHintMessage({
+                smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
+            });
+        }
     };
 
     useEffect(() => {
@@ -83,6 +113,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             const timer = setTimeout(() => {
                 setShowHint(false);
                 setHintMessage("");
+                setCodeHelp('');
             }, 10000);
             return () => clearTimeout(timer);
         }
@@ -113,6 +144,8 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     <CodeEditor
                         initialValue={selectedQuest.baseCode}
                         onChange={setUserCode}
+                        codeHelp={codeHelp}
+
                     />
                 )}
                 <div className="absolute bottom-6 right-4 z-10 flex gap-2">

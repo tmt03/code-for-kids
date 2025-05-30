@@ -7,15 +7,24 @@ import React, { useEffect, useState } from "react";
 interface CodeEditorProps {
     initialValue?: string;
     onChange: (value: string) => void;
+    codeHelp?: string;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeHelp }) => {
     const [value, setValue] = useState(initialValue || "");
+    const [editable, setEditable] = useState(true);
 
     useEffect(() => {
-        setValue(initialValue || "");
-        onChange(initialValue || ""); // Gọi onChange với giá trị ban đầu
-    }, [initialValue, onChange]);
+        if (codeHelp) {
+            // Khi codeHelp hiển thị, ẩn baseCode và vô hiệu hóa chỉnh sửa
+            setValue("");
+        } else {
+            // Khi codeHelp không còn, khôi phục baseCode và cho phép chỉnh sửa
+            setValue(initialValue || "");
+            setEditable(true);
+            onChange(initialValue || "");
+        }
+    }, [codeHelp, initialValue, onChange]);
 
     const handleChange = (val: string) => {
         setValue(val);
@@ -23,7 +32,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
     };
 
     return (
-        <div className='w-full h-full min-h-[300px]'>
+        <div className='w-full h-full min-h-[300px] relative'>
             <CodeMirror
                 value={value}
                 // height="480px"
@@ -33,13 +42,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                 extensions={[javascript({ jsx: true })]}
                 theme={'light'}
                 onChange={handleChange}
-                placeholder="Gõ code của bạn vào đây nhé!"
+                editable={editable}
+                placeholder=""
                 basicSetup={{
                     lineNumbers: true,
                     highlightActiveLine: true,
                     autocompletion: true,
                 }}
-                className="border-2 border-gray-500 rounded-lg overflow-hidden"
+                className="border-2 border-gray-500 rounded-lg overflow-hidden font-mono text-sm text-gray-900"
                 style={{
                     height: '100%',
                     display: 'flex',
@@ -47,6 +57,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange }) => {
                     flexGrow: 1,
                 }}
             />
+            {codeHelp && (
+                <pre className="code-help-overlay font-mono text-sm text-gray-900 absolute top-0 right-0 w-[calc(100%-3rem)] h-full z-50 pointer-events-none whitespace-pre-wrap leading-[1.5] animate-blink">
+                    {codeHelp}
+                </pre>
+            )}
         </div>
     );
 };
