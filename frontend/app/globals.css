@@ -153,12 +153,12 @@
   width: calc(100% - 2rem); /* Chừa chỗ cho cột số dòng */
   height: 100%;
   pointer-events: none;
-  animation: blink 2s infinite;
+  animation: blink 1s infinite;
   z-index: 5;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.875rem; /* text-sm */
   color: #1f2937; /* text-gray-900, khớp với baseCode */
-  line-height: 1.5;
+  line-height: 1.4;
   white-space: pre-wrap;
   padding: 0.37rem;
 }
@@ -167,4 +167,9 @@
   0% { opacity: 1; }
   50% { opacity: 0.7; }
   100% { opacity: 1; }
+}
+
+/* Đảm bảo danh sách gợi ý của CodeMirror hiển thị trên codeHelp */
+.cm-completion {
+  z-index: 100 !important;
 }
