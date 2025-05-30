@@ -29,7 +29,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         });
     }, [questId]);
 
-    // RUN code
+    // Nút chạy code
     const handleRun = async () => {
         setShowHint(true);
         try {
@@ -71,6 +71,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
     };
 
+    //Nút trợ giúp
     const handleHelp = async () => {
         setShowHint(true);
         if (!selectedQuest?.codeHelp) {
@@ -105,6 +106,21 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             setHintMessage({
                 smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
             });
+        }
+    };
+
+    // Nút Xóa code và đặt lại về baseCode
+    const handleClear = () => {
+        if (selectedQuest) {
+            setUserCode(selectedQuest.baseCode || ""); // Đặt lại về baseCode
+            setHintMessage({ smartHints: "Code đã được xóa và đặt lại về trạng thái ban đầu!" });
+            setShowHint(true);
+            speak("Code đã được xóa và đặt lại về trạng thái ban đầu!");
+        } else {
+            setUserCode(""); // Nếu selectedQuest chưa tải, chỉ clear
+            setHintMessage({ smartHints: "Code đã được xóa, nhưng chưa tải được base code!" });
+            setShowHint(true);
+            speak("Code đã được xóa, nhưng chưa tải được base code!");
         }
     };
 
@@ -144,6 +160,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     <CodeEditor
                         initialValue={selectedQuest.baseCode}
                         onChange={setUserCode}
+                        codeClear={userCode}
                         codeHelp={codeHelp}
 
                     />
@@ -157,7 +174,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                         <CopyIcon className="w-4 h-4" />
                         Trợ giúp
                     </Button>
-                    <Button variant="pixelDanger" size="lg">
+                    <Button onClick={handleClear} variant="pixelDanger" size="lg">
                         <DeleteIcon className="w-4 h-4" />
                         Xóa
                     </Button>

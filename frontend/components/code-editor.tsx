@@ -11,13 +11,20 @@ import React, { useEffect, useRef, useState } from "react";
 interface CodeEditorProps {
     initialValue?: string;
     onChange: (value: string) => void;
+    codeClear: string;
     codeHelp?: string;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeHelp }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeClear, codeHelp }) => {
     const [value, setValue] = useState(initialValue || "");
     const editorRef = useRef<EditorView | null>(null);
 
+    // Đồng bộ giá trị của editor với codeClear
+    useEffect(() => {
+        setValue(codeClear);
+    }, [codeClear]);
+
+    // Xử lý logic liên quan đến codeHelp và initialValue
     useEffect(() => {
         if (codeHelp) {
             setValue("");
@@ -27,13 +34,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeHel
         }
     }, [codeHelp, initialValue, onChange]);
 
+    // Focus vào editor mỗi khi giá trị thay đổi
     useEffect(() => {
         if (editorRef.current) {
             setTimeout(() => editorRef.current?.focus(), 100);
         }
     }, [value]);
 
-    const handleChange = (val: string) => {
+    const handleChangeCode = (val: string) => {
         setValue(val);
         onChange(val);
     };
@@ -54,7 +62,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeHel
                     autocompletion({ override: [getCompletions], activateOnTyping: false }),
                 ]}
                 theme="light"
-                onChange={handleChange}
+                onChange={handleChangeCode}
                 placeholder=""
                 basicSetup={{ lineNumbers: true, highlightActiveLine: true }}
                 className="border-2 border-gray-500 rounded-lg overflow-hidden font-mono text-sm text-gray-900"
