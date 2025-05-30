@@ -67,10 +67,18 @@ export const SPRITES = [
 ] as const;
 
 // Danh sách background
-export const BACKGROUNDS = ["sky_1"] as const;
+export const BACKGROUNDS = [
+  "sky_1",
+  "sky_2",
+  "sky_3",
+  "sky_4",
+  "sky_5",
+  "sky_6",
+  "sky_7",
+] as const;
 
 // Danh sách sàn
-export const FLOORS = ["ground"] as const;
+export const FLOORS = ["ground_1", "ground_2"] as const;
 
 // Danh sách màu
 export const COLORS = [
@@ -109,7 +117,7 @@ export const COMMANDS = [
   },
   {
     name: "setFloor",
-    syntax: 'setFloor("tên", x, y);',
+    syntax: 'setFloor("tên_nền", x, y);',
   },
   {
     name: "setColor",
