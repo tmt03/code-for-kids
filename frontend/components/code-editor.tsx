@@ -1,6 +1,6 @@
 "use client";
 
-import { getCompletions } from "@/utils/completionCode";
+import { getCompletions } from "@/lib/utils/completionCode";
 import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import { defaultKeymap } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";

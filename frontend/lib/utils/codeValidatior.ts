@@ -2,7 +2,7 @@ import {
   API_PARAM_COUNTS,
   VALID_ANIMATIONS,
   VALID_GAME_COMMANDS,
-} from "../utils/constants";
+} from "./constants";
 
 export type CheckResult = {
   passed: boolean;
