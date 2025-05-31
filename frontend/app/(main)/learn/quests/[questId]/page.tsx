@@ -1,12 +1,12 @@
 "use client"
 
-import { fetchQuestDetails, submitCode } from '@/app/apis';
+import { fetchQuestDetails, submitCode } from '@/apis';
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
-import { FrontendCodeValidator } from '@/utils/codeValidatior';
-import { speak } from '@/utils/speak';
+import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
+import { speak } from '@/lib/utils/speak';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 

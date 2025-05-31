@@ -80,8 +80,19 @@ const logout = async (req: Request, res: Response) => {
   res.status(200).json({ message: "Đã đăng xuất" });
 };
 
+const me = async (req: Request, res: Response) => {
+  const user = (req as any).user; // lấy từ verifyToken
+
+  if (!user) {
+    return res.status(401).json({ error: "Chưa xác thực" });
+  }
+
+  res.status(200).json({ user });
+};
+
 export const authController = {
   login,
   refreshToken,
   logout,
+  me,
 };

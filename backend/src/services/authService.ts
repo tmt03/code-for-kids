@@ -1,13 +1,13 @@
-import { userModel } from "../models/userModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { env } from "../config/environment";
+import { userModel } from "../models/userModel";
 
 const generateAccessToken = (user: any) => {
   return jwt.sign(
     { username: user.username, role: user.role },
     env.JWT_SECRET_ACCESS_TOKEN,
-    { expiresIn: "15m" }
+    { expiresIn: "1h" }
   );
 };
 

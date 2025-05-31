@@ -1,21 +1,30 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+
+import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
-import "@fortawesome/fontawesome-svg-core/styles.css";
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
 import { config } from "@fortawesome/fontawesome-svg-core";
-config.autoAddCss = false;
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import {
+    faArrowLeft, faBars, faGear,
+    faHouse,
+    faSignOut, faUser
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
+config.autoAddCss = false;
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
-    
-    const isLoggedIn = null;
+    const { user, logout } = useAuth();
+    const router = useRouter();
+
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
-        setIsMobileProfileDropdownOpen(false); // Close mobile profile dropdown when toggling menu
+        setIsMobileProfileDropdownOpen(false);
     };
 
     const toggleProfileDropdown = () => {
@@ -24,10 +33,14 @@ export default function Navbar() {
 
     const toggleMobileProfileDropdown = () => {
         setIsMobileProfileDropdownOpen(prev => !prev);
-        setIsMenuOpen(false); // Hide main dropdown
+        setIsMenuOpen(false);
     };
 
-    // Auto-close dropdown on window resize
+    const handleLogout = async () => {
+        await logout();
+        router.push("/login");
+    };
+
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth >= 1024) {
@@ -51,7 +64,7 @@ export default function Navbar() {
 
                     {/* Nav links */}
                     <ul className="hidden lg:flex gap-6">
-                        {isLoggedIn && (
+                        {user && (
                             <Link href="/home" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
                                 <FontAwesomeIcon icon={faHouse} className='pr-1' /> Trang chủ
                             </Link>
@@ -69,13 +82,13 @@ export default function Navbar() {
 
                     {/* Right-side buttons */}
                     <div className="flex items-center gap-4">
-                        {!isLoggedIn && (
+                        {!user && (
                             <Link href="/login" className="hidden lg:block bg-blue-500 font-bold px-3 py-2 rounded hover:bg-blue-400 transition-colors">
                                 Đăng nhập
                             </Link>
                         )}
 
-                        {isLoggedIn && (
+                        {user && (
                             <div className="relative hidden lg:block">
                                 <button
                                     onClick={toggleProfileDropdown}
@@ -90,13 +103,16 @@ export default function Navbar() {
 
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <Link href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
                                         <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faGear} /> Cài đặt
                                         </Link>
-                                        <button className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100">
+                                        <button
+                                            onClick={handleLogout}
+                                            className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                        >
                                             <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                                         </button>
                                     </div>
@@ -112,11 +128,11 @@ export default function Navbar() {
                 </nav>
             </header>
 
-            {/* Main dropdown for mobile */}
+            {/* Mobile dropdown */}
             {isMenuOpen && (
                 <div className="fixed top-14 left-0 w-full z-10 bg-[#28284f]/90 text-white flex flex-col items-start">
                     <ul className="flex flex-col items-start w-full">
-                        {isLoggedIn && (
+                        {user && (
                             <Link href="/home" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
                                 <FontAwesomeIcon icon={faHouse} className='pr-1' /> Trang chủ
                             </Link>
@@ -130,7 +146,7 @@ export default function Navbar() {
                         <Link href="/shop" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
                             Cửa hàng
                         </Link>
-                        {!isLoggedIn ? (
+                        {!user ? (
                             <Link href="/login" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
                                 Đăng nhập
                             </Link>
@@ -139,11 +155,7 @@ export default function Navbar() {
                                 onClick={toggleMobileProfileDropdown}
                                 className="w-full flex items-center justify-start gap-2 px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"
                             >
-                                <img
-                                    src="/assets/globe.svg"
-                                    alt="User Avatar"
-                                    className="h-6 w-6 rounded-full"
-                                />
+                                <img src="/assets/globe.svg" alt="User Avatar" className="h-6 w-6 rounded-full" />
                                 <span>Tài khoản</span>
                             </button>
                         )}
@@ -151,10 +163,9 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* Mobile profile dropdown (replaces menu) */}
+            {/* Mobile profile dropdown */}
             {isMobileProfileDropdownOpen && (
                 <div className="fixed top-14 left-0 w-full z-20 bg-[#28284f]/90 text-white flex flex-col items-start">
-                    {/* Back Button */}
                     <button
                         className="w-full text-left px-2 py-2 font-semibold text-blue-400 hover:text-blue-200"
                         onClick={() => {
@@ -165,14 +176,16 @@ export default function Navbar() {
                         <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
                     </button>
 
-                    {/* Profile Menu Items */}
-                    <Link href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </Link>
                     <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faGear} /> Cài đặt
                     </Link>
-                    <button className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors"
+                    >
                         <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                     </button>
                 </div>
@@ -180,5 +193,3 @@ export default function Navbar() {
         </div>
     );
 }
-
-

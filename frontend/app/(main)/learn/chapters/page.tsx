@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchAllChapters } from "@/app/apis";
+import { fetchAllChapters } from "@/apis";
 import ChapterList from "@/components/companion/chapter-list";
 import CourseBadges from "@/components/companion/course-badges";
 import CourseProgress from "@/components/companion/course-progress";
