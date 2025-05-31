@@ -12,11 +12,21 @@ export const fetchAllChapters = async () => {
 };
 
 export const fetchCheckLogin = async (username: string, password: string) => {
-  const res = await axios.post(`${API_ROOT}/v1/login/`,
+  const res = await axios.post(`${API_ROOT}/v1/auth/login/`,
     {
       username,
       password
+    },
+    {
+      withCredentials: true
     }
   );
+  return res.data;
+};
+
+export const fetchUserInfo = async () => {
+  const res = await axios.get(`${API_ROOT}/v1/auth/me/`, {
+    withCredentials: true,
+  });
   return res.data;
 };

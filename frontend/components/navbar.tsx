@@ -5,14 +5,31 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faBars, faGear, faGears, faSignOut, faSignOutAlt, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faBars, faGear, faSignOut, faUser, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { fetchUserInfo } from '@/app/apis';
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
-    
-    const isLoggedIn = null;
+    const [user, setUser] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // Gọi API kiểm tra đăng nhập
+    useEffect(() => {
+        const checkLogin = async () => {
+            try {
+                const data = await fetchUserInfo();
+                setUser(data.user); // hoặc `data`, tùy response của bạn
+                setIsLoggedIn(true);
+            } catch (err) {
+                setIsLoggedIn(false);
+            }
+        };
+
+        checkLogin();
+    }, []);
+
     const toggleMenu = () => {
         setIsMenuOpen(prev => !prev);
         setIsMobileProfileDropdownOpen(false); // Close mobile profile dropdown when toggling menu

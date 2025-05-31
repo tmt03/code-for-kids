@@ -1,6 +1,5 @@
 import { userModel } from "../models/userModel";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-key';
 
@@ -21,19 +20,10 @@ const login = async (username: string, password: string) => {
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) throw new Error("Sai mật khẩu!");
 
-    const token = jwt.sign(
-      {
-        _id: user._id,
-        username: user.username,
-      },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
+    // Loại bỏ password trước khi trả về
     const { password_hash, ...userWithoutPass } = user;
 
-    return { token, userWithoutPass };
-
+    return userWithoutPass;
   } catch (error) {
     throw error;
   }
