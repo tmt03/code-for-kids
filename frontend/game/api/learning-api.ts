@@ -10,10 +10,18 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     scene.add.image(0, 0, bgKey).setOrigin(0).setScale(0.51);
   };
 
-  // 2. Set floor
-  sandbox.setFloor = (floorKey: string, x: number, y: number) => {
+  // Set floor (tự động thêm vào platforms, ghi đè refName nếu không chỉ định)
+  sandbox.setFloor = (
+    floorKey: string,
+    x: number,
+    y: number,
+    refName: string = "floor"
+  ) => {
     const floor = scene.physics.add.staticSprite(x, y, floorKey);
     floor.setScale(0.5).refreshBody();
+    sandbox[refName] = floor; // Ghi đè refName nếu đã tồn tại
+    sandbox.platforms.add(floor); // Thêm vào nhóm platforms qua sandbox
+    return floor;
   };
 
   // Set màu cho đối tượng dựa trên key và màu định danh
@@ -69,12 +77,12 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
   //   return sprite;
   // };
 
-  // 4. Spawn character with animation (optional)
+  //4. Spawn character with animation (optional)
   sandbox.spawn = (
     spriteKey: string,
     x: number,
     y: number,
-    options: { animation?: string }, // Tham số options là tùy chọn
+    options: { animation?: string },
     refName: string
   ) => {
     const sprite = scene.physics.add.sprite(
@@ -84,13 +92,13 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     ) as Phaser.GameObjects.Sprite;
     sandbox[refName] = sprite;
     if (options?.animation) {
-      const animationKey = `${options.animation}`;
-      sprite.anims.play(animationKey, true);
+      sprite.anims.play(options.animation, true);
     }
+    scene.physics.add.collider(sprite, sandbox.platforms); // Thêm va chạm với platforms
     return sprite;
   };
 
-  // 5. Spawn random character
+  //5. Spawn random character
   sandbox.spawnRandom = (
     spriteKey: string,
     xMin: number,
@@ -107,6 +115,7 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
         spriteKey
       ) as Phaser.GameObjects.Sprite;
       sandbox[refName] = sprite;
+      scene.physics.add.collider(sprite, sandbox.platforms); // Thêm va chạm với platforms
     };
     scene.time.addEvent({
       delay: interval,
