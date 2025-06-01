@@ -1,6 +1,6 @@
 import CourseCard from "@/components/course-card";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Header from "@/components/header";
 import SearchBar from "@/components/searchbar";
 
 export default function LearnPage() {
@@ -53,7 +53,7 @@ export default function LearnPage() {
                 </div>
             </div>
 
-            <Navbar />
+            <Header />
 
             <Footer />
         </div>

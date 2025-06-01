@@ -1,12 +1,12 @@
 "use client"
 
-import { fetchQuestDetails, submitCode } from '@/app/apis';
+import { fetchQuestDetails, submitCode } from '@/apis';
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
-import { FrontendCodeValidator } from '@/utils/codeValidatior';
-import { speak } from '@/utils/speak';
+import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
+import { speak } from '@/lib/utils/speak';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 
@@ -19,6 +19,8 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         string | { error?: string; smartHints?: string }
     >("");
     const [showHint, setShowHint] = useState(false);
+    const [codeHelp, setCodeHelp] = useState<string>('');
+    const [helpIndex, setHelpIndex] = useState<number>(0);
 
     // Lấy chương và chọn nhiệm vụ đầu tiên
     useEffect(() => {
@@ -27,7 +29,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         });
     }, [questId]);
 
-    // RUN code
+    // Nút chạy code
     const handleRun = async () => {
         setShowHint(true);
         try {
@@ -69,13 +71,57 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
     };
 
+    //Nút trợ giúp
     const handleHelp = async () => {
         setShowHint(true);
-        const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
-        setHintMessage({
-            error: feResult.error,
-            smartHints: feResult.smartHints || "Hãy thử viết code và kiểm tra nhé! hẹ hẹ",
-        });
+        if (!selectedQuest?.codeHelp) {
+            setHintMessage({
+                smartHints: 'Không có gợi ý code cho nhiệm vụ này. Hãy thử viết code và kiểm tra nhé!',
+            });
+            return;
+        }
+
+        if (selectedQuest.type === 'challenge') {
+            const codeLines = selectedQuest.codeHelp.split('\n');
+            const startIndex = helpIndex * 2;
+            const accumulatedLines = codeLines.slice(0, startIndex + 2).join('\n');
+            if (startIndex < codeLines.length) {
+                setCodeHelp(accumulatedLines);
+                setHelpIndex((prev) => prev + 1);
+                setHintMessage({
+                    smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
+                });
+                if (startIndex + 2 >= codeLines.length) {
+                    setHelpIndex(0); // Reset khi hết gợi ý
+                }
+            } else {
+                setCodeHelp('');
+                setHintMessage({
+                    smartHints: 'Hết gợi ý rồi! Hãy thử lại từ đầu nhé!',
+                });
+                setHelpIndex(0);
+            }
+        } else {
+            setCodeHelp(selectedQuest.codeHelp);
+            setHintMessage({
+                smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
+            });
+        }
+    };
+
+    // Nút Xóa code và đặt lại về baseCode
+    const handleClear = () => {
+        if (selectedQuest) {
+            setUserCode(selectedQuest.baseCode || ""); // Đặt lại về baseCode
+            setHintMessage({ smartHints: "Code đã được xóa và đặt lại về trạng thái ban đầu!" });
+            setShowHint(true);
+            speak("Code đã được xóa và đặt lại về trạng thái ban đầu!");
+        } else {
+            setUserCode(""); // Nếu selectedQuest chưa tải, chỉ clear
+            setHintMessage({ smartHints: "Code đã được xóa, nhưng chưa tải được base code!" });
+            setShowHint(true);
+            speak("Code đã được xóa, nhưng chưa tải được base code!");
+        }
     };
 
     useEffect(() => {
@@ -83,6 +129,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             const timer = setTimeout(() => {
                 setShowHint(false);
                 setHintMessage("");
+                setCodeHelp('');
             }, 10000);
             return () => clearTimeout(timer);
         }
@@ -113,6 +160,9 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     <CodeEditor
                         initialValue={selectedQuest.baseCode}
                         onChange={setUserCode}
+                        codeClear={userCode}
+                        codeHelp={codeHelp}
+
                     />
                 )}
                 <div className="absolute bottom-6 right-4 z-10 flex gap-2">
@@ -124,7 +174,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                         <CopyIcon className="w-4 h-4" />
                         Trợ giúp
                     </Button>
-                    <Button variant="pixelDanger" size="lg">
+                    <Button onClick={handleClear} variant="pixelDanger" size="lg">
                         <DeleteIcon className="w-4 h-4" />
                         Xóa
                     </Button>

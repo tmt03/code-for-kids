@@ -1,4 +1,5 @@
-import { API_ROOT } from "@/utils/constants";
+import axiosInstance from "@/lib/utils/axiosInstance";
+import { API_ROOT } from "@/lib/utils/constants";
 import axios from "axios";
 
 export const fetchQuestDetails = async (questId: string) => {
@@ -27,9 +28,18 @@ export const submitCode = async (userCode: string) => {
 };
 
 export const fetchCheckLogin = async (username: string, password: string) => {
-  const res = await axios.post(`${API_ROOT}/v1/login/`, {
+  const res = await axios.post(`${API_ROOT}/v1/auth/login`, {
     username,
     password,
   });
   return res.data;
+};
+
+export const getCurrentUser = async () => {
+  const res = await axiosInstance.get("/v1/auth/me");
+  return res.data.user;
+};
+
+export const logoutUser = async () => {
+  await axiosInstance.post("/v1/auth/logout");
 };

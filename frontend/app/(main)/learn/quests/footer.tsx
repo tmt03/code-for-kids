@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchAllChapters } from "@/app/apis";
+import { fetchAllChapters } from "@/apis";
 import ProgressBar from "@/components/progressbar";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";

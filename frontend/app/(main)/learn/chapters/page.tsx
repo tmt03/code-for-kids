@@ -1,11 +1,11 @@
 "use client"
 
-import { fetchAllChapters } from "@/app/apis";
+import { fetchAllChapters } from "@/apis";
 import ChapterList from "@/components/companion/chapter-list";
 import CourseBadges from "@/components/companion/course-badges";
 import CourseProgress from "@/components/companion/course-progress";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Header from "@/components/header";
 import { useEffect, useState } from "react";
 
 export default function ChapterPage() {
@@ -20,7 +20,7 @@ export default function ChapterPage() {
 
     return (
         <div className="w-full flex flex-col min-h-screen">
-            <Navbar />
+            <Header />
 
             {/* Header Background */}
             <div

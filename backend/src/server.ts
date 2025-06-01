@@ -6,6 +6,7 @@ import { env } from "./config/environment";
 import { CLOSE_DB, CONNECT_DB } from "./config/mongoDB";
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
 import APIs_V1 from "./routes/v1";
+import cookieParser from "cookie-parser";
 
 // Start server
 const START_SERVER = async () => {
@@ -15,7 +16,9 @@ const START_SERVER = async () => {
   app.use(Cors(corsOptions));
 
   app.use(express.json());
-  console.log(3);
+
+  app.use(cookieParser());
+
   app.use("/v1", APIs_V1);
 
   //Middleware xử lý lỗi
