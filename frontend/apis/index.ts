@@ -3,12 +3,12 @@ import { API_ROOT } from "@/lib/utils/constants";
 import axios from "axios";
 
 export const fetchQuestDetails = async (questId: string) => {
-  const res = await axios.get(`${API_ROOT}/v1/quests/${questId}`);
+  const res = await axiosInstance.get(`/v1/quests/${questId}`);
   return res.data;
 };
 
 export const fetchAllChapters = async () => {
-  const res = await axios.get(`${API_ROOT}/v1/chapters/`);
+  const res = await axiosInstance.get("/v1/chapters/");
   return res.data;
 };
 
@@ -42,4 +42,15 @@ export const getCurrentUser = async () => {
 
 export const logoutUser = async () => {
   await axiosInstance.post("/v1/auth/logout");
+};
+
+export const fetchInitUserProgress = async () => {
+  try {
+    await axiosInstance.post("/v1/progress/init");
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      throw new Error("Vui lòng đăng nhập để bắt đầu");
+    }
+    throw new Error(`Lỗi khi khởi tạo tiến trình: ${error.message}`);
+  }
 };
