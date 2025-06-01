@@ -75,25 +75,63 @@ export class Game_Scene extends Phaser.Scene {
     // Tạo sandbox
     this.sandbox = createStudentAPI(this);
 
-    // Tạo layer cho code học sinh
-    this.userLayer = this.add.layer();
+    // Tạo layer cho code học sinh nếu chưa có
+    if (!this.userLayer) {
+      this.userLayer = this.add.layer();
+    }
 
-    try {
-      const previewCode = getBaseCodeForQuest(this.quest.id);
-      this.runPreviewCode(previewCode);
-    } catch (error) {
-      console.error("Lỗi khi chạy preview code:", error);
+    // Chạy preview code nếu có
+    const previewCode = getBaseCodeForQuest(this.quest.id);
+    if (previewCode) {
+      try {
+        previewCode(this, this.sandbox);
+      } catch (error) {
+        console.error("Lỗi khi chạy preview code:", error);
+      }
+    } else {
+      console.warn("Không tìm thấy preview code cho quest:", this.quest.id);
     }
 
     // Lắng nghe code học sinh khi ấn RUN
     window.addEventListener("run-user-code", (e: any) => {
-      this.userLayer.removeAll(true); // Xoá nội dung cũ
-      this.platforms.clear(true, true); // Xóa platforms cũ
-      this.runUserCode(e.detail.code); // chạy code vừa nhập
+      try {
+        if (
+          this.userLayer &&
+          typeof this.userLayer.removeAll === "function" &&
+          Array.isArray(this.userLayer.list)
+        ) {
+          this.userLayer.removeAll(true);
+        }
+
+        if (this.platforms && typeof this.platforms.clear === "function") {
+          this.platforms.clear(true, true);
+        }
+
+        this.runUserCode(e.detail.code);
+      } catch (err) {
+        console.error("Lỗi khi chạy user code:", err);
+      }
     });
   }
 
-  //Thực thi code của trẻ nhập vào
+  // // Tạo layer cho code học sinh
+  // this.userLayer = this.add.layer();
+
+  // try {
+  //   const previewCode = getBaseCodeForQuest(this.quest.id);
+  //   this.runPreviewCode(previewCode);
+  // } catch (error) {
+  //   console.error("Lỗi khi chạy preview code:", error);
+  // }
+
+  // // Lắng nghe code học sinh khi ấn RUN
+  // window.addEventListener("run-user-code", (e: any) => {
+  //   this.userLayer.removeAll(true); // Xoá nội dung cũ
+  //   this.platforms.clear(true, true); // Xóa platforms cũ
+  //   this.runUserCode(e.detail.code); // chạy code vừa nhập
+  // });
+
+  // Thực thi code của trẻ nhập vào
   runUserCode(code: string) {
     try {
       const wrapped = `
@@ -106,36 +144,26 @@ export class Game_Scene extends Phaser.Scene {
       console.error("Lỗi khi chạy user code:", err);
     }
   }
-  // runUserCode(code: string) {
-  //   const sandbox = createStudentAPI(this);
-  //   try {
-  //     const wrapped = `
-  //     with (sandbox) {
-  //       ${code}
-  //     }
-  //   `;
-  //     new Function("sandbox", wrapped)(sandbox);
-  //   } catch (err) {
-  //     console.error("Lỗi khi chạy user code:", err);
-  //   }
-  // }
 
-  runPreviewCode(code: string) {
-    console.log("Running preview code:", code);
+  // Dùng Function
+  runPreviewCode(previewFn: (scene: Phaser.Scene, sandbox: any) => void) {
     try {
-      this.platforms.clear(true, true); // Xóa platforms cũ trước khi chạy preview
-      this.sandbox = createStudentAPI(this); // Dùng 1 lần duy nhất
-      const fn = new Function("scene", "sandbox", code);
-      fn(this, this.sandbox); // Dùng chung sandbox
+      this.platforms.clear(true, true); // Xóa platforms cũ
+      this.sandbox = createStudentAPI(this); // Tạo sandbox mới
+      previewFn(this, this.sandbox); // Gọi trực tiếp function đã khai báo
     } catch (err) {
       console.error("Lỗi khi chạy preview code:", err);
     }
   }
+
+  // Dùng String
   // runPreviewCode(code: string) {
+  //   console.log("Running preview code:", code);
   //   try {
-  //     const sandbox = createStudentAPI(this); // Tạo sandbox để truyền vào code
-  //     const fn = new Function("scene", "sandbox", code); // Nhận cả scene và sandbox
-  //     fn(this, sandbox); // Truyền cả hai
+  //     this.platforms.clear(true, true); // Xóa platforms cũ trước khi chạy preview
+  //     this.sandbox = createStudentAPI(this); // Dùng 1 lần duy nhất
+  //     const fn = new Function("scene", "sandbox", code);
+  //     fn(this, this.sandbox); // Dùng chung sandbox
   //   } catch (err) {
   //     console.error("Lỗi khi chạy preview code:", err);
   //   }
