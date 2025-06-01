@@ -9,9 +9,6 @@ export type CheckResult = {
 };
 
 const logicCheck = async (userCode: string): Promise<CheckResult> => {
-  console.log("\n=== BẮT ĐẦU KIỂM TRA CODE ===");
-  console.log("Code được submit:", userCode);
-
   const result: CheckResult = { passed: false };
 
   try {

@@ -1,5 +1,5 @@
-import { ChapterWithQuests } from "../types"; // nếu bạn định nghĩa riêng
 import { userProgressModel } from "../models/userProgressModel";
+import { ChapterWithQuests } from "../types";
 
 const buildInitProgress = (userId: string, chapters: ChapterWithQuests[]) => {
   return {
@@ -35,45 +35,95 @@ const initProgressIfNotExists = async (
   return newProgress;
 };
 
-export const progressService = {
-  buildInitProgress,
-  initProgressIfNotExists,
+// Đánh dấu quest là hoàn thành
+const markQuestCompleted = async (userId: string, questId: string) => {
+  const progress = await userProgressModel.findByUserId(userId);
+  if (!progress) return;
+
+  const chapter = progress.chapterProgress.find((ch: any) =>
+    ch.quests.some((q: any) => q.questId === questId)
+  );
+
+  if (!chapter) return;
+
+  const quest = chapter.quests.find((q: any) => q.questId === questId);
+  if (!quest || quest.status === "done") return;
+
+  quest.status = "done";
+  quest.score = 10; // Có thể lấy từ DB questModel sau
+  quest.completedAt = new Date();
+  quest.attempts.push({ at: new Date(), result: "passed" });
+
+  chapter.status = "in-progress";
+  progress.lastUpdated = new Date();
+
+  await userProgressModel.updateProgress(userId, {
+    $set: {
+      chapterProgress: progress.chapterProgress,
+      lastUpdated: new Date(),
+    },
+  });
 };
 
-// // Đánh dấu quest/chapter đã hoàn thành.
-// const updateQuestProgress = async (userId: string, questId: string, chapterId: string, score: number, code: string) => {
-//   const now = new Date();
-//   const userProgress = await db.user_progress.findOne({ userId });
+// Cộng lại toàn bộ điểm từ các quest đã hoàn thành
+const updateTotalScore = async (userId: string) => {
+  const progress = await userProgressModel.findByUserId(userId);
+  if (!progress) return;
 
-//   const chapter = userProgress.chapterProgress.find(ch => ch.chapterId === chapterId);
-//   const quest = chapter.quests.find(q => q.questId === questId);
+  let total = 0;
+  for (const ch of progress.chapterProgress) {
+    for (const q of ch.quests) {
+      if (q.status === "done") total += q.score;
+    }
+  }
 
-//   if (quest.status !== "completed") {
-//     quest.status = "completed";
-//     quest.completedAt = now;
-//     quest.score = score;
-//     userProgress.totalScore += score;
+  await userProgressModel.updateProgress(userId, {
+    $set: { totalScore: total, lastUpdated: new Date() },
+  });
+};
 
-//     quest.attempts.push({ submittedCode: code, passed: true, submittedAt: now });
-//   }
+// Nếu tất cả quest và challenge trong chapter đều done → hoàn thành chapter
+const checkAndMarkChapterDone = async (userId: string, questId: string) => {
+  const progress = await userProgressModel.findByUserId(userId);
+  if (!progress) return;
 
-//   // Nếu tất cả quest đã hoàn thành
-//   if (chapter.quests.every(q => q.status === "completed")) {
-//     chapter.status = "completed";
-//     chapter.completedAt = now;
-//     if (!chapter.badgeEarned) {
-//       chapter.badgeEarned = true;
-//       userProgress.badges += 1;
-//     }
-//   }
+  const chapter = progress.chapterProgress.find((ch: any) =>
+    ch.quests.some((q: any) => q.questId === questId)
+  );
+  if (!chapter) return;
 
-//   userProgress.lastUpdated = now;
-//   await db.user_progress.updateOne({ userId }, { $set: userProgress });
-// };
+  const allDone = chapter.quests.every((q: any) => q.status === "done");
+
+  if (allDone && chapter.status !== "done") {
+    chapter.status = "done";
+    chapter.badgeEarned = true;
+    chapter.completedAt = new Date();
+    progress.lastUpdated = new Date();
+
+    await userProgressModel.updateProgress(userId, {
+      $set: {
+        chapterProgress: progress.chapterProgress,
+        lastUpdated: new Date(),
+      },
+    });
+  }
+};
+
+// Hàm lấy số quest đã hoàn thành
+
+// Hàm lấy số challenges đã hoàn thành
+
+// Hàm lấy số điểm đã hoàn thành
 
 // Kiểm tra điều kiện mở khóa chapter tiếp theo.
 //conditionBeforeNextChapter
 
-// Trả về % tiến độ học tập.
+// Trả về % tiến độ học tập (dựa vào totalScore).
 
-// Lưu trạng thái chưa hoàn thành (paused, saved draft, v.v.).
+export const progressService = {
+  buildInitProgress,
+  initProgressIfNotExists,
+  markQuestCompleted,
+  updateTotalScore,
+  checkAndMarkChapterDone,
+};

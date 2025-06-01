@@ -13,11 +13,13 @@ export const fetchAllChapters = async () => {
 };
 
 // Hàm mới: Gửi code lên server
-export const submitCode = async (userCode: string) => {
+export const fetchSubmitCode = async (userCode: string, questId: string) => {
   try {
     console.log("Code content:", userCode);
+    console.log("Code content:", questId);
     const res = await axios.post(`${API_ROOT}/v1/submissions/submit`, {
       code: userCode,
+      questId: questId,
     });
 
     console.log("Response:", res.data);

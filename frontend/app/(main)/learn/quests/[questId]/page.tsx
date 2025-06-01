@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchQuestDetails, submitCode } from '@/apis';
+import { fetchQuestDetails, fetchSubmitCode } from '@/apis';
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
@@ -43,7 +43,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             }
 
             // 2. Gửi lên backend
-            const result = await submitCode(userCode);
+            const result = await fetchSubmitCode(userCode, questId);
             if (!result.passed) {
                 // playSound("error");
                 speak(`${result.error}. ${result.smartHints}`);
