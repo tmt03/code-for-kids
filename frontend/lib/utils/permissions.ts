@@ -1,3 +1,5 @@
+//permissions.ts (frontend)
+
 export const permissions = {
   admin: ["viewDashboard", "manageUsers"],
   user: ["viewCourses"],
