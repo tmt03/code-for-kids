@@ -1,17 +1,16 @@
 'use client'
 
-import React from 'react';
-import Navbar from "@/components/navbar";
 import Footer from '@/components/footer';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Header from "@/components/header";
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 
 export default function HomePage() {
     return (
         <div className="w-full overflow-x-hidden ">
             {/* Navbar */}
-            <Navbar />
+            <Header />
 
             <div className="pt-14 bg-[#0a0a23]">
                 {/* Welcome Section (Luôn ở đầu) */}

@@ -4,14 +4,16 @@ type Props = {
     children: React.ReactNode;
 };
 
-const HomeLayout = ({ children }: Props) => {
+const LearnPageLayout = ({ children }: Props) => {
     return (
         <RequireAuth>
             <div className="">
-                {children}
+                <main className="">
+                    {children}
+                </main>
             </div>
         </RequireAuth>
     );
 };
 
-export default HomeLayout;
+export default LearnPageLayout;

@@ -1,8 +1,7 @@
 'use client'
 
-import React from 'react';
-import Navbar from "@/components/navbar";
 import Footer from '@/components/footer';
+import Header from "@/components/header";
 
 export default function Landing() {
     return (
@@ -32,8 +31,8 @@ export default function Landing() {
                     style={{ backgroundImage: "url('../../../assets/9285000.jpg')" }}
                 />
 
-                {/* Navbar */}
-                <Navbar />
+                {/* Header */}
+                <Header />
             </div>
 
             <section className="bg-[#181c4e] text-white py-16 px-6">
