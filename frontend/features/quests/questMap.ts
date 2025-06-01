@@ -13,14 +13,14 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
     },
   
     C00_H02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sky_1")
+      scene.bg = scene.add.image(0, 0, "blue_sky")
         .setOrigin(0)
         .setScale(0.51);
         
     },
   
     C01_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sky_1")
+      scene.bg = scene.add.image(0, 0, "blue_sky")
         .setOrigin(0)
         .setScale(0.6);
   
@@ -36,7 +36,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
     },
   
     C01_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sky_1")
+      scene.bg = scene.add.image(0, 0, "blue_sky")
         .setOrigin(0)
         .setScale(0.51);
   
@@ -57,7 +57,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
     },
   
     C01_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sky_1")
+      scene.bg = scene.add.image(0, 0, "blue_sky")
         .setOrigin(0)
         .setScale(0.51);
   
@@ -73,7 +73,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
     },
   
     C01_Q04: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sky_1")
+      scene.bg = scene.add.image(0, 0, "blue_sky")
         .setOrigin(0)
         .setScale(0.51);
   
@@ -89,7 +89,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
     },
 
     C02_Q01: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -112,7 +112,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C02_Q02: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -135,7 +135,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C02_Q03: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -157,8 +157,8 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
         scene.physics.add.collider(player, floor);
       },
     
-      C02_CL: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+      C02_Q04: (scene, sandbox) => {
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -181,7 +181,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C03_Q01: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "mountain_4").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -198,7 +198,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C03_Q02: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "mountain_4").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -215,7 +215,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C03_Q03: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "mountain_4").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -231,8 +231,8 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
         scene.physics.add.collider(player, floor);
       },
     
-      C03_CL: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "mountain_4").setOrigin(0).setScale(0.51);
+      C03_Q04: (scene, sandbox) => {
+        scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -289,7 +289,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
 
       C04_Q01: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_6").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "sunset_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -306,7 +306,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C04_Q02: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_6").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "sunset_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -323,7 +323,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C04_Q03: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_6").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "sunset_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -339,8 +339,8 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
         scene.physics.add.collider(monster, floor);
       },
     
-      C04_CL: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "mountain_2").setOrigin(0).setScale(0.51);
+      C04_Q04: (scene, sandbox) => {
+        scene.bg = scene.add.image(0, 0, "ice_mountain").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 470, "ground_2")
           .setScale(0.67)
@@ -357,7 +357,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
 
       C05_Q01: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const castle = scene.add.image(660, 293, "castle")
           .setOrigin(0.5)
@@ -381,7 +381,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C05_Q02: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const castle = scene.add.image(660, 293, "castle")
           .setOrigin(0.5)
@@ -411,7 +411,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C05_Q03: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const castle = scene.add.image(660, 293, "castle")
           .setOrigin(0.5)
@@ -435,7 +435,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C05_Q04: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const castle = scene.add.image(660, 293, "castle")
           .setOrigin(0.5)
@@ -458,8 +458,8 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
         scene.physics.add.collider(player, floor);
       },
     
-      C05_CL: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+      C05_Q05: (scene, sandbox) => {
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -477,7 +477,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C06_Q01: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -495,7 +495,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C06_Q02: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
@@ -519,7 +519,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
       },
     
       C06_Q03: (scene, sandbox) => {
-        scene.bg = scene.add.image(0, 0, "sky_1").setOrigin(0).setScale(0.51);
+        scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
     
         const floor = scene.physics.add.staticImage(425, 453, "ground_2")
           .setScale(0.67)
