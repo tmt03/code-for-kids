@@ -1,4 +1,5 @@
 import RequireAuth from "@/components/auth/RequireAuth";
+import RequirePermission from "@/components/auth/RequirePermission";
 
 type Props = {
     children: React.ReactNode;
@@ -7,9 +8,11 @@ type Props = {
 const ProfileLayout = ({ children }: Props) => {
     return (
         <RequireAuth>
-            <div className="">
-                {children}
-            </div>
+            <RequirePermission permission="viewProfile">
+                <div className="">
+                    {children}
+                </div>
+            </RequirePermission>
         </RequireAuth>
     );
 };
