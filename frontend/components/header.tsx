@@ -103,7 +103,7 @@ export default function Header() {
 
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <Link href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
                                         <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">

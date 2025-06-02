@@ -35,6 +35,20 @@ export const fetchCheckLogin = async (username: string, password: string) => {
   return res.data;
 };
 
+export const uploadUserAvatar = async (file: File) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const res = await axiosInstance.post("/v1/users/avatar", formData);
+  return res.data;
+};
+
+export const uploadUserBanner = async (file: File) => {
+  const formData = new FormData();
+  formData.append("banner", file);
+  const res = await axiosInstance.post("/v1/users/banner", formData);
+  return res.data;
+};
+
 export const getCurrentUser = async () => {
   const res = await axiosInstance.get("/v1/auth/me");
   return res.data.user;

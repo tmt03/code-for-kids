@@ -5,7 +5,12 @@ import { userModel } from "../models/userModel";
 
 const generateAccessToken = (user: any) => {
   return jwt.sign(
-    { username: user.username, role: user.role },
+    { username: user.username,
+      role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bannerUrl: user.bannerUrl,
+      bio: user.bio, },
     env.JWT_SECRET_ACCESS_TOKEN,
     { expiresIn: "1h" }
   );
@@ -38,6 +43,10 @@ const login = async (username: string, password: string) => {
     user: {
       username: user.username,
       role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bannerUrl: user.bannerUrl,
+      bio: user.bio,
     },
   };
 };

@@ -5,20 +5,23 @@ import Header from "@/components/header";
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function HomePage() {
+    const user = useAuth();
+
     return (
         <div className="w-full overflow-x-hidden ">
             {/* Navbar */}
             <Header />
 
-            <div className="pt-14 bg-[#0a0a23]">
+            <div className="pt-14 bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA]">
                 {/* Welcome Section (Luôn ở đầu) */}
                 <section className="text-white py-6 px-4">
                     <div className="max-w-7xl mx-auto flex items-center gap-4">
                         <img src="/assets/window.svg" alt="Computer Icon" className="w-10 h-10" />
                         <div className="bg-[#1e1e3f] border border-white rounded px-4 py-2 text-sm">
-                            Chào mừng bạn quay trở lại, <span className="font-bold">user!</span> Cùng học thôi nào!
+                            Chào mừng bạn quay trở lại, <span className="font-bold">{user.user?.displayName}</span> Cùng học thôi nào!
                         </div>
                     </div>
                 </section>
@@ -52,7 +55,7 @@ export default function HomePage() {
                                 className="w-12 h-12 rounded-full border-2 border-blue-400 mr-4"
                             />
                             <div>
-                                <h2 className="text-lg font-bold">leminhquan760</h2>
+                                <h2 className="text-lg font-bold">{user.user?.displayName}</h2>
                                 <p className="text-sm text-gray-400">Cấp 1</p>
                             </div>
                         </div>
@@ -125,9 +128,9 @@ export default function HomePage() {
                     {/* Explore More */}
                     {/* Small screen: order-4 (Thứ 5) */}
                     {/* Medium screen: order-3, chiếm 2 cột, hàng 2 */}
-                    <section className="text-white order-4 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
-                        <h2 className="text-xl font-bold mb-4">Khám phá thêm</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <section className="order-4 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
+                        <h2 className="text-2xl font-bold mb-4">Khám phá thêm</h2>
+                        <div className="text-white grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {['Thử thách hàng ngày', 'Xây dựng một dự án', 'Quản lý mã nguồn dự án bằng GitHub', '#CodeRace25'].map((item, i) => (
                                 <Link key={i} href="/" className="block border border-white rounded-md p-4 bg-[#1b1b35] hover:bg-[#2a2a4a] transition duration-200 cursor-pointer">
                                     {/* Thêm class để con trỏ chuột thay đổi khi hover */}
@@ -141,14 +144,14 @@ export default function HomePage() {
                     {/* New Tutorials */}
                     {/* Small screen: order-5 (Thứ 6) */}
                     {/* Medium screen: order-5, chiếm 2 cột, hàng 3 */}
-                    <section className="text-white order-5 md:order-5 md:col-span-2 md:row-start-3 md:row-span-1">
+                    <section className="order-5 md:order-5 md:col-span-2 md:row-start-3 md:row-span-1">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">Hướng dẫn các khóa học mới</h2>
-                            <a href="#" className="text-blue-400 text-md font-bold">
+                            <h2 className="text-2xl font-bold">Hướng dẫn các khóa học mới</h2>
+                            <a href="#" className="text-blue-500 hover:text-blue-400 text-xl font-bold">
                                 Xem tất cả <FontAwesomeIcon icon={faArrowRight} />
                             </a>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="text-white grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {[
                                 { title: 'Thêm hiệu ứng cho ảnh với CSS keyframes', tag: 'HTML', level: 'Nhập môn' },
                                 { title: 'Clone và pull dự án trên GitHub với GitBash', tag: 'Git', level: 'Cơ bản' },
