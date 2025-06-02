@@ -1,21 +1,14 @@
-interface CourseBadgesProps {
-    chapters: Array<{
-        id: number;
-        title: string;
-        description: string;
-        status: "completed" | "in-progress" | "not-started";
-        isSpecial?: boolean;
-        tasks: Array<{ id: number; title: string; isChallenge?: boolean }>;
-    }>;
+import { useProgress } from "@/hooks/useProgress";
 
-}
+export default function CourseBadges() {
+    const { progressSummary } = useProgress();
+    const badgeChapters = progressSummary.badgeChapters || [];
 
-export default function CourseBadges({ chapters }: CourseBadgesProps) {
-    const totalBadges = chapters.length; // 7 chapters = 7 badges
-    const earnedBadges = chapters.filter((chapter) => chapter.status === "completed").length; // 2 badges
+    const totalBadges = badgeChapters.length;
+    const earnedBadges = badgeChapters.filter(ch => ch.badgeEarned).length;
 
-    // Danh sách icon placeholder cho huy hiệu (có thể thay bằng hình ảnh thực tế)
     const badgeIcons = ["🔵", "🟣", "🔴", "🟡", "🟢", "🟠", "⭐"];
+
 
     return (
         <div className="mt-4 p-4 bg-[#1C6CA8] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
@@ -36,14 +29,15 @@ export default function CourseBadges({ chapters }: CourseBadgesProps) {
 
             {/* Danh sách huy hiệu */}
             <div className="grid grid-cols-4 gap-3">
-                {chapters.map((chapter, index) => (
-                    <div key={chapter.id} className="flex flex-col items-center">
+                {badgeChapters.map((chapter, index) => (
+                    <div key={chapter.chapterId} className="flex flex-col items-center">
                         <div
-                            className={`w-10 h-10 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center transition-transform hover:scale-110 ${chapter.status === "completed"
-                                ? chapter.isSpecial
-                                    ? "bg-gradient-to-r from-[#FFD700] to-[#FFA500]"
-                                    : "bg-[#FFD700]"
-                                : "bg-gray-400 opacity-50"
+                            className={`w-10 h-10 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center transition-transform hover:scale-110
+                                ${chapter.badgeEarned
+                                    ? chapter.isSpecial
+                                        ? "bg-gradient-to-r from-[#FFD700] to-[#FFA500]"
+                                        : "bg-[#FFD700]"
+                                    : "bg-gray-400 opacity-50 grayscale"
                                 }`}
                         >
                             <span className="text-xl">{badgeIcons[index]}</span>

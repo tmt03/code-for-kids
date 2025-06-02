@@ -88,9 +88,27 @@ const aggregateProgressSummary = async (userId: string) => {
   );
 };
 
+const awardChapterBadge = async (userId: string, chapterId: string) => {
+  return await GET_DB()
+    .collection(USER_PROGRESS_COLLECTION)
+    .updateOne(
+      { userId, "chapterProgress.chapterId": chapterId },
+      {
+        $set: {
+          "chapterProgress.$.badgeEarned": true,
+          "chapterProgress.$.completedAt": new Date(),
+        },
+        $inc: {
+          badges: 1,
+        },
+      }
+    );
+};
+
 export const userProgressModel = {
   findByUserId,
   insert,
   updateProgress,
   aggregateProgressSummary,
+  awardChapterBadge,
 };

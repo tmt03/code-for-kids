@@ -1,12 +1,17 @@
 // lib/context/ProgressContext.tsx
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-
+import { createContext, ReactNode, useState } from "react";
 interface ProgressSummary {
     totalScore: number;
     completedQuests: number;
     completedChallenges: number;
+    badgeChapters: Array<{
+        chapterId: string;
+        status: string;
+        badgeEarned: boolean;
+        isSpecial?: boolean;
+    }>;
 }
 
 interface ProgressContextType {
@@ -21,10 +26,14 @@ export const ProgressProvider = ({ children }: { children: ReactNode }) => {
         totalScore: 0,
         completedQuests: 0,
         completedChallenges: 0,
+        badgeChapters: [],
     });
 
     return (
-        <ProgressContext.Provider value={{ progressSummary, setProgressSummary }}>
+        <ProgressContext.Provider value={{
+            progressSummary,
+            setProgressSummary,
+        }}>
             {children}
         </ProgressContext.Provider>
     );

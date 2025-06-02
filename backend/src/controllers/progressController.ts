@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { chapterModel } from "../models/chapterModel";
+import { badgeService } from "../services/badgeService";
 import { progressService } from "../services/progressService";
 
 const initUserProgress = async (req: Request, res: Response) => {
@@ -24,7 +25,6 @@ const initUserProgress = async (req: Request, res: Response) => {
 
     return res.status(StatusCodes.OK).json(progress);
   } catch (error: any) {
-    console.error("Lỗi khi khởi tạo tiến độ:", error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: "Lỗi máy chủ khi khởi tạo tiến độ người dùng",
     });
@@ -35,14 +35,18 @@ const getLearnProgress = async (req: Request, res: Response) => {
   try {
     const { userId } = (req as any).user;
 
-    const progressSummary = await progressService.getLearnProgress(userId);
-    console.log(progressSummary);
+    const [progressSummary, badgeData] = await Promise.all([
+      progressService.getLearnProgress(userId),
+      badgeService.getBadgeChapters(userId),
+    ]);
 
-    res.status(StatusCodes.OK).json(progressSummary);
+    return res.status(StatusCodes.OK).json({
+      ...progressSummary,
+      badgeChapters: badgeData, // Dùng cho hiển thị CourseBadges
+    });
   } catch (error: any) {
-    console.error("Lỗi getLearnProgress:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      error: "Không thể lấy tiến độ học",
+      error: "Không thể lấy tiến độ học đầy đủ",
       message: error.message,
     });
   }

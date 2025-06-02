@@ -26,7 +26,7 @@ export default function ChapterPage() {
 
                 if (isMounted) {
                     setChapters(chaptersData || []);
-                    setProgressSummary(progress || { totalScore: 0, completedQuests: 0, completedChallenges: 0 });
+                    setProgressSummary(progress);
                     setIsLoading(false);
                 }
             } catch (error) {
@@ -72,7 +72,7 @@ export default function ChapterPage() {
                                 <CourseProgress chapters={chapters} />
                             </div>
                             <div>
-                                <CourseBadges chapters={chapters} />
+                                <CourseBadges />
                             </div>
                         </div>
                     </div>

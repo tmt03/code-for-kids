@@ -42,7 +42,18 @@ export const getAllChaptersWithQuests = async () => {
   }));
 };
 
+// models/chapterModel.ts
+const getAllChapterForBadge = async () => {
+  const chapters = await GET_DB()
+    .collection(CHAPTER_COLLECTION_NAME)
+    .find({ _destroy: false })
+    .project({ id: 1, isSpecial: 1 })
+    .toArray();
+  return chapters;
+};
+
 export const chapterModel = {
   getAllChapters,
   getAllChaptersWithQuests,
+  getAllChapterForBadge,
 };
