@@ -1,33 +1,95 @@
 "use client"
 
-import { fetchQuestDetails, fetchSubmitCode } from '@/apis';
+import { fetchLearnProgress, fetchQuestDetails, fetchSubmitCode } from '@/apis';
 import CodeEditor from '@/components/code-editor';
 import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
+import { useProgress } from "@/hooks/useProgress";
 import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
 import { speak } from '@/lib/utils/speak';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 
+interface Quest {
+    id: string;
+    type: "quest" | "challenge";
+    baseCode?: string;
+    codeHelp?: string;
+}
+
+interface ProgressSummary {
+    totalScore: number;
+    completedQuests: number;
+    completedChallenges: number;
+}
+
+
+interface BackendResult {
+    passed: boolean;
+    error?: string;
+    smartHints?: string;
+}
+
 export default function ChapterPage({ params }: { params: Promise<{ questId: string }> }) {
     const { questId } = use(params);
+    const { setProgressSummary } = useProgress();
+
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
-    const [userCode, setUserCode] = useState<string>("");
-    const [beResult, setBeResult] = useState<any>(null);
+    const [userCode, setUserCode] = useState("");
+    const [beResult, setBeResult] = useState<BackendResult | null>(null);
     const [hintMessage, setHintMessage] = useState<
         string | { error?: string; smartHints?: string }
     >("");
     const [showHint, setShowHint] = useState(false);
-    const [codeHelp, setCodeHelp] = useState<string>('');
-    const [helpIndex, setHelpIndex] = useState<number>(0);
+    const [codeHelp, setCodeHelp] = useState("");
+    const [helpIndex, setHelpIndex] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Lấy chương và chọn nhiệm vụ đầu tiên
+    // Load quest and progress data
     useEffect(() => {
-        fetchQuestDetails(questId).then((quest) => {
-            setSelectedQuest(quest);
-        });
-    }, [questId]);
+        let isMounted = true;
+
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                const [quest, progress] = await Promise.all([
+                    fetchQuestDetails(questId),
+                    fetchLearnProgress(),
+                ]);
+
+                if (isMounted) {
+                    setSelectedQuest(quest || null);
+                    setUserCode(quest?.baseCode || "");
+                    setProgressSummary(progress || { totalScore: 0, completedQuests: 0, completedChallenges: 0 });
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                if (isMounted) {
+                    setHintMessage({ error: "Lỗi khi tải dữ liệu", smartHints: "Hãy thử lại!" });
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [questId, setProgressSummary]);
+
+    // Handle hint timeout
+    useEffect(() => {
+        if (showHint) {
+            const timer = setTimeout(() => {
+                setShowHint(false);
+                setHintMessage({});
+                setCodeHelp("");
+            }, 8000);
+            return () => clearTimeout(timer);
+        }
+    }, [showHint]);
 
     // Nút chạy code
     const handleRun = async () => {
@@ -59,7 +121,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
             // 3. Nếu backend pass thì chạy code trong game
             if (result.passed) {
-                console.log("game hẹ hẹ")
                 window.dispatchEvent(
                     new CustomEvent("run-user-code", {
                         detail: { code: userCode },
@@ -89,7 +150,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 setCodeHelp(accumulatedLines);
                 setHelpIndex((prev) => prev + 1);
                 setHintMessage({
-                    smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
+                    smartHints: 'Gợi ý code đã hiển thị. Bạn có 8 giây để ghi nhớ!',
                 });
                 if (startIndex + 2 >= codeLines.length) {
                     setHelpIndex(0); // Reset khi hết gợi ý
@@ -104,7 +165,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         } else {
             setCodeHelp(selectedQuest.codeHelp);
             setHintMessage({
-                smartHints: 'Gợi ý code đã hiển thị. Bạn có 10 giây để ghi nhớ!',
+                smartHints: 'Gợi ý code đã hiển thị. Bạn có 8 giây để ghi nhớ!',
             });
         }
     };
@@ -124,16 +185,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
     };
 
-    useEffect(() => {
-        if (showHint) {
-            const timer = setTimeout(() => {
-                setShowHint(false);
-                setHintMessage("");
-                setCodeHelp('');
-            }, 10000);
-            return () => clearTimeout(timer);
-        }
-    }, [showHint]);
 
     return (
         <div className='w-full h-full flex gap-2'>
@@ -142,11 +193,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     <InteractionBox
                         message={hintMessage || "Anh hùng nhỏ cùng học nhé!"}
                         showHint={showHint}
-                        onClose={() => {
-                            setShowHint(false);
-                            setHintMessage("");
-                        }}
-                        onHelp={handleHelp}
                     />
                 </div>
                 <div className='h-4/5 pt-2'>

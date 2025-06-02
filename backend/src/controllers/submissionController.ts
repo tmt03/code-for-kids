@@ -8,10 +8,10 @@
 // Gọi ProgressService để đánh dấu hoàn thành quest nếu đủ điểm
 
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { badgeService } from "../services/badgeService";
 import { codeCheckService } from "../services/codeCheckService";
 import { progressService } from "../services/progressService";
-import { badgeService } from "../services/badgeService";
-import { StatusCodes } from "http-status-codes";
 
 const submitCode = async (req: Request, res: Response, next: NextFunction) => {
   const { code, questId } = req.body;

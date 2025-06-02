@@ -7,6 +7,7 @@ interface CourseBadgesProps {
         isSpecial?: boolean;
         tasks: Array<{ id: number; title: string; isChallenge?: boolean }>;
     }>;
+
 }
 
 export default function CourseBadges({ chapters }: CourseBadgesProps) {

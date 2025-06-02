@@ -11,6 +11,7 @@ const buildInitProgress = (userId: string, chapters: ChapterWithQuests[]) => {
       completedAt: null,
       quests: ch.quests.map((q) => ({
         questId: q.id,
+        type: q.type,
         status: "not-started",
         score: 0,
         completedAt: null,
@@ -18,7 +19,7 @@ const buildInitProgress = (userId: string, chapters: ChapterWithQuests[]) => {
       })),
     })),
     totalScore: 0,
-    badges: 0,
+    badges: [],
     lastUpdated: new Date(),
   };
 };
@@ -47,9 +48,9 @@ const markQuestCompleted = async (userId: string, questId: string) => {
   if (!chapter) return;
 
   const quest = chapter.quests.find((q: any) => q.questId === questId);
-  if (!quest || quest.status === "done") return;
+  if (!quest || quest.status === "completed") return;
 
-  quest.status = "done";
+  quest.status = "completed";
   quest.score = 10; // Có thể lấy từ DB questModel sau
   quest.completedAt = new Date();
   quest.attempts.push({ at: new Date(), result: "passed" });
@@ -73,7 +74,7 @@ const updateTotalScore = async (userId: string) => {
   let total = 0;
   for (const ch of progress.chapterProgress) {
     for (const q of ch.quests) {
-      if (q.status === "done") total += q.score;
+      if (q.status === "completed") total += q.score;
     }
   }
 
@@ -92,10 +93,10 @@ const checkAndMarkChapterDone = async (userId: string, questId: string) => {
   );
   if (!chapter) return;
 
-  const allDone = chapter.quests.every((q: any) => q.status === "done");
+  const allDone = chapter.quests.every((q: any) => q.status === "completed");
 
-  if (allDone && chapter.status !== "done") {
-    chapter.status = "done";
+  if (allDone && chapter.status !== "completed") {
+    chapter.status = "completed";
     chapter.badgeEarned = true;
     chapter.completedAt = new Date();
     progress.lastUpdated = new Date();
@@ -109,11 +110,10 @@ const checkAndMarkChapterDone = async (userId: string, questId: string) => {
   }
 };
 
-// Hàm lấy số quest đã hoàn thành
-
-// Hàm lấy số challenges đã hoàn thành
-
-// Hàm lấy số điểm đã hoàn thành
+// Hàm lấy số quest, challenges, điểm đã hoàn thành
+const getLearnProgress = async (userId: string) => {
+  return await userProgressModel.aggregateProgressSummary(userId);
+};
 
 // Kiểm tra điều kiện mở khóa chapter tiếp theo.
 //conditionBeforeNextChapter
@@ -126,4 +126,5 @@ export const progressService = {
   markQuestCompleted,
   updateTotalScore,
   checkAndMarkChapterDone,
+  getLearnProgress,
 };

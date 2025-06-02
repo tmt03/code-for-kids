@@ -1,22 +1,52 @@
 "use client"
 
-import { fetchAllChapters } from "@/apis";
+import { fetchAllChapters, fetchLearnProgress } from "@/apis";
 import ChapterList from "@/components/companion/chapter-list";
 import CourseBadges from "@/components/companion/course-badges";
 import CourseProgress from "@/components/companion/course-progress";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import { useProgress } from "@/hooks/useProgress";
 import { useEffect, useState } from "react";
 
 export default function ChapterPage() {
+    const { setProgressSummary } = useProgress();
     const [chapters, setChapters] = useState<any[]>([]);
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        fetchAllChapters().then((chapters) => {
-            setChapters(chapters)
-            console.log(chapters)
-        })
-    }, []);
+        let isMounted = true;
+
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                const [chaptersData, progress] = await Promise.all([
+                    fetchAllChapters(),
+                    fetchLearnProgress(),
+                ]);
+
+                if (isMounted) {
+                    setChapters(chaptersData || []);
+                    setProgressSummary(progress || { totalScore: 0, completedQuests: 0, completedChallenges: 0 });
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                if (isMounted) {
+                    console.error("Error loading data:", error);
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [setProgressSummary]);
+
+    if (isLoading) {
+        return <div className="p-4">Đang tải dữ liệu...</div>;
+    }
 
     return (
         <div className="w-full flex flex-col min-h-screen">

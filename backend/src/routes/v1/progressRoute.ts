@@ -12,4 +12,11 @@ Router.post(
   progressController.initUserProgress
 );
 
+Router.get(
+  "/learn-progress",
+  verifyToken,
+  requirePermission("viewLearnProgress"),
+  progressController.getLearnProgress
+);
+
 export const progressRoute = Router;

@@ -15,9 +15,7 @@ export const fetchAllChapters = async () => {
 // Hàm mới: Gửi code lên server
 export const fetchSubmitCode = async (userCode: string, questId: string) => {
   try {
-    console.log("Code content:", userCode);
-    console.log("Code content:", questId);
-    const res = await axios.post(`${API_ROOT}/v1/submissions/submit`, {
+    const res = await axiosInstance.post(`/v1/submissions/submit`, {
       code: userCode,
       questId: questId,
     });
@@ -55,4 +53,9 @@ export const fetchInitUserProgress = async () => {
     }
     throw new Error(`Lỗi khi khởi tạo tiến trình: ${error.message}`);
   }
+};
+
+export const fetchLearnProgress = async () => {
+  const res = await axiosInstance.get("/v1/progress/learn-progress");
+  return res.data;
 };

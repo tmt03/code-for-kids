@@ -7,15 +7,11 @@ import React, { useEffect, useState } from 'react';
 interface InteractionBoxProps {
     message: string | { error?: string; smartHints?: string };
     showHint?: boolean;
-    onClose?: () => void;
-    onHelp?: () => void;
 }
 
 const InteractionBox: React.FC<InteractionBoxProps> = ({
     message,
     showHint = false,
-    onClose,
-    onHelp,
 }) => {
     const [displayMessage, setDisplayMessage] = useState<{
         error?: string;

@@ -8,7 +8,7 @@ const Router = express.Router();
 Router.post(
   "/submit",
   verifyToken,
-  requirePermission("submitQuest"), // 🎯 chỉ người dùng thật mới có quyền nộp bài
+  requirePermission("submitQuest"),
   submissionController.submitCode
 );
 

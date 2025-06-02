@@ -31,6 +31,23 @@ const initUserProgress = async (req: Request, res: Response) => {
   }
 };
 
+const getLearnProgress = async (req: Request, res: Response) => {
+  try {
+    const { userId } = (req as any).user;
+
+    const progressSummary = await progressService.getLearnProgress(userId);
+    console.log(progressSummary);
+
+    res.status(StatusCodes.OK).json(progressSummary);
+  } catch (error: any) {
+    console.error("Lỗi getLearnProgress:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Không thể lấy tiến độ học",
+      message: error.message,
+    });
+  }
+};
 export const progressController = {
   initUserProgress,
+  getLearnProgress,
 };
