@@ -1,5 +1,7 @@
+import { questModel } from "../models/questModel";
 import { userProgressModel } from "../models/userProgressModel";
 import { ChapterWithQuests } from "../types";
+import { extractFunctionNames } from "../utils/codeParser";
 
 const buildInitProgress = (userId: string, chapters: ChapterWithQuests[]) => {
   return {
@@ -39,6 +41,7 @@ const initProgressIfNotExists = async (
 // Đánh dấu quest là hoàn thành
 const markQuestCompleted = async (userId: string, questId: string) => {
   const progress = await userProgressModel.findByUserId(userId);
+  const score = await questModel.getPointByQuestId(questId);
   if (!progress) return;
 
   const chapter = progress.chapterProgress.find((ch: any) =>
@@ -51,10 +54,8 @@ const markQuestCompleted = async (userId: string, questId: string) => {
   if (!quest || quest.status === "completed") return;
 
   quest.status = "completed";
-  quest.score = 10; // Có thể lấy từ DB questModel sau
   quest.completedAt = new Date();
-  quest.attempts.push({ at: new Date(), result: "passed" });
-
+  quest.score = score; //đoạn này lấy điểm  ponit ở
   chapter.status = "in-progress";
   progress.lastUpdated = new Date();
 
@@ -115,10 +116,59 @@ const getLearnProgress = async (userId: string) => {
   return await userProgressModel.aggregateProgressSummary(userId);
 };
 
+// Cập nhật attempts
+const recordAttempt = async (userId: string, questId: string, code: string) => {
+  const progress = await userProgressModel.findByUserId(userId);
+  if (!progress) return;
+
+  const chapter = progress.chapterProgress.find((ch: any) =>
+    ch.quests.some((q: any) => q.questId === questId)
+  );
+  if (!chapter) return;
+
+  const quest = chapter.quests.find((q: any) => q.questId === questId);
+  if (!quest) return;
+
+  const currentFns = extractFunctionNames(code);
+  const prevFns: Record<string, number> = {};
+
+  // Tính số lần xuất hiện mỗi lệnh trong tất cả attempts cũ
+  (quest.attempts || []).forEach((a: any) => {
+    const fns = extractFunctionNames(a.code || "");
+    fns.forEach((fn) => {
+      prevFns[fn] = (prevFns[fn] || 0) + 1;
+    });
+  });
+
+  // Kiểm tra có lệnh mới hoặc lệnh cũ được viết thêm
+  let shouldSave = false;
+  const newFnsCount: Record<string, number> = {};
+  currentFns.forEach((fn) => {
+    newFnsCount[fn] = (newFnsCount[fn] || 0) + 1;
+    if (!prevFns[fn] || newFnsCount[fn] > prevFns[fn]) {
+      shouldSave = true;
+    }
+  });
+
+  if (!shouldSave) return;
+
+  // Thêm attempt mới
+  quest.attempts = quest.attempts || [];
+  quest.attempts.push({
+    at: new Date(),
+    code,
+  });
+
+  await userProgressModel.updateProgress(userId, {
+    $set: {
+      chapterProgress: progress.chapterProgress,
+      lastUpdated: new Date(),
+    },
+  });
+};
+
 // Kiểm tra điều kiện mở khóa chapter tiếp theo.
 //conditionBeforeNextChapter
-
-// Trả về % tiến độ học tập (dựa vào totalScore).
 
 export const progressService = {
   buildInitProgress,
@@ -127,4 +177,5 @@ export const progressService = {
   updateTotalScore,
   checkAndMarkChapterDone,
   getLearnProgress,
+  recordAttempt,
 };
