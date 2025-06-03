@@ -12,6 +12,7 @@ import { StatusCodes } from "http-status-codes";
 import { badgeService } from "../services/badgeService";
 import { codeCheckService } from "../services/codeCheckService";
 import { progressService } from "../services/progressService";
+import { scoreService } from "../services/scoreService";
 
 const submitCode = async (req: Request, res: Response, next: NextFunction) => {
   const { code, questId } = req.body;
@@ -35,10 +36,12 @@ const submitCode = async (req: Request, res: Response, next: NextFunction) => {
     if (!result.passed) return res.status(StatusCodes.OK).json(result);
 
     // 2. Tiến trình cập nhật nếu passed
-    await progressService.markQuestCompleted(userId, questId);
-    await progressService.updateTotalScore(userId);
-    await progressService.checkAndMarkChapterDone(userId, questId);
-    await badgeService.checkAndAward(userId);
+    await progressService.markQuestCompleted(userId, questId); // Cập nhật quest completed
+    await progressService.updateTotalScore(userId); //Cập nhật totalScore
+    await progressService.checkAndMarkChapterDone(userId, questId); //Cập nhật chapter completed nếu tất cả quest completed
+    await badgeService.checkAndAward(userId); // Kiểm tra và trao badge
+    await scoreService.addUserRatingScore(userId, questId, code); // Update ratingScore trong users
+    await progressService.recordAttempt(userId, questId, code); // lưu code người dung vào attempt trong user_progress
 
     return res.status(StatusCodes.OK).json({
       ...result,
