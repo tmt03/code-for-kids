@@ -7,8 +7,6 @@ import Link from 'next/link';
 const SidebarLeaderboard = () => {
   return (
     <div className="h-screen w-60 bg-[#0f172a] text-white flex flex-col gap-2 px-4 py-6 border-r border-gray-700">
-      <SidebarItem icon={<Home size={18} />} label="Home" href="/home" />
-      <SidebarItem icon={<BarChart2 size={18} />} label="Bảng xếp hạng" href="/leaderboard" />
       <SidebarItem icon={<Star size={18} />} label="Showcase dự án" href="/" />
       <SidebarItem icon={<Trophy size={18} />} label="Thử thách hàng tháng" href="/" />
       <SidebarItem icon={<HashIcon size={18} />} label="CodeRace25" href="/" />

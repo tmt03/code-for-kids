@@ -1,12 +1,12 @@
 import RequireAuth from "@/components/auth/RequireAuth";
-import Footer from '@/components/footer';
-import Header from '@/components/header';
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 type Props = {
     children: React.ReactNode;
 };
 
-const ProfileLayout = ({ children }: Props) => {
+const SettingsLayout = ({ children }: Props) => {
     return (
         <RequireAuth>
             <div className="">
@@ -18,4 +18,4 @@ const ProfileLayout = ({ children }: Props) => {
     );
 };
 
-export default ProfileLayout;
+export default SettingsLayout;

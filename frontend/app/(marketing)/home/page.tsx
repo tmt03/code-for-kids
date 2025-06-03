@@ -1,7 +1,5 @@
 'use client'
 
-import Footer from '@/components/footer';
-import Header from "@/components/header";
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -11,9 +9,7 @@ export default function HomePage() {
     const user = useAuth();
 
     return (
-        <div className="w-full overflow-x-hidden ">
-            {/* Navbar */}
-            <Header />
+        <div className="w-full overflow-x-hidden">
 
             <div className="pt-14 bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA]">
                 {/* Welcome Section (Luôn ở đầu) */}
@@ -185,8 +181,6 @@ export default function HomePage() {
                     </div>
                 </section>
 
-                {/* Footer */}
-                <Footer />
             </div>
         </div>
     );

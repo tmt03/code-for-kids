@@ -22,7 +22,7 @@ const generateRefreshToken = (user: any) => {
   });
 };
 
-const JWT_SECRET = process.env.JWT_SECRET || "default-key";
+// const JWT_SECRET = process.env.JWT_SECRET || "default-key";
 
 const login = async (username: string, password: string) => {
   const user = await userModel.findByUsername(username);

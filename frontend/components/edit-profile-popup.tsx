@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCamera, faSave } from '@fortawesome/free-solid-svg-icons';
-import { uploadUserAvatar, uploadUserBanner } from "@/apis";
+import { updateUserProfile, uploadUserAvatar, uploadUserBanner } from "@/apis";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -20,6 +20,7 @@ export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean;
         return () => {
             document.body.classList.remove('overflow-hidden');
         };
+
     }, [isOpen]);
 
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -63,15 +64,11 @@ export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean;
     const handleSaveAll = async () => {
         setLoading(true);
         try {
-            // Upload avatar nếu có file mới
-            if (avatarFile) {
-                await uploadUserAvatar(avatarFile);
-            }
-            // Upload banner nếu có file mới
-            if (bannerFile) {
-                await uploadUserBanner(bannerFile);
-            }
-            
+            if (avatarFile) await uploadUserAvatar(avatarFile);
+            if (bannerFile) await uploadUserBanner(bannerFile);
+            await updateUserProfile(displayName, bio);
+
+            alert("Thay đổi đã được lưu thành công!");
             onClose();
         } catch (err) {
             alert("Có lỗi xảy ra khi lưu thay đổi!");

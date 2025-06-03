@@ -1,8 +1,6 @@
 'use client';
 
 import EditProfilePopup from '@/components/edit-profile-popup';
-import Footer from '@/components/footer';
-import Header from '@/components/header';
 import { faCircle, faClock, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -16,7 +14,6 @@ export default function ProfilePage() {
 
     return (
         <div className="w-full overflow-x-hidden bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] font-mono text-white min-h-screen flex flex-col">
-            <Header />
 
             {/* Chỉ giới hạn chiều rộng bên trong */}
             <div className="w-full max-w-6xl px-6 mx-auto pt-18">
@@ -169,7 +166,6 @@ export default function ProfilePage() {
 
             <EditProfilePopup isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
 
-            <Footer />
         </div>
     );
 }

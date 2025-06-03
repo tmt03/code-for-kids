@@ -66,10 +66,41 @@ const updateBanner = async (username: string, bannerUrl: string) => {
     );
 };
 
+const updateProfile = async (username: string, data: { displayName?: string; bio?: string }) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { username },
+      { $set: { ...data, updated_at: new Date() } }
+    );
+};
+
+const changePassword = async (username: string, newPassword: string) => {
+  const hashed = await bcrypt.hash(newPassword, 12);
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { username },
+      { $set: { password: hashed, updated_at: new Date() } }
+    );
+};
+
+const getLeaderboard = async () => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .find({ _destroy: false })
+    .project({ username: 1, displayName: 1, avatarUrl: 1, ratingPoints: 1, _id: 0 })
+    .sort({ ratingPoints: -1 }) // Sắp xếp giảm dần theo điểm
+    .toArray();
+};
+
 export const userModel = {
   findByUsername,
   createNew,
   updateRefreshToken,
   updateAvatar,
   updateBanner,
+  updateProfile,
+  changePassword,
+  getLeaderboard,
 };

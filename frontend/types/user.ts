@@ -5,5 +5,6 @@ export interface User {
   bannerUrl: string;
   bio: string;
   role: "admin" | "user";
+  ratingPoints: number;
   // Thêm các trường khác nếu cần
 }

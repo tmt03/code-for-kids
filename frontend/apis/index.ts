@@ -57,3 +57,21 @@ export const getCurrentUser = async () => {
 export const logoutUser = async () => {
   await axiosInstance.post("/v1/auth/logout");
 };
+
+export const updateUserProfile = async (displayName: string, bio: string) => {
+  const res = await axiosInstance.put("v1/users/profile", {displayName,bio})
+  return res.data;
+};
+
+export const changeUserPassword = async (oldPassword: string, newPassword: string) => {
+  const res = await axiosInstance.put("v1/users/change-password", {
+    oldPassword,
+    newPassword,
+  });
+  return res.data;
+};
+
+export const fetchLeaderboard = async () => {
+  const res = await axiosInstance.get("/v1/users/leaderboard");
+  return res.data.users;
+};
