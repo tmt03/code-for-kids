@@ -13,7 +13,7 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
   // Set floor (tự động thêm vào platforms, ghi đè refName nếu không chỉ định)
   sandbox.setFloor = (
     floorKey: string,
-    x: number,
+    x: number, 
     y: number,
     refName: string = "floor"
   ) => {

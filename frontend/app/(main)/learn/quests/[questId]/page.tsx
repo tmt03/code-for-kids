@@ -187,31 +187,30 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
 
     return (
-        <div className='w-full h-full flex gap-2'>
-            <div className='w-3/5 h-full flex flex-col'>
-                <div className='h-1/5'>
+        <div className="w-full h-full flex flex-col md:flex-row p-1 gap-2 md:gap-4">
+            <div className="w-full md:w-3/5 h-full flex flex-col">
+                <div className="h-1/5">
                     <InteractionBox
                         message={hintMessage || "Anh hùng nhỏ cùng học nhé!"}
                         showHint={showHint}
                     />
                 </div>
-                <div className='h-4/5 pt-2'>
-                    <GameCanvas
-                        quest={selectedQuest}
-                    />
+                <div className="h-[80%] flex-1 min-h-0 pt-2">
+                    <div className="w-full h-full aspect-[2/1] min-h-[360px] min-w-[720px] max-h-[1440px] max-w-[2880px]">
+                        <GameCanvas quest={selectedQuest} />
+                    </div>
                 </div>
             </div>
-            <div className="w-2/5 h-full relative flex flex-col">
+            <div className="w-full md:w-2/5 h-full relative flex flex-col">
                 {selectedQuest && (
                     <CodeEditor
                         initialValue={selectedQuest.baseCode}
                         onChange={setUserCode}
                         codeClear={userCode}
                         codeHelp={codeHelp}
-
                     />
                 )}
-                <div className="absolute bottom-6 right-4 z-10 flex gap-2">
+                <div className="absolute bottom-4 right-2 z-10 flex gap-2 md:gap-4">
                     <Button onClick={handleRun} variant="pixelGreen" size="lg">
                         <PlayIcon className="w-4 h-4" />
                         Chạy

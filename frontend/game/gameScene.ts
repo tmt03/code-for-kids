@@ -1,7 +1,5 @@
-// GameScene.ts
 import { getBaseCodeForQuest } from "@/features/quests/questMap";
 import { createStudentAPI } from "@/game/api/learning-api";
-import { Player } from "@/game/player"; // ← đường dẫn đến file player.ts của bạn
 import { preloadAssets } from "./preloadAssets";
 
 import * as Phaser from "phaser";
@@ -14,14 +12,11 @@ interface Quest {
 }
 
 export class Game_Scene extends Phaser.Scene {
+  private static LOGICAL_WIDTH = 1440;
+  private static LOGICAL_HEIGHT = 720;
   private sandbox!: Record<string, any>;
   private quest: Quest;
   private userLayer!: Phaser.GameObjects.Layer;
-  private boss!: Phaser.Physics.Arcade.Sprite;
-  private platforms!: Phaser.Physics.Arcade.StaticGroup;
-  private bg!: Phaser.GameObjects.Image;
-  private floor!: Phaser.Physics.Arcade.Sprite;
-  private player!: Player;
 
   constructor(quest: Quest) {
     super("Game_Scene");
@@ -33,10 +28,6 @@ export class Game_Scene extends Phaser.Scene {
   }
 
   create() {
-    // Tạo nhóm platforms và gán trực tiếp vào scene
-    this.platforms = this.physics.add.staticGroup();
-    (this as any).platforms = this.platforms;
-
     // Tạo animation cho player
     this.anims.create({
       key: "run",
@@ -68,17 +59,15 @@ export class Game_Scene extends Phaser.Scene {
       repeat: 0,
     });
 
-    // Tạo nhân vật
-    this.player = new Player(this, 400, 400);
-    this.player.addCollider(this.platforms); // Va chạm với tất cả platforms
-
     // Tạo sandbox
     this.sandbox = createStudentAPI(this);
 
-    // Tạo layer cho code học sinh nếu chưa có
-    if (!this.userLayer) {
-      this.userLayer = this.add.layer();
-    }
+    this.userLayer = this.add.layer();
+
+    // Lắng nghe sự kiện resize
+    this.scale.on("resize", (gameSize: Phaser.Structs.Size) => {
+      console.log(`Canvas resized: ${gameSize.width}x${gameSize.height}`);
+    });
 
     // Chạy preview code nếu có
     const previewCode = getBaseCodeForQuest(this.quest.id);
@@ -89,24 +78,13 @@ export class Game_Scene extends Phaser.Scene {
         console.error("Lỗi khi chạy preview code:", error);
       }
     } else {
-      console.warn("Không tìm thấy preview code cho quest:", this.quest.id);
+      console.warn("Không tìm thấy preview code:", this.quest.id);
     }
 
     // Lắng nghe code học sinh khi ấn RUN
     window.addEventListener("run-user-code", (e: any) => {
       try {
-        if (
-          this.userLayer &&
-          typeof this.userLayer.removeAll === "function" &&
-          Array.isArray(this.userLayer.list)
-        ) {
-          this.userLayer.removeAll(true);
-        }
-
-        if (this.platforms && typeof this.platforms.clear === "function") {
-          this.platforms.clear(true, true);
-        }
-
+        this.userLayer.removeAll(true);
         this.runUserCode(e.detail.code);
       } catch (err) {
         console.error("Lỗi khi chạy user code:", err);
@@ -114,22 +92,7 @@ export class Game_Scene extends Phaser.Scene {
     });
   }
 
-  // // Tạo layer cho code học sinh
-  // this.userLayer = this.add.layer();
-
-  // try {
-  //   const previewCode = getBaseCodeForQuest(this.quest.id);
-  //   this.runPreviewCode(previewCode);
-  // } catch (error) {
-  //   console.error("Lỗi khi chạy preview code:", error);
-  // }
-
-  // // Lắng nghe code học sinh khi ấn RUN
-  // window.addEventListener("run-user-code", (e: any) => {
-  //   this.userLayer.removeAll(true); // Xoá nội dung cũ
-  //   this.platforms.clear(true, true); // Xóa platforms cũ
-  //   this.runUserCode(e.detail.code); // chạy code vừa nhập
-  // });
+  update() {}
 
   // Thực thi code của trẻ nhập vào
   runUserCode(code: string) {
@@ -139,7 +102,7 @@ export class Game_Scene extends Phaser.Scene {
           ${code}
         }
       `;
-      new Function("sandbox", wrapped)(this.sandbox); // Dùng lại sandbox đã tạo ở preview
+      new Function("sandbox", wrapped)(this.sandbox);
     } catch (err) {
       console.error("Lỗi khi chạy user code:", err);
     }
@@ -148,30 +111,10 @@ export class Game_Scene extends Phaser.Scene {
   // Dùng Function
   runPreviewCode(previewFn: (scene: Phaser.Scene, sandbox: any) => void) {
     try {
-      this.platforms.clear(true, true); // Xóa platforms cũ
-      this.sandbox = createStudentAPI(this); // Tạo sandbox mới
-      previewFn(this, this.sandbox); // Gọi trực tiếp function đã khai báo
+      this.sandbox = createStudentAPI(this);
+      previewFn(this, this.sandbox);
     } catch (err) {
       console.error("Lỗi khi chạy preview code:", err);
-    }
-  }
-
-  // Dùng String
-  // runPreviewCode(code: string) {
-  //   console.log("Running preview code:", code);
-  //   try {
-  //     this.platforms.clear(true, true); // Xóa platforms cũ trước khi chạy preview
-  //     this.sandbox = createStudentAPI(this); // Dùng 1 lần duy nhất
-  //     const fn = new Function("scene", "sandbox", code);
-  //     fn(this, this.sandbox); // Dùng chung sandbox
-  //   } catch (err) {
-  //     console.error("Lỗi khi chạy preview code:", err);
-  //   }
-  // }
-
-  update() {
-    if (this.player) {
-      this.player.update(); // <-- Cái này là bắt buộc để hoạt ảnh và điều khiển chạy
     }
   }
 }
