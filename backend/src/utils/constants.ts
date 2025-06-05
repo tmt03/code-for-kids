@@ -11,6 +11,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   move: 3,
   moveRandom: 4,
   onKey: 5,
+  onAttack: 3,
   interact: 5,
   autoAttack: 3,
   when: 4,
