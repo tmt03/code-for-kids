@@ -16,7 +16,7 @@ interface Quest {
 export class Game_Scene extends Phaser.Scene {
   private sandbox!: Record<string, any>;
   private quest: Quest;
-  private userLayer!: Phaser.GameObjects.Layer;
+  // private userLayer!: Phaser.GameObjects.Layer;
   private boss!: Phaser.Physics.Arcade.Sprite;
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
   private bg!: Phaser.GameObjects.Image;
@@ -68,6 +68,68 @@ export class Game_Scene extends Phaser.Scene {
       repeat: 0,
     });
 
+    // Tạo animation cho quai
+    this.anims.create({
+      key: "mrun",
+      frames: this.anims.generateFrameNumbers("monster_run", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "midle",
+      frames: this.anims.generateFrameNumbers("monster_idle", {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "mjump",
+      frames: this.anims.generateFrameNumbers("monster_jump", {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 4,
+      repeat: 0,
+    });
+
+        // Tạo animation cho boss
+    this.anims.create({
+      key: "brun",
+      frames: this.anims.generateFrameNumbers("boss_run", {
+        start: 0,
+        end: 11,
+      }),
+      frameRate: 12,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "bidle",
+      frames: this.anims.generateFrameNumbers("boss_idle", {
+        start: 0,
+        end: 9,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "fireball_anim",
+      frames: this.anims.generateFrameNumbers("fireball_anim", { 
+        start: 0, 
+        end: 3, 
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
     // Tạo nhân vật
     this.player = new Player(this, 400, 400);
     this.player.addCollider(this.platforms); // Va chạm với tất cả platforms
@@ -75,10 +137,10 @@ export class Game_Scene extends Phaser.Scene {
     // Tạo sandbox
     this.sandbox = createStudentAPI(this);
 
-    // Tạo layer cho code học sinh nếu chưa có
-    if (!this.userLayer) {
-      this.userLayer = this.add.layer();
-    }
+    // // Tạo layer cho code học sinh nếu chưa có
+    // if (!this.userLayer) {
+    //   this.userLayer = this.add.layer();
+    // }
 
     // Chạy preview code nếu có
     const previewCode = getBaseCodeForQuest(this.quest.id);
@@ -95,13 +157,13 @@ export class Game_Scene extends Phaser.Scene {
     // Lắng nghe code học sinh khi ấn RUN
     window.addEventListener("run-user-code", (e: any) => {
       try {
-        if (
-          this.userLayer &&
-          typeof this.userLayer.removeAll === "function" &&
-          Array.isArray(this.userLayer.list)
-        ) {
-          this.userLayer.removeAll(true);
-        }
+        // if (
+        //   this.userLayer &&
+        //   typeof this.userLayer.removeAll === "function" &&
+        //   Array.isArray(this.userLayer.list)
+        // ) {
+        //   this.userLayer.removeAll(true);
+        // }
 
         if (this.platforms && typeof this.platforms.clear === "function") {
           this.platforms.clear(true, true);

@@ -10,19 +10,23 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     scene.add.image(0, 0, bgKey).setOrigin(0).setScale(0.51);
   };
 
-  // Set floor (tự động thêm vào platforms, ghi đè refName nếu không chỉ định)
-  sandbox.setFloor = (
-    floorKey: string,
-    x: number,
-    y: number,
-    refName: string = "floor"
-  ) => {
-    const floor = scene.physics.add.staticSprite(x, y, floorKey);
-    floor.setScale(0.5).refreshBody();
-    sandbox[refName] = floor; // Ghi đè refName nếu đã tồn tại
-    sandbox.platforms.add(floor); // Thêm vào nhóm platforms qua sandbox
-    return floor;
-  };
+  // Set floor (tự động thêm vào platforms, tạo platforms nếu chưa có)
+sandbox.setFloor = (
+  floorKey: string,
+  x: number,
+  y: number,
+  refName: string = "floor"
+) => {
+  if (!sandbox.platforms) {
+    sandbox.platforms = scene.physics.add.staticGroup();
+  }
+  const floor = scene.physics.add.staticSprite(x, y, floorKey)
+    .setScale(0.67)
+    .refreshBody();
+  sandbox[refName] = floor;
+  sandbox.platforms.add(floor);
+  return floor;
+};
 
   // Set màu cho đối tượng dựa trên key và màu định danh
   sandbox.setColor = (refName: string, colorName: string) => {
@@ -212,21 +216,28 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
     });
   };
 
-  // 12. Auto attack
-  sandbox.autoAttack = (refName: string, xMin: number, xMax: number) => {
-    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite) return;
+
+  //12. Auto Attack
+  sandbox.autoAttack = (
+    refName: string,
+    range: number,
+    skillKey: string,
+    damage: number,
+    cooldown: number
+  ) => {
+    const shooter = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!shooter || !skillHandlers[skillKey]) return;
+  
     scene.time.addEvent({
-      delay: 2000,
+      delay: cooldown,
       loop: true,
       callback: () => {
-        const beam = scene.physics.add.sprite(sprite.x, sprite.y, "boss_beam");
-        beam.setVelocityX(Phaser.Math.Between(xMin, xMax));
-        scene.time.delayedCall(3000, () => beam.destroy());
-      },
+        skillHandlers[skillKey](scene, shooter, range, damage);
+      }
     });
   };
-
+  
+  
   // 13. When
   sandbox.when = (
     condition: string,
@@ -270,6 +281,50 @@ export function createStudentAPI(scene: Phaser.Scene): Record<string, any> {
       }
     });
   };
+
+//===================================================================================================================================================//
+
+  //hàm skill
+  const skillHandlers: Record<
+  string,
+  (scene: Phaser.Scene, shooter: Phaser.GameObjects.Sprite, range: number, damage: number) => void
+> = {
+  fireball: (scene, shooter, range, damage) => {
+    const direction = shooter.flipX ? -1 : 1;
+
+    const fireball = scene.physics.add.sprite(shooter.x, shooter.y, "fireball")
+      .setScale(1)
+      .setAngle(direction > 0 ? 180 : 0) // 🔁 Quay góc theo hướng
+      .setVelocityX(direction * 300)
+      .setGravity(0, 0);
+
+    fireball.body.allowGravity = false;
+
+    // Bay hết quãng đường rồi biến mất
+    const travelTime = (range / 300) * 1000;
+    scene.time.delayedCall(travelTime, () => fireball.destroy());
+
+    // Gây sát thương khi chạm bất kỳ đối tượng nào (trừ bản thân)
+    scene.physics.add.overlap(fireball, scene.children.list, (skillObj, targetObj) => {
+      const target = targetObj as Phaser.GameObjects.Sprite;
+      if (target === shooter || target === fireball) return;
+
+      const targetKey = Object.keys(sandbox).find(k => sandbox[k] === target);
+      if (!targetKey) return;
+
+      const currHealth = (scene as any)[`${targetKey}.health`] ?? 100;
+      const newHealth = Math.max(0, currHealth - damage);
+
+      (scene as any)[`${targetKey}.health`] = newHealth;
+      scene.events.emit("update-health", { refName: targetKey, health: newHealth });
+
+      fireball.destroy();
+    });
+  },
+
+};
+
+
 
   return sandbox;
 }

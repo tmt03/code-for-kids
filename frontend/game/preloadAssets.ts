@@ -4,6 +4,10 @@ import * as Phaser from "phaser";
 export function preloadAssets(scene: Phaser.Scene) {
   scene.load.setPath(`/assets/game_assets`);
 
+  scene.load.spritesheet("fireball_anim", "/skill/fireball_anim.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
   // Chap 0 nhiem vu 1
   scene.load.image("background_no_color", "/sky/no_color_sky_1.png");
   scene.load.image("blue_sky", "/sky/sky_1.png");
@@ -123,4 +127,5 @@ export function preloadAssets(scene: Phaser.Scene) {
     frameWidth: 128,
     frameHeight: 128,
   });
+  
 }
