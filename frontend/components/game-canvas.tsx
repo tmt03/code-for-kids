@@ -9,8 +9,6 @@ import type * as Phaser from "phaser";
 interface GameCanvasProps {
   quest: {
     id: string;
-    name: string;
-    baseCode: string;
     mode: "guided" | "free";
   };
 }
@@ -55,8 +53,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
         physics: {
           default: "arcade",
           arcade: {
-            gravity: { y: 600, x: 0 },
-            debug: process.env.NODE_ENV === "development",
+            debug: true,
           },
         },
         scene: new Game_Scene(quest),

@@ -12,6 +12,7 @@ export const VALID_GAME_COMMANDS = [
   "move",
   "moveRandom",
   "onKey",
+  "onAttack",
   "interact",
   "autoAttack",
   "when",
@@ -49,6 +50,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   move: 3,
   moveRandom: 4,
   onKey: 5,
+  onAttack: 3,
   interact: 5,
   autoAttack: 3,
   when: 4,
@@ -92,6 +94,16 @@ export const COLORS = [
   "white",
   "black",
   "gray",
+  "teal",
+  "navy",
+  "maroon",
+  "olive",
+  "lime",
+  "aqua",
+  "silver",
+  "gold",
+  "indigo",
+  "violet",
 ] as const;
 
 // Danh sách animation
@@ -153,6 +165,10 @@ export const COMMANDS = [
     name: "onKey",
     syntax:
       'onKey("phím", { animation: "tên_animation" }, "tên_ref", giá_trị_x, giá_trị_y);',
+  },
+  {
+    name: "onAttack",
+    syntax: 'onAttack("phím", { animation: "tên_animation" }, "tên_ref");',
   },
   {
     name: "interact",

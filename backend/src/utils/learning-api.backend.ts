@@ -86,6 +86,12 @@ export function createBackendSandbox() {
       }
     },
 
+    onAttack: (key: string, options: any, refName: string) => {
+      if (refs[refName]) {
+        refs[refName].onAttack = { key, animation: options?.animation };
+      }
+    },
+
     // 11. Tương tác va chạm
     interact: (
       ref1: string,
