@@ -66,23 +66,6 @@ export default function ChapterList({ chapters }: Props) {
                             }`}
                         onClick={(e) => handleCardClick(chapter, e)}
                     >
-                        {/* Ô trạng thái - Đã giữ nguyên code comment */}
-                        {/* <div
-              className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000000] 
-                ${chapter.status === "completed"
-                  ? "bg-[#32CD32] text-white"
-                  : chapter.status === "in-progress"
-                    ? "bg-[#FFD700] text-black"
-                    : "bg-[#D3D3D3] text-black"
-                  }`}
-            >
-              {chapter.status === "completed"
-                ? "Đã Hoàn Thành"
-                : chapter.status === "in-progress"
-                  ? "Đang Học"
-                  : "Chưa Học"}
-            </div> */}
-
                         {/* Ô trạng thái - Đã giữ nguyên code bạn thêm */}
                         <div
                             className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000000] bg-[#32CD32] text-white `}
@@ -95,15 +78,6 @@ export default function ChapterList({ chapters }: Props) {
                             <h3 className="text-2xl font-bold text-[#104A7A] text-center mb-2">{chapter.name}</h3>
                             <p className="text-base text-gray-700 text-center flex-1">{chapter.description}</p>
                         </div>
-                        {/* <Button
-              className={`mt-3 px-4 py-1 font-bold rounded-sm shadow-[2px_2px_0px_0px_#000000] transition-colors ${chapter.isSpecial
-                ? "bg-[#FF1493] text-white hover:bg-[#FF69B4]"
-                : "bg-[#FF4040] text-white hover:bg-[#FF6666]"
-                }`}
-              onClick={(e) => handleButtonClick(e, chapter.id)}
-            >
-              {chapter.isSpecial ? "Thử Thách Đặc Biệt" : "Bắt Đầu"}
-            </Button> */}
 
                         {/* Hiệu ứng đặc biệt cho chapter cuối - Đã giữ nguyên code comment */}
                         {chapter.isSpecial && (

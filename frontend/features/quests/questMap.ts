@@ -62,8 +62,7 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
     
       scene["castle"] = castle;
       sandbox["castle"] = castle;
-    },
-    
+    }, 
   
     C01_Q04: (scene, sandbox) => {
 

@@ -79,6 +79,7 @@ export const hintService = {
           "move",
           "moveRandom",
           "onKey",
+          "onAttack",
           "interact",
           "autoAttack",
           "when",

@@ -1,45 +1,143 @@
-// GameScene.ts
+/**
+ * Game Scene - Scene chính xử lý điều khiển người chơi, vật lý và logic game
+ * Scene này quản lý:
+ * - Di chuyển và animation của người chơi
+ * - Cơ chế tấn công
+ * - Vật lý và va chạm
+ * - Thực thi code (preview và code người dùng)
+ */
+
 import { getBaseCodeForQuest } from "@/features/quests/questMap";
 import { createStudentAPI } from "@/game/api/learning-api";
-import { Player } from "@/game/player"; // ← đường dẫn đến file player.ts của bạn
 import { preloadAssets } from "./preloadAssets";
 
 import * as Phaser from "phaser";
 
+// ===== Định Nghĩa Các Kiểu Dữ Liệu =====
+
+/**
+ * Interface cấu hình nhiệm vụ
+ * @property id - Định danh duy nhất của nhiệm vụ
+ * @property mode - Chế độ nhiệm vụ: 'guided' cho hướng dẫn hoặc 'free' cho sandbox
+ */
 interface Quest {
   id: string;
-  name: string;
-  baseCode: string;
   mode: "guided" | "free";
 }
 
+/**
+ * Cấu hình điều khiển cho di chuyển người chơi
+ * Định nghĩa cách một phím ảnh hưởng đến di chuyển và animation của sprite
+ */
+interface ControlConfig {
+  key: number; // Mã phím bàn phím
+  sprite: Phaser.GameObjects.Sprite; // Sprite cần điều khiển
+  animation?: string; // Animation phát khi nhấn phím
+  velocityX: number; // Tốc độ di chuyển ngang
+  velocityY: number; // Tốc độ di chuyển dọc (cho nhảy)
+  isJumpKey: boolean; // Phím này có phải là phím nhảy không
+  refName: string; // Tên tham chiếu cho sprite
+}
+
+/**
+ * Cấu hình tấn công cho người chơi
+ * Định nghĩa cách một phím kích hoạt animation và hành động tấn công
+ */
+interface AttackConfig {
+  key: number; // Mã phím bàn phím
+  sprite: Phaser.GameObjects.Sprite; // Sprite thực hiện tấn công
+  animation?: string; // Animation phát khi tấn công
+  refName: string; // Tên tham chiếu cho sprite
+  projectileType: string; // Loại đạn (ví dụ: "sword", "fireball")
+}
+
+// ===== Lớp Scene Game Chính =====
+
 export class Game_Scene extends Phaser.Scene {
-  private sandbox!: Record<string, any>;
-  private quest: Quest;
-  // private userLayer!: Phaser.GameObjects.Layer;
+  // Hằng số cho kích thước game
+  private static readonly LOGICAL_WIDTH = 1440;
+  private static readonly LOGICAL_HEIGHT = 720;
   private boss!: Phaser.Physics.Arcade.Sprite;
-  private platforms!: Phaser.Physics.Arcade.StaticGroup;
-  private bg!: Phaser.GameObjects.Image;
-  private floor!: Phaser.Physics.Arcade.Sprite;
-  private player!: Player;
+  // Trạng thái và cấu hình game
+  private sandbox!: Record<string, any>; // Môi trường sandbox cho code người dùng
+  private quest: Quest; // Cấu hình nhiệm vụ hiện tại
+  private scaleFactor: number = 1; // Hệ số tỷ lệ cho responsive
+  private keys: { [key: number]: Phaser.Input.Keyboard.Key } = {}; // Theo dõi input bàn phím
+  private lastAttackTime: { [refName: string]: number } = {}; // Theo dõi thời gian hồi tấn công
+  private attackCooldown = 500; // Thời gian hồi tấn công (ms)
 
   constructor(quest: Quest) {
     super("Game_Scene");
     this.quest = quest;
   }
 
-  preload() {
+  // ===== Các Phương Thức Vòng Đời Scene =====
+
+  /**
+   * Tải tài nguyên game
+   * Được gọi tự động bởi Phaser trước create()
+   */
+  preload(): void {
     preloadAssets(this);
   }
 
-  create() {
-    // Tạo nhóm platforms và gán trực tiếp vào scene
-    this.platforms = this.physics.add.staticGroup();
-    (this as any).platforms = this.platforms;
+  /**
+   * Khởi tạo scene game
+   * Được gọi tự động bởi Phaser sau preload()
+   */
+  create(): void {
+    this.initializeScaleFactor();
+    this.setupAnimations();
+    this.initializeSandbox();
+    this.setupResizeListener();
+    this.setupHealthListener(); // Thêm lắng nghe sự kiện update-health
+    this.runPreviewCodeIfAvailable();
+    this.setupRunUserCodeListener();
+  }
 
-    // Tạo animation cho player
+  /**
+   * Vòng lặp game chính
+   * Được gọi mỗi frame bởi Phaser
+   * Xử lý di chuyển, tấn công và cập nhật vật lý
+   */
+  update(): void {
+    if (!this.sandbox.controls && !this.sandbox.attackControls) return;
+
+    // Theo dõi trạng thái cho mỗi sprite
+    const spriteStates: {
+      [refName: string]: {
+        velocityX: number;
+        wasKeyDown: boolean;
+        isJumping: boolean;
+        wasAttackKeyDown: boolean;
+      };
+    } = {};
+
+    this.handleInput(spriteStates);
+    this.applyVelocities(spriteStates);
+  }
+
+  // ===== Các Phương Thức Khởi Tạo =====
+
+  /**
+   * Tính toán và thiết lập hệ số tỷ lệ dựa trên kích thước màn hình
+   * Đảm bảo các phần tử game scale phù hợp trên các kích thước màn hình khác nhau
+   */
+  private initializeScaleFactor(): void {
+    this.scaleFactor = Math.min(
+      this.cameras.main.width / Game_Scene.LOGICAL_WIDTH,
+      this.cameras.main.height / Game_Scene.LOGICAL_HEIGHT
+    );
+  }
+
+  /**
+   * Thiết lập tất cả animation cho sprite
+   * Tạo các chuỗi animation cho các trạng thái di chuyển của người chơi
+   */
+  private setupAnimations(): void {
+    // Animation chạy
     this.anims.create({
-      key: "run",
+      key: "player_run_run",
       frames: this.anims.generateFrameNumbers("player_run", {
         start: 0,
         end: 5,
@@ -48,8 +146,9 @@ export class Game_Scene extends Phaser.Scene {
       repeat: -1,
     });
 
+    // Animation đứng yên
     this.anims.create({
-      key: "idle",
+      key: "player_run_idle",
       frames: this.anims.generateFrameNumbers("player_idle", {
         start: 0,
         end: 4,
@@ -58,8 +157,9 @@ export class Game_Scene extends Phaser.Scene {
       repeat: -1,
     });
 
+    // Animation nhảy
     this.anims.create({
-      key: "jump",
+      key: "player_run_jump",
       frames: this.anims.generateFrameNumbers("player_jump", {
         start: 0,
         end: 4,
@@ -67,8 +167,7 @@ export class Game_Scene extends Phaser.Scene {
       frameRate: 4,
       repeat: 0,
     });
-
-    // Tạo animation cho quai
+// Tạo animation cho quai
     this.anims.create({
       key: "mrun",
       frames: this.anims.generateFrameNumbers("monster_run", {
@@ -129,111 +228,393 @@ export class Game_Scene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
+  }
 
-    // Tạo nhân vật
-    this.player = new Player(this, 400, 400);
-    this.player.addCollider(this.platforms); // Va chạm với tất cả platforms
+  /**
+   * Khởi tạo môi trường sandbox cho code người dùng
+   * Tạo các hàm và đối tượng API có thể truy cập từ code người dùng
+   */
+  private initializeSandbox(): void {
+    this.sandbox = createStudentAPI(this, this.scaleFactor);
+  }
 
-    // Tạo sandbox
-    this.sandbox = createStudentAPI(this);
-
-    // // Tạo layer cho code học sinh nếu chưa có
-    // if (!this.userLayer) {
-    //   this.userLayer = this.add.layer();
-    // }
-
-    // Chạy preview code nếu có
-    const previewCode = getBaseCodeForQuest(this.quest.id);
-    if (previewCode) {
-      try {
-        previewCode(this, this.sandbox);
-      } catch (error) {
-        console.error("Lỗi khi chạy preview code:", error);
-      }
-    } else {
-      console.warn("Không tìm thấy preview code cho quest:", this.quest.id);
-    }
-
-    // Lắng nghe code học sinh khi ấn RUN
-    window.addEventListener("run-user-code", (e: any) => {
-      try {
-        // if (
-        //   this.userLayer &&
-        //   typeof this.userLayer.removeAll === "function" &&
-        //   Array.isArray(this.userLayer.list)
-        // ) {
-        //   this.userLayer.removeAll(true);
-        // }
-
-        if (this.platforms && typeof this.platforms.clear === "function") {
-          this.platforms.clear(true, true);
-        }
-
-        this.runUserCode(e.detail.code);
-      } catch (err) {
-        console.error("Lỗi khi chạy user code:", err);
-      }
+  /**
+   * Thiết lập xử lý thay đổi kích thước cửa sổ
+   * Cập nhật hệ số tỷ lệ và các phần tử game khi kích thước cửa sổ thay đổi
+   */
+  private setupResizeListener(): void {
+    this.scale.on("resize", (gameSize: Phaser.Structs.Size) => {
+      this.scaleFactor = Math.min(
+        gameSize.width / Game_Scene.LOGICAL_WIDTH,
+        gameSize.height / Game_Scene.LOGICAL_HEIGHT
+      );
+      console.log(
+        `Canvas đã thay đổi kích thước: ${gameSize.width}x${gameSize.height}, Tỷ lệ: ${this.scaleFactor}`
+      );
+      this.scaleObjects();
     });
   }
 
-  // // Tạo layer cho code học sinh
-  // this.userLayer = this.add.layer();
+  /**
+   * Lắng nghe sự kiện update-health từ createStudentAPI
+   * Cập nhật trạng thái sprite (ví dụ: tiêu diệt sprite khi máu = 0)
+   */
+  private setupHealthListener(): void {
+    this.events.on(
+      "update-health",
+      ({ refName, health }: { refName: string; health: number }) => {
+        console.log(`Sprite ${refName} cập nhật máu: ${health}`);
+        if (health <= 0) {
+          const sprite = this.sandbox[refName];
+          if (sprite) {
+            sprite.destroy();
+            delete this.sandbox[refName];
+            console.log(`Sprite ${refName} đã bị tiêu diệt`);
+          }
+        }
+      }
+    );
 
-  // try {
-  //   const previewCode = getBaseCodeForQuest(this.quest.id);
-  //   this.runPreviewCode(previewCode);
-  // } catch (error) {
-  //   console.error("Lỗi khi chạy preview code:", error);
-  // }
+    // Tương thích với API interact (nếu có)
+    this.events.on(
+      "lose-health",
+      ({ refName, value }: { refName: string; value: number }) => {
+        console.log(`Sprite ${refName} mất ${value} máu`);
+        const sprite = this.sandbox[refName];
+        if (sprite) {
+          const currHealth = (this as any)[`${refName}.health`] ?? 100;
+          const newHealth = Math.max(0, currHealth - value);
+          (this as any)[`${refName}.health`] = newHealth;
+          this.events.emit("update-health", { refName, health: newHealth });
+        }
+      }
+    );
+  }
 
-  // // Lắng nghe code học sinh khi ấn RUN
-  // window.addEventListener("run-user-code", (e: any) => {
-  //   this.userLayer.removeAll(true); // Xoá nội dung cũ
-  //   this.platforms.clear(true, true); // Xóa platforms cũ
-  //   this.runUserCode(e.detail.code); // chạy code vừa nhập
-  // });
+  // ===== Các Phương Thức Di Chuyển và Điều Khiển =====
 
-  // Thực thi code của trẻ nhập vào
-  runUserCode(code: string) {
+  /**
+   * Xử lý tất cả input của người chơi (di chuyển, nhảy, tấn công)
+   * Cập nhật vận tốc, animation và trạng thái sprite
+   */
+  private handleInput(spriteStates: {
+    [refName: string]: {
+      velocityX: number;
+      wasKeyDown: boolean;
+      isJumping: boolean;
+      wasAttackKeyDown: boolean;
+    };
+  }): void {
+    // Tạo danh sách các refName duy nhất từ controls và attackControls
+    const allRefNames = new Set<string>();
+    if (this.sandbox.controls) {
+      this.sandbox.controls.forEach((control: ControlConfig) => {
+        allRefNames.add(control.refName);
+      });
+    }
+    if (this.sandbox.attackControls) {
+      this.sandbox.attackControls.forEach((control: AttackConfig) => {
+        allRefNames.add(control.refName);
+      });
+    }
+
+    // Xử lý từng sprite
+    allRefNames.forEach((refName) => {
+      const sprite = this.sandbox[refName];
+      if (!sprite || !sprite.body) {
+        console.warn(
+          `Sprite '${refName}' không tồn tại hoặc không có physics body`
+        );
+        return;
+      }
+
+      // Khởi tạo trạng thái sprite nếu chưa có
+      if (!spriteStates[refName]) {
+        spriteStates[refName] = {
+          velocityX: 0,
+          wasKeyDown: false,
+          isJumping: false,
+          wasAttackKeyDown: false,
+        };
+      }
+
+      // 1. Xử lý di chuyển và nhảy
+      const movementControls =
+        this.sandbox.controls?.filter(
+          (control: ControlConfig) => control.refName === refName
+        ) || [];
+
+      let hasMovementKeyPressed = false;
+      movementControls.forEach((control: ControlConfig) => {
+        const { key, animation, velocityX, velocityY, isJumpKey } = control;
+
+        if (!this.keys[key]) {
+          this.keys[key] = this.input.keyboard!.addKey(key);
+        }
+        const isKeyDown = this.keys[key].isDown;
+
+        if (isKeyDown) {
+          if (
+            isJumpKey &&
+            (sprite.body as Phaser.Physics.Arcade.Body).touching.down
+          ) {
+            (sprite as Phaser.Physics.Arcade.Sprite).setVelocityY(-velocityY);
+            spriteStates[refName].isJumping = true;
+            if (animation && sprite.anims.currentAnim?.key !== animation) {
+              sprite.anims.play(animation, true);
+            }
+          } else if (!isJumpKey) {
+            spriteStates[refName].velocityX = velocityX;
+            if (velocityX > 0) sprite.setFlipX(false);
+            else if (velocityX < 0) sprite.setFlipX(true);
+            if (
+              animation &&
+              !spriteStates[refName].isJumping &&
+              sprite.anims.currentAnim?.key !== animation
+            ) {
+              sprite.anims.play(animation, true);
+            }
+            hasMovementKeyPressed = true;
+          }
+        } else if (
+          animation &&
+          sprite.anims.currentAnim?.key === animation &&
+          !isJumpKey &&
+          !spriteStates[refName].isJumping
+        ) {
+          const idleAnimation = `${sprite.texture.key}_idle`;
+          if (sprite.anims.get(idleAnimation)) {
+            sprite.anims.play(idleAnimation, true);
+          }
+        }
+
+        spriteStates[refName].wasKeyDown = isKeyDown;
+
+        if (
+          spriteStates[refName].isJumping &&
+          (sprite.body as Phaser.Physics.Arcade.Body).touching.down
+        ) {
+          spriteStates[refName].isJumping = false;
+          const spriteKey = sprite.texture.key;
+          if (
+            animation &&
+            isKeyDown &&
+            !isJumpKey &&
+            sprite.anims.get(animation)
+          ) {
+            sprite.anims.play(animation, true);
+          } else {
+            const idleAnimation = `${spriteKey}_idle`;
+            if (sprite.anims.get(idleAnimation)) {
+              sprite.anims.play(idleAnimation, true);
+            }
+          }
+        }
+      });
+
+      // Reset vận tốc nếu không có phím di chuyển nào được nhấn
+      if (!hasMovementKeyPressed) {
+        spriteStates[refName].velocityX = 0;
+        if (
+          !spriteStates[refName].isJumping &&
+          sprite.anims.currentAnim?.key !== `${sprite.texture.key}_idle`
+        ) {
+          sprite.anims.play(`${sprite.texture.key}_idle`, true);
+        }
+      }
+
+      // 2. Xử lý tấn công
+      const attackControls =
+        this.sandbox.attackControls?.filter(
+          (control: AttackConfig) => control.refName === refName
+        ) || [];
+
+      attackControls.forEach((control: AttackConfig) => {
+        const { key, animation } = control;
+
+        if (!this.keys[key]) {
+          this.keys[key] = this.input.keyboard!.addKey(key);
+        }
+        const isKeyDown = this.keys[key].isDown;
+
+        const canAttack = (sprite.body as Phaser.Physics.Arcade.Body).touching
+          .down;
+
+        if (isKeyDown && !spriteStates[refName].wasAttackKeyDown && canAttack) {
+          const currentTime = this.time.now;
+          const lastAttack = this.lastAttackTime[refName] || 0;
+
+          if (currentTime - lastAttack >= this.attackCooldown) {
+            if (animation) {
+              sprite.anims.play(animation, true);
+            }
+            this.lastAttackTime[refName] = currentTime;
+
+            spriteStates[refName].isJumping = false;
+
+            sprite.on(
+              "animationcomplete",
+              (anim: Phaser.Animations.Animation) => {
+                if (anim.key === animation) {
+                  if (
+                    !(sprite.body as Phaser.Physics.Arcade.Body).touching.down
+                  ) {
+                    spriteStates[refName].isJumping = true;
+                    if (sprite.anims.get(`${sprite.texture.key}_jump`)) {
+                      sprite.anims.play(`${sprite.texture.key}_jump`, true);
+                    }
+                  } else if (
+                    hasMovementKeyPressed &&
+                    movementControls.find(
+                      (ctrl: ControlConfig) => ctrl.animation
+                    )
+                  ) {
+                    sprite.anims.play(
+                      movementControls.find(
+                        (ctrl: ControlConfig) => ctrl.animation
+                      )!.animation!,
+                      true
+                    );
+                  } else if (sprite.anims.get(`${sprite.texture.key}_idle`)) {
+                    sprite.anims.play(`${sprite.texture.key}_idle`, true);
+                  }
+                }
+              }
+            );
+          }
+        }
+
+        spriteStates[refName].wasAttackKeyDown = isKeyDown;
+      });
+    });
+  }
+
+  /**
+   * Áp dụng vận tốc đã tính toán cho các sprite
+   * Cập nhật vị trí sprite dựa trên trạng thái di chuyển
+   */
+  private applyVelocities(spriteStates: {
+    [refName: string]: {
+      velocityX: number;
+      wasKeyDown: boolean;
+      isJumping: boolean;
+      wasAttackKeyDown: boolean;
+    };
+  }): void {
+    for (const refName in spriteStates) {
+      const sprite = this.sandbox[refName];
+      if (sprite && sprite.body) {
+        sprite.setVelocityX(spriteStates[refName].velocityX);
+      }
+    }
+  }
+
+  // ===== Các Phương Thức Thực Thi Code =====
+
+  /**
+   * Thực thi code người dùng trong môi trường sandbox
+   * @param code - Chuỗi code cần thực thi
+   */
+  runUserCode(code: string): void {
     try {
       const wrapped = `
         with (sandbox) {
           ${code}
         }
       `;
-      new Function("sandbox", wrapped)(this.sandbox); // Dùng lại sandbox đã tạo ở preview
+      new Function("sandbox", wrapped)(this.sandbox);
+      this.scaleObjects();
+      this.setupColliders();
+      console.log(
+        "Đã thực thi code người dùng, các đối tượng sandbox:",
+        Object.keys(this.sandbox)
+      );
     } catch (err) {
-      console.error("Lỗi khi chạy user code:", err);
+      console.error("Lỗi khi chạy code người dùng:", err);
     }
   }
 
-  // Dùng Function
-  runPreviewCode(previewFn: (scene: Phaser.Scene, sandbox: any) => void) {
+  /**
+   * Thiết lập phát hiện va chạm giữa sprite và platform
+   */
+  private setupColliders(): void {
+    const platforms = this.sandbox.platforms?.getChildren() || [];
+    console.log("Platforms sau khi chạy code người dùng:", platforms);
+    for (const spriteKey in this.sandbox) {
+      const sprite = this.sandbox[spriteKey];
+      if (sprite && sprite.body && platforms.length > 0) {
+        this.physics.add.collider(sprite, this.sandbox.platforms, () => {
+          console.log(`Phát hiện va chạm giữa ${spriteKey} và platforms`);
+        });
+      }
+    }
+  }
+
+  /**
+   * Scale các đối tượng game dựa trên hệ số tỷ lệ hiện tại
+   * Duy trì vị trí và kích thước phù hợp của các phần tử game
+   */
+  private scaleObjects(): void {
+    for (const obj of this.sandbox.objects || []) {
+      if (obj.obj && obj.obj.setScale) {
+        obj.obj.setScale(this.scaleFactor);
+        obj.obj.x =
+          obj.obj.originalX !== undefined
+            ? obj.obj.originalX * this.scaleFactor
+            : obj.obj.x;
+        obj.obj.y =
+          obj.obj.originalY !== undefined
+            ? obj.obj.originalY * this.scaleFactor
+            : obj.obj.y;
+        if (!obj.obj.originalX) {
+          obj.obj.originalX = obj.obj.x / this.scaleFactor;
+          obj.obj.originalY = obj.obj.y / this.scaleFactor;
+        }
+      }
+    }
+  }
+
+  /**
+   * Chạy code preview cho nhiệm vụ hiện tại
+   * @param previewFn - Hàm chứa code preview cần thực thi
+   */
+  runPreviewCode(previewFn: (scene: Phaser.Scene, sandbox: any) => void): void {
     try {
-      this.platforms.clear(true, true); // Xóa platforms cũ
-      this.sandbox = createStudentAPI(this); // Tạo sandbox mới
-      previewFn(this, this.sandbox); // Gọi trực tiếp function đã khai báo
+      this.sandbox = createStudentAPI(this, this.scaleFactor);
+      previewFn(this, this.sandbox);
+      this.scaleObjects();
     } catch (err) {
-      console.error("Lỗi khi chạy preview code:", err);
+      console.error("Lỗi khi chạy code preview:", err);
     }
   }
 
-  // Dùng String
-  // runPreviewCode(code: string) {
-  //   console.log("Running preview code:", code);
-  //   try {
-  //     this.platforms.clear(true, true); // Xóa platforms cũ trước khi chạy preview
-  //     this.sandbox = createStudentAPI(this); // Dùng 1 lần duy nhất
-  //     const fn = new Function("scene", "sandbox", code);
-  //     fn(this, this.sandbox); // Dùng chung sandbox
-  //   } catch (err) {
-  //     console.error("Lỗi khi chạy preview code:", err);
-  //   }
-  // }
-
-  update() {
-    if (this.player) {
-      this.player.update(); // <-- Cái này là bắt buộc để hoạt ảnh và điều khiển chạy
+  /**
+   * Chạy code preview nếu có cho nhiệm vụ hiện tại
+   */
+  private runPreviewCodeIfAvailable(): void {
+    const previewCode = getBaseCodeForQuest(this.quest.id);
+    console.log("ID nhiệm vụ:", this.quest.id);
+    if (previewCode) {
+      try {
+        this.runPreviewCode(previewCode);
+      } catch (error) {
+        console.error("Lỗi khi chạy code preview:", error);
+      }
+    } else {
+      console.warn("Không tìm thấy code preview:", this.quest.id);
     }
+  }
+
+  /**
+   * Thiết lập event listener cho việc chạy code người dùng
+   */
+  private setupRunUserCodeListener(): void {
+    window.addEventListener("run-user-code", (e: any) => {
+      try {
+        this.runUserCode(e.detail.code);
+      } catch (err) {
+        console.error("Lỗi khi chạy code người dùng:", err);
+      }
+    });
   }
 }
