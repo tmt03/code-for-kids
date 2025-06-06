@@ -6,7 +6,7 @@ import GameCanvas from '@/components/game-canvas';
 import InteractionBox from '@/components/interaction-box';
 import { Button } from '@/components/ui/button';
 import { useProgress } from "@/hooks/useProgress";
-import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
+// import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
 import { speak } from '@/lib/utils/speak';
 import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
@@ -96,13 +96,13 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         setShowHint(true);
         try {
             // 1. Kiểm tra frontend trước
-            const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
-            if (!feResult.passed) {
-                // playSound("error");
-                speak(`${feResult.error}. ${feResult.smartHints}`);
-                setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
-                return;
-            }
+            // const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
+            // if (!feResult.passed) {
+            //     // playSound("error");
+            //     speak(`${feResult.error}. ${feResult.smartHints}`);
+            //     setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
+            //     return;
+            // }
 
             // 2. Gửi lên backend
             const result = await fetchSubmitCode(userCode, questId);
