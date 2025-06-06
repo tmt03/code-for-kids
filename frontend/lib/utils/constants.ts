@@ -50,7 +50,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   move: 3,
   moveRandom: 4,
   onKey: 5,
-  onAttack: 3,
+  onAttack: 4,
   interact: 5,
   autoAttack: 3,
   when: 4,
@@ -168,7 +168,8 @@ export const COMMANDS = [
   },
   {
     name: "onAttack",
-    syntax: 'onAttack("phím", { animation: "tên_animation" }, "tên_ref");',
+    syntax:
+      'onAttack("phím", { animation: "tên_animation" }, kiểu_skill, "tên_ref");',
   },
   {
     name: "interact",

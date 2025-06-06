@@ -86,9 +86,18 @@ export function createBackendSandbox() {
       }
     },
 
-    onAttack: (key: string, options: any, refName: string) => {
+    onAttack: (
+      key: string,
+      options: any,
+      typeSkill: string,
+      refName: string
+    ) => {
       if (refs[refName]) {
-        refs[refName].onAttack = { key, animation: options?.animation };
+        refs[refName].onAttack = {
+          key,
+          animation: options?.animation,
+          typeSkill,
+        };
       }
     },
 
