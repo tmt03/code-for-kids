@@ -13,7 +13,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   onKey: 5,
   onAttack: 4,
   interact: 5,
-  autoAttack: 3,
+  autoAttack: 5,
   when: 4,
   setHealth: 2,
   startTimer: 1,

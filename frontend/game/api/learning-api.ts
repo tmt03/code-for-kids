@@ -12,7 +12,7 @@ export function createStudentAPI(
 
   // === Core APIs from BOOK 1 ===
 
-  // 1. Set background
+  // 1. Set background - DONE
   sandbox.setBackground = (bgKey: string) => {
     scene.add
       .image(0, 0, bgKey)
@@ -21,7 +21,7 @@ export function createStudentAPI(
       .setDepth(0);
   };
 
-  // 2. Set floor (tự động thêm vào platforms)
+  // 2. Set floor (tự động thêm vào platforms) - DONE
   sandbox.setFloor = (
     floorKey: string,
     x: number,
@@ -51,7 +51,7 @@ export function createStudentAPI(
     return floor;
   };
 
-  // 3. steColor - thay đổi màu sắc
+  // 3. steColor - thay đổi màu sắc - DONE
   sandbox.setColor = (refName: string, colorName: string) => {
     const sprite = sandbox[refName];
     if (!sprite) {
@@ -107,6 +107,7 @@ export function createStudentAPI(
     sprite.setTint(tint);
   };
 
+  // Lệnh sapwn - DONE 80%
   sandbox.spawn = (
     spriteKey: string,
     x: number,
@@ -215,8 +216,7 @@ export function createStudentAPI(
     });
   };
 
-  // 10. On key
-  // 10. On key
+  // 10. On key - DONE
   sandbox.onKey = (
     key: string,
     options: { animation?: string },
@@ -265,7 +265,7 @@ export function createStudentAPI(
     );
   };
 
-  // 10b. On attack (lệnh mới)
+  // 10b. On attack (lệnh mới) - DONE
   sandbox.onAttack = (
     key: string,
     config: { animation?: string },
@@ -327,8 +327,7 @@ export function createStudentAPI(
     });
   };
 
-
-  //12. Auto Attack
+  //12. Auto Attack - (DONE)
   sandbox.autoAttack = (
     refName: string,
     range: number,
@@ -338,17 +337,16 @@ export function createStudentAPI(
   ) => {
     const shooter = sandbox[refName] as Phaser.GameObjects.Sprite;
     if (!shooter || !skillHandlers[skillKey]) return;
-  
+
     scene.time.addEvent({
       delay: cooldown,
       loop: true,
       callback: () => {
         skillHandlers[skillKey](scene, shooter, range, damage);
-      }
+      },
     });
   };
-  
-  
+
   // 13. When
   sandbox.when = (
     condition: string,
@@ -393,47 +391,61 @@ export function createStudentAPI(
     });
   };
 
-//===================================================================================================================================================//
+  //===================================================================================================================================================//
 
   //hàm skill
   const skillHandlers: Record<
-  string,
-  (scene: Phaser.Scene, shooter: Phaser.GameObjects.Sprite, range: number, damage: number) => void
-> = {
-  fireball: (scene, shooter, range, damage) => {
-    const direction = shooter.flipX ? -1 : 1;
+    string,
+    (
+      scene: Phaser.Scene,
+      shooter: Phaser.GameObjects.Sprite,
+      range: number,
+      damage: number
+    ) => void
+  > = {
+    fireball: (scene, shooter, range, damage) => {
+      const direction = shooter.flipX ? -1 : 1;
 
-    const fireball = scene.physics.add.sprite(shooter.x, shooter.y, "fireball")
-      .setScale(1)
-      .setAngle(direction > 0 ? 180 : 0) // 🔁 Quay góc theo hướng
-      .setVelocityX(direction * 300)
-      .setGravity(0, 0);
+      const fireball = scene.physics.add
+        .sprite(shooter.x, shooter.y, "fireball")
+        .setScale(1)
+        .setAngle(direction > 0 ? 180 : 0) // 🔁 Quay góc theo hướng
+        .setVelocityX(direction * 300)
+        .setGravity(0, 0);
 
-    fireball.body.allowGravity = false;
+      fireball.body.allowGravity = false;
 
-    // Bay hết quãng đường rồi biến mất
-    const travelTime = (range / 300) * 1000;
-    scene.time.delayedCall(travelTime, () => fireball.destroy());
+      // Bay hết quãng đường rồi biến mất
+      const travelTime = (range / 300) * 1000;
+      scene.time.delayedCall(travelTime, () => fireball.destroy());
 
-    // Gây sát thương khi chạm bất kỳ đối tượng nào (trừ bản thân)
-    scene.physics.add.overlap(fireball, scene.children.list, (skillObj, targetObj) => {
-      const target = targetObj as Phaser.GameObjects.Sprite;
-      if (target === shooter || target === fireball) return;
+      // Gây sát thương khi chạm bất kỳ đối tượng nào (trừ bản thân)
+      scene.physics.add.overlap(
+        fireball,
+        scene.children.list,
+        (skillObj, targetObj) => {
+          const target = targetObj as Phaser.GameObjects.Sprite;
+          if (target === shooter || target === fireball) return;
 
-      const targetKey = Object.keys(sandbox).find(k => sandbox[k] === target);
-      if (!targetKey) return;
+          const targetKey = Object.keys(sandbox).find(
+            (k) => sandbox[k] === target
+          );
+          if (!targetKey) return;
 
-      const currHealth = (scene as any)[`${targetKey}.health`] ?? 100;
-      const newHealth = Math.max(0, currHealth - damage);
+          const currHealth = (scene as any)[`${targetKey}.health`] ?? 100;
+          const newHealth = Math.max(0, currHealth - damage);
 
-      (scene as any)[`${targetKey}.health`] = newHealth;
-      scene.events.emit("update-health", { refName: targetKey, health: newHealth });
+          (scene as any)[`${targetKey}.health`] = newHealth;
+          scene.events.emit("update-health", {
+            refName: targetKey,
+            health: newHealth,
+          });
 
-      fireball.destroy();
-    });
-  },
-
-};
+          fireball.destroy();
+        }
+      );
+    },
+  };
 
   //==============================================================================//
   // Hàm xử lý tấn công

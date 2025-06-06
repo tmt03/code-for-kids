@@ -57,7 +57,6 @@ export class Game_Scene extends Phaser.Scene {
   // Hằng số cho kích thước game
   private static readonly LOGICAL_WIDTH = 1440;
   private static readonly LOGICAL_HEIGHT = 720;
-  private boss!: Phaser.Physics.Arcade.Sprite;
   // Trạng thái và cấu hình game
   private sandbox!: Record<string, any>; // Môi trường sandbox cho code người dùng
   private quest: Quest; // Cấu hình nhiệm vụ hiện tại
@@ -167,7 +166,7 @@ export class Game_Scene extends Phaser.Scene {
       frameRate: 4,
       repeat: 0,
     });
-// Tạo animation cho quai
+    // Tạo animation cho quai
     this.anims.create({
       key: "mrun",
       frames: this.anims.generateFrameNumbers("monster_run", {
@@ -198,7 +197,7 @@ export class Game_Scene extends Phaser.Scene {
       repeat: 0,
     });
 
-        // Tạo animation cho boss
+    // Tạo animation cho boss
     this.anims.create({
       key: "brun",
       frames: this.anims.generateFrameNumbers("boss_run", {
@@ -221,9 +220,9 @@ export class Game_Scene extends Phaser.Scene {
 
     this.anims.create({
       key: "fireball_anim",
-      frames: this.anims.generateFrameNumbers("fireball_anim", { 
-        start: 0, 
-        end: 3, 
+      frames: this.anims.generateFrameNumbers("fireball_anim", {
+        start: 0,
+        end: 3,
       }),
       frameRate: 10,
       repeat: -1,

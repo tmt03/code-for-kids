@@ -117,9 +117,9 @@ export function createBackendSandbox() {
     },
 
     // 12. Tấn công tự động
-    autoAttack: (refName: string, minX: number, maxX: number) => {
+    autoAttack: (refName: string, range: number, skillKey: string, damage: number, cooldown: number) => {
       if (refs[refName]) {
-        refs[refName].autoAttack = { minX, maxX };
+        refs[refName].autoAttack = { range, skillKey, damage, cooldown };
       }
     },
 
