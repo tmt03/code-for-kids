@@ -48,6 +48,7 @@ interface AttackConfig {
   sprite: Phaser.GameObjects.Sprite; // Sprite thực hiện tấn công
   animation?: string; // Animation phát khi tấn công
   refName: string; // Tên tham chiếu cho sprite
+  projectileType: string; // Loại đạn (ví dụ: "sword", "fireball")
 }
 
 // ===== Lớp Scene Game Chính =====
@@ -64,7 +65,6 @@ export class Game_Scene extends Phaser.Scene {
   private keys: { [key: number]: Phaser.Input.Keyboard.Key } = {}; // Theo dõi input bàn phím
   private lastAttackTime: { [refName: string]: number } = {}; // Theo dõi thời gian hồi tấn công
   private attackCooldown = 500; // Thời gian hồi tấn công (ms)
-  private swordCounter = 0; // Bộ đếm cho các instance kiếm
 
   constructor(quest: Quest) {
     super("Game_Scene");
@@ -90,6 +90,7 @@ export class Game_Scene extends Phaser.Scene {
     this.setupAnimations();
     this.initializeSandbox();
     this.setupResizeListener();
+    this.setupHealthListener(); // Thêm lắng nghe sự kiện update-health
     this.runPreviewCodeIfAvailable();
     this.setupRunUserCodeListener();
   }
@@ -112,8 +113,7 @@ export class Game_Scene extends Phaser.Scene {
       };
     } = {};
 
-    this.handleMovement(spriteStates);
-    this.handleAttacks(spriteStates);
+    this.handleInput(spriteStates);
     this.applyVelocities(spriteStates);
   }
 
@@ -194,13 +194,49 @@ export class Game_Scene extends Phaser.Scene {
     });
   }
 
+  /**
+   * Lắng nghe sự kiện update-health từ createStudentAPI
+   * Cập nhật trạng thái sprite (ví dụ: tiêu diệt sprite khi máu = 0)
+   */
+  private setupHealthListener(): void {
+    this.events.on(
+      "update-health",
+      ({ refName, health }: { refName: string; health: number }) => {
+        console.log(`Sprite ${refName} cập nhật máu: ${health}`);
+        if (health <= 0) {
+          const sprite = this.sandbox[refName];
+          if (sprite) {
+            sprite.destroy();
+            delete this.sandbox[refName];
+            console.log(`Sprite ${refName} đã bị tiêu diệt`);
+          }
+        }
+      }
+    );
+
+    // Tương thích với API interact (nếu có)
+    this.events.on(
+      "lose-health",
+      ({ refName, value }: { refName: string; value: number }) => {
+        console.log(`Sprite ${refName} mất ${value} máu`);
+        const sprite = this.sandbox[refName];
+        if (sprite) {
+          const currHealth = (this as any)[`${refName}.health`] ?? 100;
+          const newHealth = Math.max(0, currHealth - value);
+          (this as any)[`${refName}.health`] = newHealth;
+          this.events.emit("update-health", { refName, health: newHealth });
+        }
+      }
+    );
+  }
+
   // ===== Các Phương Thức Di Chuyển và Điều Khiển =====
 
   /**
-   * Xử lý di chuyển người chơi dựa trên input bàn phím
-   * Cập nhật vận tốc và animation cho mỗi sprite được điều khiển
+   * Xử lý tất cả input của người chơi (di chuyển, nhảy, tấn công)
+   * Cập nhật vận tốc, animation và trạng thái sprite
    */
-  private handleMovement(spriteStates: {
+  private handleInput(spriteStates: {
     [refName: string]: {
       velocityX: number;
       wasKeyDown: boolean;
@@ -208,30 +244,25 @@ export class Game_Scene extends Phaser.Scene {
       wasAttackKeyDown: boolean;
     };
   }): void {
-    if (!this.sandbox.controls || this.sandbox.controls.length === 0) return;
+    // Tạo danh sách các refName duy nhất từ controls và attackControls
+    const allRefNames = new Set<string>();
+    if (this.sandbox.controls) {
+      this.sandbox.controls.forEach((control: ControlConfig) => {
+        allRefNames.add(control.refName);
+      });
+    }
+    if (this.sandbox.attackControls) {
+      this.sandbox.attackControls.forEach((control: AttackConfig) => {
+        allRefNames.add(control.refName);
+      });
+    }
 
-    // Xử lý từng cấu hình điều khiển
-    this.sandbox.controls.forEach((control: ControlConfig) => {
-      const {
-        key,
-        sprite,
-        refName,
-        animation,
-        velocityX,
-        velocityY,
-        isJumpKey,
-      } = control;
-
-      // Khởi tạo input bàn phím nếu chưa có
-      if (!this.keys[key]) {
-        this.keys[key] = this.input.keyboard!.addKey(key);
-      }
-      const isKeyDown = this.keys[key].isDown;
-
-      // Kiểm tra sprite
+    // Xử lý từng sprite
+    allRefNames.forEach((refName) => {
+      const sprite = this.sandbox[refName];
       if (!sprite || !sprite.body) {
         console.warn(
-          `Sprite '${refName}' không tồn tại hoặc không có physics body trong controls`
+          `Sprite '${refName}' không tồn tại hoặc không có physics body`
         );
         return;
       }
@@ -246,180 +277,154 @@ export class Game_Scene extends Phaser.Scene {
         };
       }
 
-      // Xử lý khi nhấn phím
-      if (isKeyDown) {
-        // Logic nhảy
-        if (
-          isJumpKey &&
-          (sprite.body as Phaser.Physics.Arcade.Body).touching.down
-        ) {
-          (sprite as Phaser.Physics.Arcade.Sprite).setVelocityY(-velocityY);
-          spriteStates[refName].isJumping = true;
-          if (animation && sprite.anims.currentAnim?.key !== animation) {
-            sprite.anims.play(animation, true);
-          }
+      // 1. Xử lý di chuyển và nhảy
+      const movementControls =
+        this.sandbox.controls?.filter(
+          (control: ControlConfig) => control.refName === refName
+        ) || [];
+
+      let hasMovementKeyPressed = false;
+      movementControls.forEach((control: ControlConfig) => {
+        const { key, animation, velocityX, velocityY, isJumpKey } = control;
+
+        if (!this.keys[key]) {
+          this.keys[key] = this.input.keyboard!.addKey(key);
         }
-        // Logic di chuyển
-        else if (!isJumpKey) {
-          spriteStates[refName].velocityX = velocityX;
-          if (velocityX > 0) sprite.setFlipX(false);
-          else if (velocityX < 0) sprite.setFlipX(true);
+        const isKeyDown = this.keys[key].isDown;
+
+        if (isKeyDown) {
           if (
-            animation &&
-            !spriteStates[refName].isJumping &&
-            sprite.anims.currentAnim?.key !== animation
+            isJumpKey &&
+            (sprite.body as Phaser.Physics.Arcade.Body).touching.down
           ) {
-            sprite.anims.play(animation, true);
+            (sprite as Phaser.Physics.Arcade.Sprite).setVelocityY(-velocityY);
+            spriteStates[refName].isJumping = true;
+            if (animation && sprite.anims.currentAnim?.key !== animation) {
+              sprite.anims.play(animation, true);
+            }
+          } else if (!isJumpKey) {
+            spriteStates[refName].velocityX = velocityX;
+            if (velocityX > 0) sprite.setFlipX(false);
+            else if (velocityX < 0) sprite.setFlipX(true);
+            if (
+              animation &&
+              !spriteStates[refName].isJumping &&
+              sprite.anims.currentAnim?.key !== animation
+            ) {
+              sprite.anims.play(animation, true);
+            }
+            hasMovementKeyPressed = true;
           }
-        }
-      }
-      // Xử lý khi thả phím - trở về animation đứng yên
-      else if (
-        animation &&
-        sprite.anims.currentAnim?.key === animation &&
-        !isJumpKey &&
-        !spriteStates[refName].isJumping
-      ) {
-        const idleAnimation = `${sprite.texture.key}_idle`;
-        if (sprite.anims.get(idleAnimation)) {
-          sprite.anims.play(idleAnimation, true);
-        }
-      }
-
-      // Cập nhật theo dõi trạng thái
-      spriteStates[refName].wasKeyDown = isKeyDown;
-
-      // Xử lý khi tiếp đất sau khi nhảy
-      if (
-        spriteStates[refName].isJumping &&
-        (sprite.body as Phaser.Physics.Arcade.Body).touching.down
-      ) {
-        spriteStates[refName].isJumping = false;
-        const spriteKey = sprite.texture.key;
-        if (isKeyDown && !isJumpKey && sprite.anims.get(`${spriteKey}_run`)) {
-          sprite.anims.play(`${spriteKey}_run`, true);
-        } else {
-          const idleAnimation = `${spriteKey}_idle`;
+        } else if (
+          animation &&
+          sprite.anims.currentAnim?.key === animation &&
+          !isJumpKey &&
+          !spriteStates[refName].isJumping
+        ) {
+          const idleAnimation = `${sprite.texture.key}_idle`;
           if (sprite.anims.get(idleAnimation)) {
             sprite.anims.play(idleAnimation, true);
           }
         }
-      }
-    });
 
-    // Reset vận tốc khi không có phím di chuyển nào được nhấn
-    for (const refName in spriteStates) {
-      const state = spriteStates[refName];
-      const sprite = this.sandbox[refName];
-      if (sprite && sprite.body) {
-        let hasMovementKeyPressed = false;
-        this.sandbox.controls.forEach((control: ControlConfig) => {
+        spriteStates[refName].wasKeyDown = isKeyDown;
+
+        if (
+          spriteStates[refName].isJumping &&
+          (sprite.body as Phaser.Physics.Arcade.Body).touching.down
+        ) {
+          spriteStates[refName].isJumping = false;
+          const spriteKey = sprite.texture.key;
           if (
-            control.refName === refName &&
-            !control.isJumpKey &&
-            this.keys[control.key]?.isDown
+            animation &&
+            isKeyDown &&
+            !isJumpKey &&
+            sprite.anims.get(animation)
           ) {
-            hasMovementKeyPressed = true;
-          }
-        });
-        if (!hasMovementKeyPressed) {
-          state.velocityX = 0;
-          if (
-            !state.isJumping &&
-            sprite.anims.currentAnim?.key !== `${sprite.texture.key}_idle`
-          ) {
-            sprite.anims.play(`${sprite.texture.key}_idle`, true);
+            sprite.anims.play(animation, true);
+          } else {
+            const idleAnimation = `${spriteKey}_idle`;
+            if (sprite.anims.get(idleAnimation)) {
+              sprite.anims.play(idleAnimation, true);
+            }
           }
         }
-      }
-    }
-  }
+      });
 
-  /**
-   * Xử lý các hành động tấn công dựa trên input bàn phím
-   * Quản lý animation tấn công và thời gian hồi
-   */
-  private handleAttacks(spriteStates: {
-    [refName: string]: {
-      velocityX: number;
-      wasKeyDown: boolean;
-      isJumping: boolean;
-      wasAttackKeyDown: boolean;
-    };
-  }): void {
-    if (
-      !this.sandbox.attackControls ||
-      this.sandbox.attackControls.length === 0
-    )
-      return;
-
-    this.sandbox.attackControls.forEach((control: AttackConfig) => {
-      const { key, sprite, refName, animation } = control;
-
-      // Khởi tạo input bàn phím nếu chưa có
-      if (!this.keys[key]) {
-        this.keys[key] = this.input.keyboard!.addKey(key);
-      }
-      const isKeyDown = this.keys[key].isDown;
-
-      // Kiểm tra sprite
-      if (!sprite || !sprite.body) {
-        console.warn(
-          `Sprite '${refName}' không tồn tại hoặc không có physics body trong attackControls`
-        );
-        return;
+      // Reset vận tốc nếu không có phím di chuyển nào được nhấn
+      if (!hasMovementKeyPressed) {
+        spriteStates[refName].velocityX = 0;
+        if (
+          !spriteStates[refName].isJumping &&
+          sprite.anims.currentAnim?.key !== `${sprite.texture.key}_idle`
+        ) {
+          sprite.anims.play(`${sprite.texture.key}_idle`, true);
+        }
       }
 
-      // Khởi tạo trạng thái sprite nếu chưa có
-      if (!spriteStates[refName]) {
-        spriteStates[refName] = {
-          velocityX: 0,
-          wasKeyDown: false,
-          isJumping: false,
-          wasAttackKeyDown: false,
-        };
-      }
+      // 2. Xử lý tấn công
+      const attackControls =
+        this.sandbox.attackControls?.filter(
+          (control: AttackConfig) => control.refName === refName
+        ) || [];
 
-      // Xử lý input tấn công
-      if (isKeyDown && !spriteStates[refName].wasAttackKeyDown) {
-        const currentTime = this.time.now;
-        const lastAttack = this.lastAttackTime[refName] || 0;
+      attackControls.forEach((control: AttackConfig) => {
+        const { key, animation } = control;
 
-        // Kiểm tra thời gian hồi tấn công
-        if (currentTime - lastAttack >= this.attackCooldown) {
-          if (animation) {
-            sprite.anims.play(animation, true);
-          }
-          this.attack(sprite, refName);
-          this.lastAttackTime[refName] = currentTime;
+        if (!this.keys[key]) {
+          this.keys[key] = this.input.keyboard!.addKey(key);
+        }
+        const isKeyDown = this.keys[key].isDown;
 
-          // Xử lý khi animation hoàn thành
-          sprite.on(
-            "animationcomplete",
-            (anim: Phaser.Animations.Animation) => {
-              if (anim.key === animation) {
-                if (spriteStates[refName].isJumping) {
-                  sprite.anims.play(`${sprite.texture.key}_jump`, true);
-                } else {
-                  const hasMovementKeyPressed = this.sandbox.controls.some(
-                    (ctrl: ControlConfig) =>
-                      ctrl.refName === refName &&
-                      !ctrl.isJumpKey &&
-                      this.keys[ctrl.key]?.isDown
-                  );
-                  if (hasMovementKeyPressed) {
-                    sprite.anims.play(`${sprite.texture.key}_run`, true);
-                  } else {
+        const canAttack = (sprite.body as Phaser.Physics.Arcade.Body).touching
+          .down;
+
+        if (isKeyDown && !spriteStates[refName].wasAttackKeyDown && canAttack) {
+          const currentTime = this.time.now;
+          const lastAttack = this.lastAttackTime[refName] || 0;
+
+          if (currentTime - lastAttack >= this.attackCooldown) {
+            if (animation) {
+              sprite.anims.play(animation, true);
+            }
+            this.lastAttackTime[refName] = currentTime;
+
+            spriteStates[refName].isJumping = false;
+
+            sprite.on(
+              "animationcomplete",
+              (anim: Phaser.Animations.Animation) => {
+                if (anim.key === animation) {
+                  if (
+                    !(sprite.body as Phaser.Physics.Arcade.Body).touching.down
+                  ) {
+                    spriteStates[refName].isJumping = true;
+                    if (sprite.anims.get(`${sprite.texture.key}_jump`)) {
+                      sprite.anims.play(`${sprite.texture.key}_jump`, true);
+                    }
+                  } else if (
+                    hasMovementKeyPressed &&
+                    movementControls.find(
+                      (ctrl: ControlConfig) => ctrl.animation
+                    )
+                  ) {
+                    sprite.anims.play(
+                      movementControls.find(
+                        (ctrl: ControlConfig) => ctrl.animation
+                      )!.animation!,
+                      true
+                    );
+                  } else if (sprite.anims.get(`${sprite.texture.key}_idle`)) {
                     sprite.anims.play(`${sprite.texture.key}_idle`, true);
                   }
                 }
               }
-            }
-          );
+            );
+          }
         }
-      }
 
-      spriteStates[refName].wasAttackKeyDown = isKeyDown;
+        spriteStates[refName].wasAttackKeyDown = isKeyDown;
+      });
     });
   }
 
@@ -439,68 +444,6 @@ export class Game_Scene extends Phaser.Scene {
       const sprite = this.sandbox[refName];
       if (sprite && sprite.body) {
         sprite.setVelocityX(spriteStates[refName].velocityX);
-      }
-    }
-  }
-
-  /**
-   * Tạo và quản lý đạn tấn công
-   * Xử lý tạo kiếm, di chuyển và phát hiện va chạm
-   */
-  private attack(sprite: Phaser.GameObjects.Sprite, refName: string): void {
-    if (!sprite || !sprite.body) {
-      console.warn(
-        `Sprite '${refName}' không tồn tại hoặc không có physics body trong attack`
-      );
-      return;
-    }
-
-    // Tạo đạn kiếm
-    const speed = 300 * this.scaleFactor;
-    const swordRefName = `sword_${refName}_${this.swordCounter++}`;
-    const sword = this.physics.add.sprite(
-      sprite.x + (sprite.flipX ? -10 : 10),
-      sprite.y,
-      "sword"
-    );
-
-    // Cấu hình thuộc tính kiếm
-    sword.setScale(this.scaleFactor * 0.25);
-    sword.body.allowGravity = false;
-    sword.setVelocityX((sprite.flipX ? -3 : 3) * speed);
-    this.sandbox[swordRefName] = sword;
-
-    // Xóa kiếm sau 1 giây
-    this.time.delayedCall(1000, () => {
-      if (sword && sword.active) {
-        delete this.sandbox[swordRefName];
-        sword.destroy();
-      }
-    });
-
-    // Thiết lập phát hiện va chạm cho tất cả mục tiêu tiềm năng
-    for (const targetRef in this.sandbox) {
-      if (
-        targetRef !== refName &&
-        targetRef !== swordRefName &&
-        targetRef !== "platforms" &&
-        this.sandbox[targetRef] instanceof Phaser.GameObjects.Sprite
-      ) {
-        const target = this.sandbox[targetRef];
-        if (!target || !target.body) {
-          console.warn(
-            `Mục tiêu '${targetRef}' không tồn tại hoặc không có physics body trong attack`
-          );
-          continue;
-        }
-        this.physics.add.overlap(sword, target, () => {
-          console.log(
-            `Kiếm ${swordRefName} từ ${refName} đã trúng ${targetRef}`
-          );
-          this.events.emit("lose-health", { refName: targetRef, value: 10 });
-          delete this.sandbox[swordRefName];
-          sword.destroy();
-        });
       }
     }
   }

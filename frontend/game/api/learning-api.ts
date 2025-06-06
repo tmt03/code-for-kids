@@ -268,12 +268,14 @@ export function createStudentAPI(
   // 10b. On attack (lệnh mới)
   sandbox.onAttack = (
     key: string,
-    options: { animation?: string },
-    refName: string
+    config: { animation?: string },
+    projectileType: string,
+    refName: string,
+    DAMAGE: number = 10 //mặc định
   ) => {
-    const sprite = sandbox[refName];
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
     if (!sprite) {
-      console.warn(`Sprite with refName '${refName}' not found`);
+      console.warn(`Sprite '${refName}' không tồn tại trong sandbox`);
       return;
     }
     const upperKey = key.toUpperCase();
@@ -286,18 +288,22 @@ export function createStudentAPI(
       return;
     }
     const keyCode = allowedKeys[upperKey];
-    if (!Array.isArray(sandbox.attackControls)) sandbox.attackControls = [];
+    if (!sandbox.attackControls) sandbox.attackControls = [];
     sandbox.attackControls.push({
       key: keyCode,
-      sprite: sprite,
-      animation: options?.animation
-        ? `${sprite.texture.key}_${options.animation}`
-        : null,
-      refName: refName,
+      sprite,
+      refName,
+      animation: config.animation,
+      projectileType,
     });
-    console.log(
-      `Added attack control for ${refName}: key=${key}, keyCode=${keyCode}`
-    );
+
+    // Lắng nghe phím để kích hoạt tấn công
+    scene.input.keyboard?.on("keydown-" + key.toUpperCase(), () => {
+      if (config.animation) {
+        sprite.anims.play(config.animation, true);
+      }
+      attackHandler(scene, sprite, projectileType, sandbox, DAMAGE);
+    });
   };
 
   // 11. Interact
@@ -378,6 +384,58 @@ export function createStudentAPI(
         scene.add.sprite(400, 240, "game_over");
       }
     });
+  };
+
+  //==============================================================================//
+  // Hàm xử lý tấn công
+  const attackHandler = (
+    scene: Phaser.Scene,
+    shooter: Phaser.GameObjects.Sprite,
+    projectileType: string,
+    sandbox: Record<string, any>,
+    DAMAGE: number // Truền vào từ attackHandler
+  ) => {
+    const direction = shooter.flipX ? -1 : 1;
+    const projectile = scene.physics.add
+      .sprite(shooter.x + (direction > 0 ? 10 : -10), shooter.y, projectileType)
+      .setScale(0.25)
+      .setVelocityX(direction * 300)
+      .setGravity(0, 0);
+
+    projectile.body.allowGravity = false;
+
+    // Biến mất sau 1 giây
+    scene.time.delayedCall(1000, () => projectile.destroy());
+
+    // Gây sát thương cho các sprite va chạm (trừ người bắn, chính đạn, và platforms)
+    scene.physics.add.overlap(
+      projectile,
+      scene.children.list,
+      (skillObj, targetObj) => {
+        const target = targetObj as Phaser.GameObjects.Sprite;
+        if (target === shooter || target === projectile) return;
+
+        // Kiểm tra xem target có phải là platform không
+        const platforms = sandbox.platforms?.getChildren() || [];
+        if (platforms.includes(target)) {
+          projectile.destroy(); // Chỉ phá hủy đạn khi va chạm platform, không gây sát thương
+          return;
+        }
+
+        // Tìm targetKey trong sandbox (cho các sprite như enemy)
+        const targetKey = Object.keys(sandbox).find(
+          (k) => sandbox[k] === target
+        );
+        if (!targetKey) return;
+
+        // Lấy máu hiện tại và tính toán máu mới
+        const currHealth = (scene as any)[`${targetKey}.health`] ?? 100;
+        const newHealth = Math.max(0, currHealth - DAMAGE); // Sử dụng damage tùy chỉnh
+        sandbox.setHealth(targetKey, newHealth); // Gọi setHealth để cập nhật máu
+
+        projectile.destroy();
+      }
+    );
   };
 
   return sandbox;
