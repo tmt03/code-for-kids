@@ -1,6 +1,60 @@
 import * as Phaser from "phaser";
 import { allowedKeys } from "../constants/allowedKeys";
 
+type HitboxOptions = {
+  widthPercent?: number; // % chiều rộng sprite
+  heightPercent?: number; // % chiều cao sprite
+  offsetY?: number; // offset Y tùy chỉnh
+  scaleFactor: number; // scale factor hiện tại
+};
+
+const setupHitbox = (
+  sprite: Phaser.GameObjects.Sprite,
+  options: HitboxOptions
+) => {
+  if (!sprite.body) {
+    console.warn("Sprite không có physics body");
+    return;
+  }
+
+  const {
+    widthPercent = 0.5, // Mặc định 80% chiều rộng
+    heightPercent = 0.5, // Mặc định 60% chiều cao
+    offsetY = 0, // Mặc định không offset Y
+    scaleFactor,
+  } = options;
+
+  // Tính toán kích thước hitbox
+  const hitboxWidth = sprite.width * widthPercent;
+  const hitboxHeight = sprite.height * heightPercent;
+  const offsetX = (sprite.width - hitboxWidth) / 2; // Căn giữa theo chiều ngang
+  const finalOffsetY = sprite.height - hitboxHeight + offsetY; // Sát dưới chân sprite
+
+  // Cấu hình hitbox
+  if (sprite.body instanceof Phaser.Physics.Arcade.Body) {
+    sprite.body.setSize(hitboxWidth, hitboxHeight);
+    sprite.body.setOffset(offsetX, finalOffsetY);
+    sprite.body.updateBounds();
+  }
+
+  // Lưu kích thước hitbox gốc để sử dụng khi scale
+  sprite.setData("originalHitbox", {
+    width: hitboxWidth,
+    height: hitboxHeight,
+    offsetX,
+    offsetY: finalOffsetY,
+    widthPercent,
+    heightPercent,
+  });
+
+  console.log(
+    `Hitbox configured for sprite: width=${hitboxWidth}, height=${hitboxHeight}, ` +
+      `offsetX=${offsetX}, offsetY=${finalOffsetY}`
+  );
+};
+
+//==============================================================================//
+//API GAME
 export function createStudentAPI(
   scene: Phaser.Scene,
   scaleFactor: number
@@ -107,7 +161,7 @@ export function createStudentAPI(
     sprite.setTint(tint);
   };
 
-  // Lệnh sapwn - DONE 80%
+  // Lệnh spawn - Tích hợp hitbox mặc định
   sandbox.spawn = (
     spriteKey: string,
     x: number,
@@ -124,6 +178,7 @@ export function createStudentAPI(
       .setGravityY(1000)
       .setCollideWorldBounds(true);
     sandbox[refName] = sprite;
+
     // Thêm animation mặc định là "idle" nếu không có animation
     const animationToPlay = options?.animation
       ? `${spriteKey}_${options.animation}`
@@ -136,10 +191,12 @@ export function createStudentAPI(
         `Animation '${animationToPlay}' không tồn tại cho '${spriteKey}'`
       );
     }
+
+    // Sử dụng setupHitbox để cấu hình hitbox
+    setupHitbox(sprite, { scaleFactor });
+
     console.log(
-      `Player '${spriteKey}' spawned at (${scaledX}, ${scaledY}) with scale ${
-        scaleFactor * 0.75
-      }`
+      `Player '${spriteKey}' spawned at (${scaledX}, ${scaledY}) with scale ${scaleFactor}`
     );
     return sprite;
   };
@@ -160,6 +217,10 @@ export function createStudentAPI(
         y,
         spriteKey
       ) as Phaser.GameObjects.Sprite;
+
+      // Thêm hitbox cho sprite
+      setupHitbox(sprite, { scaleFactor });
+
       sandbox[refName] = sprite;
       scene.physics.add.collider(sprite, sandbox.platforms); // Thêm va chạm với platforms
     };
@@ -171,23 +232,139 @@ export function createStudentAPI(
     spawnItem(); // Spawn ngay lần đầu
   };
 
-  // 6. Set name
+  // 6. Set name - DONE
   sandbox.setName = (refName: string, name: string) => {
     const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite) return;
-    scene.add
-      .text(sprite.x, sprite.y - 50, name, {
-        font: "20px Arial",
+    if (!sprite) {
+      console.warn(`Không tìm thấy đối tượng với key '${refName}'`);
+      return;
+    }
+
+    // Tạo container để chứa tên
+    const container = scene.add.container(
+      sprite.x,
+      sprite.y - 40 * scaleFactor
+    );
+    container.setDepth(3); // Đảm bảo tên hiển thị trên sprite
+
+    // Tạo nền cho tên
+    const background = scene.add.rectangle(
+      0,
+      0,
+      50 * scaleFactor,
+      20 * scaleFactor,
+      0x000000,
+      0.7
+    );
+    container.add(background);
+
+    // Tạo text cho tên
+    const text = scene.add
+      .text(0, 0, name, {
+        font: `${20 * scaleFactor}px Arial`,
         color: "#ffffff",
       })
       .setOrigin(0.5);
+    container.add(text);
+
+    // Gắn container vào sprite để di chuyển cùng
+    sprite.setData("nameContainer", container);
+
+    // Lưu refName để theo dõi
+    container.setData("refName", refName);
+
+    // Cập nhật vị trí container khi sprite di chuyển
+    const updateHandler = () => {
+      const currentSprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+      if (
+        currentSprite &&
+        currentSprite.data &&
+        currentSprite.data.get("nameContainer")
+      ) {
+        const currentContainer = currentSprite.data.get("nameContainer");
+        currentContainer.setPosition(
+          currentSprite.x,
+          currentSprite.y - 40 * scaleFactor
+        );
+      } else {
+        // Nếu sprite không còn, hủy container và gỡ sự kiện
+        if (container.data.get("refName")) {
+          container.destroy();
+          scene.events.off("update", updateHandler); // Gỡ sự kiện khi sprite không còn
+        }
+      }
+    };
+
+    scene.events.on("update", updateHandler);
+
+    console.log(`Đã đặt tên '${name}' cho sprite '${refName}'`);
   };
 
-  // 7. Scale
+  // 7. Scale - Cập nhật hitbox khi scale sprite
   sandbox.scale = (refName: string, factor: number) => {
     const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite || factor < 0.5 || factor > 2) return;
+    if (!sprite) {
+      console.warn(`Không tìm thấy đối tượng với key '${refName}'`);
+      return;
+    }
+    if (factor < 0.5 || factor > 2) {
+      console.warn(
+        `Yêu cầu scale '${factor}' không hợp lệ. Giới hạn từ 0.5 đến 2.`
+      );
+      return;
+    }
+
+    // Lưu lại scale factor hiện tại
+    const currentScale = sprite.scaleX;
     sprite.setScale(factor);
+
+    // Lấy thông tin hitbox gốc
+    const originalHitbox = sprite.data.get("originalHitbox");
+    if (originalHitbox && sprite.body instanceof Phaser.Physics.Arcade.Body) {
+      // Tính toán kích thước mới dựa trên kích thước gốc của sprite và tỷ lệ hitbox
+      const originalWidth = sprite.width; // Lấy kích thước gốc của sprite
+      const originalHeight = sprite.height;
+
+      // Tính toán hitbox mới dựa trên kích thước gốc và tỷ lệ phần trăm
+      const newHitboxWidth =
+        originalWidth * originalHitbox.widthPercent * factor * 0.5;
+      const newHitboxHeight =
+        originalHeight * originalHitbox.heightPercent * factor * 0.5;
+
+      // Tính toán offset mới
+      const newOffsetX = (sprite.width - newHitboxWidth) / 2; // Căn giữa theo chiều ngang
+      const newOffsetY = sprite.height - newHitboxHeight; // Sát dưới chân sprite
+
+      // Cập nhật hitbox
+      sprite.body.setSize(newHitboxWidth, newHitboxHeight);
+      sprite.body.setOffset(newOffsetX, newOffsetY);
+      sprite.body.updateBounds();
+
+      // Cập nhật lại dữ liệu hitbox gốc với kích thước mới
+      sprite.setData("originalHitbox", {
+        ...originalHitbox,
+        width: newHitboxWidth,
+        height: newHitboxHeight,
+        offsetX: newOffsetX,
+        offsetY: newOffsetY,
+      });
+
+      console.log(
+        `Updated hitbox for ${refName}: width=${newHitboxWidth}, height=${newHitboxHeight}, ` +
+          `offsetX=${newOffsetX}, offsetY=${newOffsetY}`
+      );
+    }
+
+    // Giữ nguyên kích thước của container tên, chỉ cập nhật vị trí
+    const container = sprite.data.get("nameContainer");
+    if (container) {
+      container.setPosition(
+        sprite.x,
+        sprite.y - 40 * scaleFactor // Giữ offset cố định
+      );
+    }
+
+    console.log(`Đã scale '${refName}' với factor ${factor}`);
   };
 
   // 8. Move
@@ -493,6 +670,12 @@ export function createStudentAPI(
         const currHealth = (scene as any)[`${targetKey}.health`] ?? 100;
         const newHealth = Math.max(0, currHealth - DAMAGE); // Sử dụng damage tùy chỉnh
         sandbox.setHealth(targetKey, newHealth); // Gọi setHealth để cập nhật máu
+
+        // Hủy sprite nếu health <= 0
+        if (newHealth <= 0 && target && target.destroy) {
+          target.destroy();
+          delete sandbox[targetKey]; // Xóa khỏi sandbox
+        }
 
         projectile.destroy();
       }
