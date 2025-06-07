@@ -6,9 +6,10 @@ const seedUsers = async () => {
   await CONNECT_DB();
 
   const users = [
-    { username: "student03", password: "123", role: "user" },
-    { username: "student04", password: "123", role: "user" },
-    { username: "student05", password: "123", role: "user" },
+    { username: "admin01", password: "123", role: "admin" },
+    { username: "student01", password: "123", role: "user" },
+    { username: "student02", password: "123", role: "user" },
+    { username: "admin02", password: "123", role: "admin" },
   ];
 
   for (const user of users) {
