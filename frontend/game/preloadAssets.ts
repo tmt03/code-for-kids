@@ -2,130 +2,120 @@
 import * as Phaser from "phaser";
 
 export function preloadAssets(scene: Phaser.Scene) {
-  scene.load.setPath(`/assets/game_assets`);
+  scene.load.setPath("/assets/game_assets");
 
-  scene.load.spritesheet("fireball_anim", "/skill/fireball_anim.png", {
-    frameWidth: 72,
-    frameHeight: 72,
-  });
-  // Chap 0 nhiem vu 1
-  scene.load.image("background_no_color", "/sky/no_color_sky_1.png");
-  scene.load.image("blue_sky", "/sky/sky_1.png");
-  scene.load.image("midnight_sky", "/sky/sky_2.png");
-  scene.load.image("pink_sky", "/sky/sky_3.png");
-  scene.load.image("cloudy_sky", "/sky/sky_4.png");
-  scene.load.image("afternoon_sky", "/sky/sky_5.png");
-  scene.load.image("sunset_sky", "/sky/sky_6.png");
-  scene.load.image("night_sky", "/sky/sky_7.png");
+  // 🌤️ Background Skies
+  scene.load.image("sky_gray", "/sky/no_color_sky_1.png");
+  scene.load.image("sky_blue", "/sky/sky_1.png");
+  scene.load.image("sky_midnight", "/sky/sky_2.png");
+  scene.load.image("sky_pink", "/sky/sky_3.png");
+  scene.load.image("sky_cloudy", "/sky/sky_4.png");
+  scene.load.image("sky_afternoon", "/sky/sky_5.png");
+  scene.load.image("sky_sunset", "/sky/sky_6.png");
+  scene.load.image("sky_night", "/sky/sky_7.png");
 
-  // Chap 0 nhiem vu 2
-  scene.load.image("ground_1", "/ground/ground_1.png");
-  scene.load.image("ground_2", "/ground/ground_2.png");
+  // 🟫 Grounds
+  scene.load.image("ground_plain", "/ground/ground_1.png");
+  scene.load.image("ground_rocky", "/ground/ground_2.png");
+  scene.load.image("ground_floating", "/ground/fly_ground.png");
+  scene.load.image("goal_flag", "/ground/win_flag.png");
 
-  // Chap 1 nhiem vu 1, 2
-  scene.load.image("castle", "/castle/castle.png");
+  // 🏰 Castle
+  scene.load.image("castle_main", "/castle/castle.png");
 
-  // Chap 1 nhiem vu 3
-  scene.load.image("pine_tree", "/tree/tree_1.png");
-  scene.load.image("tree", "/tree/tree_2.png");
-  scene.load.image("small_tree", "/tree/tree_3.png");
-  scene.load.image("big_tree", "/tree/tree_4.png");
+  // 🌲 Trees
+  scene.load.image("tree_pine", "/tree/tree_1.png");
+  scene.load.image("tree_round", "/tree/tree_2.png");
+  scene.load.image("tree_small", "/tree/tree_3.png");
+  scene.load.image("tree_big", "/tree/tree_4.png");
 
-  // Chap 1 thu thach
-  scene.load.image("small_shrub", "/tree/shrub_1.png");
-  scene.load.image("cherry_shrub", "/tree/shrub_2.png");
-  scene.load.image("berry_shrub", "/tree/shrub_3.png");
-  scene.load.image("big_shrub", "/tree/shrub_4.png");
-  scene.load.image("small_rock", "/rock/rock_1.png");
-  scene.load.image("tall_rock", "/rock/rock_2.png");
-  scene.load.image("strike_rock", "/rock/rock_3.png");
-  scene.load.image("big_rock", "/rock/rock_4.png");
-  scene.load.image("mountain_1", "/mountain/mountain_1.png");
-  scene.load.image("ice_mountain", "/mountain/mountain_2.png");
-  scene.load.image("meadow_mountain", "/mountain/mountain_3.png");
-  scene.load.image("plain_mountain", "/mountain/mountain_4.png");
-  scene.load.image("snow_mountain", "/mountain/mountain_5.png");
-  scene.load.image("dirt_mountain", "/mountain/mountain_6.png");
-  scene.load.image("plain_forest", "/forest/forest_1.png");
-  scene.load.image("dark_forest", "/forest/forest_2.png");
-  scene.load.image("night_forest", "/forest/forest_3.png");
+  // 🌿 Shrubs
+  scene.load.image("shrub_small", "/tree/shrub_1.png");
+  scene.load.image("shrub_cherry", "/tree/shrub_2.png");
+  scene.load.image("shrub_berry", "/tree/shrub_3.png");
+  scene.load.image("shrub_big", "/tree/shrub_4.png");
+
+  // 🪨 Rocks
+  scene.load.image("rock_small", "/rock/rock_1.png");
+  scene.load.image("rock_tall", "/rock/rock_2.png");
+  scene.load.image("rock_cracked", "/rock/rock_3.png");
+  scene.load.image("rock_big", "/rock/rock_4.png");
+
+  // 🏔️ Mountains
+  scene.load.image("mountain_gray", "/mountain/mountain_1.png");
+  scene.load.image("mountain_ice", "/mountain/mountain_2.png");
+  scene.load.image("mountain_meadow", "/mountain/mountain_3.png");
+  scene.load.image("mountain_plain", "/mountain/mountain_4.png");
+  scene.load.image("mountain_snow", "/mountain/mountain_5.png");
+  scene.load.image("mountain_dirt", "/mountain/mountain_6.png");
+
+  // 🌳 Forests
+  scene.load.image("forest_plain", "/forest/forest_1.png");
+  scene.load.image("forest_dark", "/forest/forest_2.png");
+  scene.load.image("forest_night", "/forest/forest_3.png");
   scene.load.image("forest_4", "/forest/forest_4.png");
-  scene.load.image("fog_forest", "/forest/forest_5.png");
-  scene.load.image("sunset_forest", "/forest/forest_6.png");
+  scene.load.image("forest_foggy", "/forest/forest_5.png");
+  scene.load.image("forest_sunset", "/forest/forest_6.png");
 
-  // Chap 2 nhiem vu 1, 2, 3
-  scene.load.spritesheet("player_run", "/player/knight_1/Run.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-  scene.load.spritesheet("player_idle", "/player/knight_1/Idle.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-  scene.load.spritesheet("player_jump", "/player/knight_1/Jump.png", {
-    frameWidth: 96,
-    frameHeight: 96,
+  // 🧍 Knight Players (Knight 1, 2, 3)
+  const knightVersions = ["knight_1", "knight_2", "knight_3"];
+  knightVersions.forEach((knight, i) => {
+    const prefix = `player${i + 1}`;
+    scene.load.spritesheet(`${prefix}_run`, `/player/${knight}/Run.png`, {
+      frameWidth: 96,
+      frameHeight: 96,
+    });
+    scene.load.spritesheet(`${prefix}_idle`, `/player/${knight}/Idle.png`, {
+      frameWidth: 96,
+      frameHeight: 96,
+    });
+    scene.load.spritesheet(`${prefix}_jump`, `/player/${knight}/Jump.png`, {
+      frameWidth: 96,
+      frameHeight: 96,
+    });
   });
 
-  // Chap 2 thu thach
-  scene.load.spritesheet("player_run", "/player/knight_2/Run.png", {
+  // 🧌 Monster - Orc 1
+  scene.load.spritesheet("orc_run", "/monster/Orc_1/Run.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
-  scene.load.spritesheet("player_idle", "/player/knight_2/Idle.png", {
+  scene.load.spritesheet("orc_idle", "/monster/Orc_1/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
-  scene.load.spritesheet("player_jump", "/player/knight_2/Jump.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-  scene.load.spritesheet("player_run", "/player/knight_3/Run.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-  scene.load.spritesheet("player_idle", "/player/knight_3/Idle.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-  scene.load.spritesheet("player_jump", "/player/knight_3/Jump.png", {
+  scene.load.spritesheet("orc_jump", "/monster/Orc_1/Jump.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
 
-  // Chap 3 thu thach
-  scene.load.image("fly_ground", "/ground/fly_ground.png");
-  scene.load.image("win_flag", "/ground/win_flag.png");
-
-  // Chap 4 nhiem vu 1
-  scene.load.spritesheet("monster_run", "/monster/Orc_1/Run.png", {
-    frameWidth: 96,
-    frameHeight: 96,
+  // 🧟 Boss
+  // === Minotaur 1 === //
+  scene.load.spritesheet("Minotaur_run", "/boss/monitaur_1/Idle.png", {
+    frameWidth: 128,
+    frameHeight: 128,
   });
-  scene.load.spritesheet("monster_idle", "/monster/Orc_1/Idle.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-  scene.load.spritesheet("monster_jump", "/monster/Orc_1/Jump.png", {
-    frameWidth: 96,
-    frameHeight: 96,
-  });
-
-  // Chap 5 nhiem vu 1
-  scene.load.image("sword", "/player/item/sword.png");
-
-  // Chap 5 nhiem vu 2
-  scene.load.image("axe", "/player/item/axe.png");
-  scene.load.image("spear", "/player/item/spear.png");
-
-  // Chap 6 nhiem vu 1
   scene.load.spritesheet("boss_run", "/boss/monitaur_1/Run.png", {
     frameWidth: 128,
     frameHeight: 128,
   });
-  scene.load.spritesheet("boss_idle", "/boss/monitaur_1/Idle.png", {
+  scene.load.spritesheet("boss_idle", "/boss/monitaur_1/Attack.png", {
     frameWidth: 128,
     frameHeight: 128,
   });
-  
+  scene.load.spritesheet("boss_idle", "/boss/monitaur_1/Dead.png", {
+    frameWidth: 128,
+    frameHeight: 128,
+  });
+
+  // 🔥 Skill Animations
+  scene.load.spritesheet("fireball_anim", "/skill/fireball_anim.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
+
+  // ⚔️ Weapons
+  scene.load.image("item_sword", "/player/item/sword.png");
+  scene.load.image("item_axe", "/player/item/axe.png");
+  scene.load.image("item_spear", "/player/item/spear.png");
 }

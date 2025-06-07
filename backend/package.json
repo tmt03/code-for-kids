@@ -28,8 +28,9 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
-    "uuid": "^11.1.0",
+    "mongoose": "^8.15.1",
     "multer": "^2.0.0",
+    "uuid": "^11.1.0",
     "vm2": "^3.9.19"
   },
   "devDependencies": {

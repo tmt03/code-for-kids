@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 // ✅ Chỉ cần khai báo và export trực tiếp ở đây
 export interface OrderData {
   orderCode: string;
-  role: 'guest' | 'user';
+  role: "guest" | "user";
   products: {
     pid: string;
     pname: string;
@@ -20,13 +20,13 @@ export interface OrderData {
     note?: string;
   };
   createdAt: Date;
-  status: 'pending' | 'approved' | 'rejected' | 'done';
+  status: "pending" | "approved" | "rejected" | "done";
   createdBy: string;
 }
 
 const orderSchema = new mongoose.Schema<OrderData>({
   orderCode: { type: String, required: true, unique: true },
-  role: { type: String, required: true, enum: ['guest', 'user'] },
+  role: { type: String, required: true, enum: ["guest", "user"] },
   products: [{ pid: String, pname: String, pprice: Number, quantity: Number }],
   total: { type: Number, required: true },
   buyer: {
@@ -40,13 +40,14 @@ const orderSchema = new mongoose.Schema<OrderData>({
   status: {
     type: String,
     required: true,
-    enum: ['pending', 'approved', 'rejected', 'done'],
-    default: 'pending',
+    enum: ["pending", "approved", "rejected", "done"],
+    default: "pending",
   },
   createdBy: { type: String, required: true },
 });
 
-const OrderModel = mongoose.models.Order || mongoose.model("Order", orderSchema);
+const OrderModel =
+  mongoose.models.Order || mongoose.model("Order", orderSchema);
 
 //Export model
 export default OrderModel;

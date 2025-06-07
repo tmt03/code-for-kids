@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import Header from "@/components/shop/header";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -22,7 +23,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
               🛒 Sản phẩm
             </Link>
 
-            {!user &&(
+            {!user && (
               <Link href="/shop/lookup" className="text-blue-700 hover:underline">
                 🔍 Tra cứu đơn hàng
               </Link>
@@ -49,9 +50,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-300 p-4 text-center text-sm text-gray-500">
-        © 2025 CODE FOR KIDS. All rights reserved.
-      </footer>
+      <Footer />
     </div>
   );
 }
