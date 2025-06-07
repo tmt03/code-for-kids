@@ -1,7 +1,8 @@
 //permissions.ts (backend)
 export const rolePermissions = {
-  admin: ["manageUsers"],
-  user: ["viewChapter", "viewQuestDetails", "submitQuest"],
+  admin: ["manageUsers", "manageOrders", "viewAllOrders", "editProduct", "deleteProduct"],
+  user: ["viewChapter", "viewQuestDetails", "submitQuest", "placeOrder", "viewOwnOrders"],
+  guest: ["browseProducts", "placeOrder", "lookupOrder"]
 } as const;
 
 // export type Permission = (typeof permissions)["admin"][number];
