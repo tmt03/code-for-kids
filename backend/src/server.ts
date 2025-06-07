@@ -7,6 +7,8 @@ import { CLOSE_DB, CONNECT_DB } from "./config/mongoDB";
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
 import APIs_V1 from "./routes/v1";
 import cookieParser from "cookie-parser";
+import productRoutes from "./routes/productRoutes";
+import orderRoutes from "./routes/orderRoute";
 
 // Start server
 const START_SERVER = async () => {
@@ -20,6 +22,10 @@ const START_SERVER = async () => {
   app.use(cookieParser());
 
   app.use("/v1", APIs_V1);
+
+  app.use("/api/products", productRoutes);
+
+  app.use("/api/orders", orderRoutes);
 
   //Middleware xử lý lỗi
   app.use(errorHandlingMiddleware);

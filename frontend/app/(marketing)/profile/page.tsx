@@ -11,7 +11,7 @@ export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState('Bài đăng');
     const [isEditOpen, setIsEditOpen] = useState(false);
     const user = useAuth();
-
+    
     return (
         <div className="w-full overflow-x-hidden bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] font-mono text-white min-h-screen flex flex-col">
 
