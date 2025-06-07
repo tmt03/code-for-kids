@@ -12,10 +12,12 @@ export const VALID_GAME_COMMANDS = [
   "move",
   "moveRandom",
   "onKey",
+  "onAttack",
   "interact",
   "autoAttack",
   "when",
   "setHealth",
+  "setPower",
   "startTimer",
 ];
 
@@ -43,16 +45,18 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   setFloor: 3,
   setColor: 2,
   spawn: 5,
-  spawnRandom: 5,
+  spawnRandom: 6,
   setName: 2,
   scale: 2,
   move: 3,
   moveRandom: 4,
   onKey: 5,
+  onAttack: 4,
   interact: 5,
-  autoAttack: 3,
+  autoAttack: 5,
   when: 4,
   setHealth: 2,
+  setPower: 2,
   startTimer: 1,
 };
 
@@ -92,6 +96,16 @@ export const COLORS = [
   "white",
   "black",
   "gray",
+  "teal",
+  "navy",
+  "maroon",
+  "olive",
+  "lime",
+  "aqua",
+  "silver",
+  "gold",
+  "indigo",
+  "violet",
 ] as const;
 
 // Danh sách animation
@@ -131,7 +145,7 @@ export const COMMANDS = [
   {
     name: "spawnRandom",
     syntax:
-      'spawnRandom("tên_sprite", x_min, x_max, "tên_ref", khoảng_thời_gian);',
+      'spawnRandom("tên_sprite", x_min, x_max, y, "tên_ref", khoảng_thời_gian);',
   },
   {
     name: "setName",
@@ -155,13 +169,18 @@ export const COMMANDS = [
       'onKey("phím", { animation: "tên_animation" }, "tên_ref", giá_trị_x, giá_trị_y);',
   },
   {
+    name: "onAttack",
+    syntax:
+      'onAttack("phím", { animation: "tên_animation" }, kiểu_skill, "tên_ref");',
+  },
+  {
     name: "interact",
     syntax:
       'interact("tên_ref_1", "tên_ref_2", "hành_động", "thuộc_tính", giá_trị);',
   },
   {
     name: "autoAttack",
-    syntax: 'autoAttack("tên_ref", x_min, x_max);',
+    syntax: 'autoAttack("tên_ref", tầm_đánh, tên_skill, damage, cooldown);',
   },
   {
     name: "when",
@@ -170,6 +189,10 @@ export const COMMANDS = [
   {
     name: "setHealth",
     syntax: 'setHealth("tên_ref", máu);',
+  },
+  {
+    name: "setPower",
+    syntax: 'setPower("tên_ref", sức mạnh);',
   },
   {
     name: "startTimer",

@@ -1,7 +1,7 @@
 //permissions.ts (backend)
 export const rolePermissions = {
   admin: ["manageUsers", "manageOrders", "viewAllOrders", "editProduct", "deleteProduct"],
-  user: ["viewChapter", "viewQuestDetails", "submitQuest", "placeOrder", "viewOwnOrders"],
+  user: ["viewChapter", "viewQuestDetails", "submitQuest", "placeOrder", "viewOwnOrders", "initUserProgress", "viewLearnProgress",],
   guest: ["browseProducts", "placeOrder", "lookupOrder"]
 } as const;
 

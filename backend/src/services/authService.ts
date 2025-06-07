@@ -5,19 +5,29 @@ import { userModel } from "../models/userModel";
 
 const generateAccessToken = (user: any) => {
   return jwt.sign(
-    { username: user.username, role: user.role },
+    { userId: user._id.toString(), 
+      username: user.username,
+      role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bannerUrl: user.bannerUrl,
+      bio: user.bio, },
     env.JWT_SECRET_ACCESS_TOKEN,
     { expiresIn: "1h" }
   );
 };
 
 const generateRefreshToken = (user: any) => {
-  return jwt.sign({ username: user.username }, env.JWT_SECRET_REFRESH_TOKEN, {
-    expiresIn: "7d",
-  });
+  return jwt.sign(
+    { userId: user._id.toString(), username: user.username },
+    env.JWT_SECRET_REFRESH_TOKEN,
+    {
+      expiresIn: "7d",
+    }
+  );
 };
 
-const JWT_SECRET = process.env.JWT_SECRET || "default-key";
+// const JWT_SECRET = process.env.JWT_SECRET || "default-key";
 
 const login = async (username: string, password: string) => {
   const user = await userModel.findByUsername(username);
@@ -36,8 +46,13 @@ const login = async (username: string, password: string) => {
     accessToken,
     refreshToken,
     user: {
+      userId: user._id.toString(),
       username: user.username,
       role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bannerUrl: user.bannerUrl,
+      bio: user.bio,
     },
   };
 };
@@ -66,10 +81,25 @@ const logout = async (username: string) => {
   return await userModel.updateRefreshToken(username, "");
 };
 
+const getUserInfo = async (username: string) => {
+  const user = await userModel.findByUsername(username);
+  if (!user) return null;
+  // Trả về thông tin an toàn, không trả password
+  return {
+    username: user.username,
+    role: user.role,
+    displayName: user.displayName,
+    avatarUrl: user.avatarUrl,
+    bannerUrl: user.bannerUrl,
+    bio: user.bio,
+  };
+};
+
 export const authService = {
   login,
   generateAccessToken,
   generateRefreshToken,
   refreshAccessToken,
   logout,
+  getUserInfo,
 };
