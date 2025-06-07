@@ -13,6 +13,7 @@ export interface AuthContextType {
     login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     clearError: () => void;
+    refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -90,6 +91,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const clearError = () => setError(null);
 
+    const refreshUser = fetchUser;
+
     const value: AuthContextType = {
         user,
         accessToken,
@@ -98,6 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         logout,
         clearError,
+        refreshUser, // Cung cấp hàm refreshUser để làm mới thông tin người dùng
     };
 
     return (

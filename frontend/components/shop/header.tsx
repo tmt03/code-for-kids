@@ -8,10 +8,10 @@ export default function ShopHeader() {
     <header className="w-full bg-[#28284f] text-white px-6 h-14 flex items-center justify-between shadow-md">
       {/* Logo và tên */}
       <div className="flex items-center gap-3">
-        <Link href="/">
+        <Link href="/" className="flex items-center gap-3">
           <img src="/assets/logo_scriptbies.png" alt="Scriptbies Logo" className="h-9 w-auto cursor-pointer" />
+          <span className="text-xl font-bold font-mono">Scriptbies</span>
         </Link>
-        <span className="text-xl font-bold font-mono">Scriptbies</span>
       </div>
       {/* Nav links */}
       <ul className="hidden md:flex gap-6">

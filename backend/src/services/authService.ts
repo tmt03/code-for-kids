@@ -81,10 +81,25 @@ const logout = async (username: string) => {
   return await userModel.updateRefreshToken(username, "");
 };
 
+const getUserInfo = async (username: string) => {
+  const user = await userModel.findByUsername(username);
+  if (!user) return null;
+  // Trả về thông tin an toàn, không trả password
+  return {
+    username: user.username,
+    role: user.role,
+    displayName: user.displayName,
+    avatarUrl: user.avatarUrl,
+    bannerUrl: user.bannerUrl,
+    bio: user.bio,
+  };
+};
+
 export const authService = {
   login,
   generateAccessToken,
   generateRefreshToken,
   refreshAccessToken,
   logout,
+  getUserInfo,
 };

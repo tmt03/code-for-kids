@@ -33,6 +33,18 @@ export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        if (isOpen) {
+            setAvatarFile(null);
+            setBannerFile(null);
+            setAvatarPreview(null);
+            setBannerPreview(null);
+            setDisplayName(user.user?.displayName || "");
+            setBio(user.user?.bio || "");
+        }
+
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -67,6 +79,7 @@ export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean;
             if (avatarFile) await uploadUserAvatar(avatarFile);
             if (bannerFile) await uploadUserBanner(bannerFile);
             await updateUserProfile(displayName, bio);
+            await user.refreshUser(); // Làm mới thông tin người dùng sau khi cập nhật
 
             alert("Thay đổi đã được lưu thành công!");
             onClose();
@@ -94,7 +107,7 @@ export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean;
                     <div className="mb-6">
                         <label className="text-sm block text-gray-300 mb-2">Ảnh bìa</label>
                         <div className="relative h-32 bg-gray-700 rounded overflow-hidden">
-                            <img src={bannerPreview || user?.user?.bannerUrl || "/assets/9285000.jpg"} alt="Cover" className="w-full h-full object-cover" />
+                            <img src={bannerPreview || user.user?.bannerUrl || "/assets/9285000.jpg"} alt="Cover" className="w-full h-full object-cover" />
                             <input
                                 type="file"
                                 accept="image/*"
@@ -118,8 +131,8 @@ export default function EditProfilePopup({ isOpen, onClose }: { isOpen: boolean;
                         <label className="text-sm block text-gray-300 mb-2">Ảnh đại diện</label>
                         <div className="flex items-center space-x-4">
                             <div className="w-20 h-20 bg-gray-500 rounded-full overflow-hidden flex items-center justify-center">
-                                {avatarPreview || user?.user?.avatarUrl ? (
-                                    <img src={avatarPreview || user?.user?.avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+                                {avatarPreview || user.user?.avatarUrl ? (
+                                    <img src={avatarPreview || user.user?.avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
                                 ) : (
                                     <span className="text-black text-sm">Avatar</span>
                                 )}

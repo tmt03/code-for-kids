@@ -1,0 +1,25 @@
+[
+  {
+    "role": "guest",
+    "products": [
+      {
+        "pid": "P001",
+        "pname": "CODE FOR KIDS",
+        "pprice": 250000,
+        "quantity": 1
+      }
+    ],
+    "total": 270000,
+    "buyer": {
+      "name": "test1",
+      "phone": "0989872189",
+      "email": "ab@gmail.com",
+      "address": "134 babaj",
+      "note": "giao bsang"
+    },
+    "createdBy": "guest",
+    "orderCode": "OD-12E0EAAD",
+    "createdAt": "2025-06-07T14:08:15.184Z",
+    "status": "pending"
+  }
+]
