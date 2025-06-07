@@ -17,6 +17,7 @@ export const VALID_GAME_COMMANDS = [
   "autoAttack",
   "when",
   "setHealth",
+  "setPower",
   "startTimer",
 ];
 
@@ -44,7 +45,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   setFloor: 3,
   setColor: 2,
   spawn: 5,
-  spawnRandom: 5,
+  spawnRandom: 6,
   setName: 2,
   scale: 2,
   move: 3,
@@ -55,6 +56,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   autoAttack: 5,
   when: 4,
   setHealth: 2,
+  setPower: 2,
   startTimer: 1,
 };
 
@@ -143,7 +145,7 @@ export const COMMANDS = [
   {
     name: "spawnRandom",
     syntax:
-      'spawnRandom("tên_sprite", x_min, x_max, "tên_ref", khoảng_thời_gian);',
+      'spawnRandom("tên_sprite", x_min, x_max, y, "tên_ref", khoảng_thời_gian);',
   },
   {
     name: "setName",
@@ -187,6 +189,10 @@ export const COMMANDS = [
   {
     name: "setHealth",
     syntax: 'setHealth("tên_ref", máu);',
+  },
+  {
+    name: "setPower",
+    syntax: 'setPower("tên_ref", sức mạnh);',
   },
   {
     name: "startTimer",

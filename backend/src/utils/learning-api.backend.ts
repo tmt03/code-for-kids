@@ -38,11 +38,12 @@ export function createBackendSandbox() {
       key: string,
       minX: number,
       maxX: number,
+      y: number,
       refName: string,
       interval: number
     ) => {
       const x = Math.floor((minX + maxX) / 2);
-      refs[refName] = { key, x, y: 0, interval };
+      refs[refName] = { key, x, y, interval };
     },
 
     // 6. Gán tên hiển thị
@@ -117,7 +118,13 @@ export function createBackendSandbox() {
     },
 
     // 12. Tấn công tự động
-    autoAttack: (refName: string, range: number, skillKey: string, damage: number, cooldown: number) => {
+    autoAttack: (
+      refName: string,
+      range: number,
+      skillKey: string,
+      damage: number,
+      cooldown: number
+    ) => {
       if (refs[refName]) {
         refs[refName].autoAttack = { range, skillKey, damage, cooldown };
       }
@@ -132,6 +139,13 @@ export function createBackendSandbox() {
     setHealth: (refName: string, hp: number) => {
       if (refs[refName]) {
         refs[refName].health = clamp(hp, 0, 100);
+      }
+    },
+
+    // 14. Thiết lập máu
+    setPower: (refName: string, power: number) => {
+      if (refs[refName]) {
+        refs[refName].power = clamp(power, 0, 100);
       }
     },
 

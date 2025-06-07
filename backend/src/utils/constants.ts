@@ -5,7 +5,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   setFloor: 3,
   setColor: 2,
   spawn: 5,
-  spawnRandom: 5,
+  spawnRandom: 6,
   setName: 2,
   scale: 2,
   move: 3,
@@ -16,5 +16,6 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   autoAttack: 5,
   when: 4,
   setHealth: 2,
+  setPower: 2,
   startTimer: 1,
 };
