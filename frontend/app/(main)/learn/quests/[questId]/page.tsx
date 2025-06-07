@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useProgress } from "@/hooks/useProgress";
 import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
 import { speak } from '@/lib/utils/speak';
-import { CopyIcon, DeleteIcon, PlayIcon } from 'lucide-react';
+import { HelpCircleIcon, PlayIcon, RefreshCwIcon, SaveIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 
 interface Quest {
@@ -213,15 +213,19 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 <div className="absolute bottom-4 right-2 z-10 flex gap-2 md:gap-4">
                     <Button onClick={handleRun} variant="pixelGreen" size="lg">
                         <PlayIcon className="w-4 h-4" />
-                        Chạy
+                        Chạy Code
                     </Button>
                     <Button onClick={handleHelp} variant="pixel" size="lg">
-                        <CopyIcon className="w-4 h-4" />
+                        <HelpCircleIcon className="w-4 h-4" />
                         Trợ giúp
                     </Button>
                     <Button onClick={handleClear} variant="pixelDanger" size="lg">
-                        <DeleteIcon className="w-4 h-4" />
-                        Xóa
+                        <RefreshCwIcon className="w-4 h-4" />
+                        Làm lại
+                    </Button>
+                    <Button variant="pixelYellow" size="lg">
+                        <SaveIcon className="w-4 h-4" />
+                        Lưu game
                     </Button>
                 </div>
             </div>

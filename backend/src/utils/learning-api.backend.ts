@@ -150,7 +150,7 @@ export function createBackendSandbox() {
     },
 
     // 15. Hẹn giờ kết thúc
-    startTimer: (ms: number) => {
+    setTimer: (ms: number) => {
       refs.timer = clamp(ms, 1000, 600000); // tối đa 10 phút
     },
 

@@ -5,454 +5,472 @@
  * Dùng cho chế độ "guided" hoặc preview quest.
  */
 
-export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => void> = {
-    C00_H01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "background_no_color")
-        .setOrigin(0)
-        .setScale(0.51);
-    },
-  
-    C00_H02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky")
-        .setOrigin(0)
-        .setScale(0.51);
-        
-    },
-  
-    C01_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky")
-        .setOrigin(0)
-        .setScale(0.6);
-    
-      // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const castle = scene.add.image(410, 293, "castle")
-        .setOrigin(0.5)
-        .setScale(0.3);
-    
-      sandbox.castle = castle;
-      scene.castle = castle;
-    },
+export const baseCodeFunctions: Record<
+  string,
+  (scene: any, sandbox: any) => void
+> = {
+  C00_H01: (scene, sandbox) => {
+    scene.bg = scene.add
+      .image(0, 0, "bautroi_1")
+      .setOrigin(0)
+      .setScale(0.55)
+      .setTint(0x404040);
+  },
 
-    C01_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky")
-        .setOrigin(0)
-        .setScale(0.51);
-    
-      // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    },
-    
-  
-    C01_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky")
-        .setOrigin(0)
-        .setScale(0.51);
-    
-      // Tạo floor có vật lý và thêm vào platforms
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const castle = scene.add.image(410, 293, "castle")
-        .setOrigin(0.5)
-        .setScale(0.3);
-    
-      scene["castle"] = castle;
-      sandbox["castle"] = castle;
-    }, 
-  
-    C01_Q04: (scene, sandbox) => {
+  C00_H02: (scene, sandbox) => {
+    scene.bg = scene.add.image(0, 0, "bautroi_1").setOrigin(0).setScale(0.55);
+  },
 
-    },
-    
+  C01_Q01: (scene, sandbox) => {
+    scene.bg = scene.add.image(0, 0, "bautroi_1").setOrigin(0).setScale(0.6);
 
-    C02_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const castle = scene.add.image(410, 293, "castle")
-        .setOrigin(0.5)
-        .setScale(0.3);
-      scene["castle"] = castle;
-      sandbox["castle"] = castle;
-    
-      // Spawn player sẵn (có thể xoá nếu để học sinh nhập lệnh)
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C02_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      // Đảm bảo có platforms
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-    
-      // Dùng setFloor tự động thêm vào platforms
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const castle = scene.add.image(410, 293, "castle")
-        .setOrigin(0.5)
-        .setScale(0.3);
-      scene["castle"] = castle;
-      sandbox["castle"] = castle;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C02_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-    
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const castle = scene.add.image(410, 293, "castle")
-        .setOrigin(0.5)
-        .setScale(0.3);
-      scene["castle"] = castle;
-      sandbox["castle"] = castle;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C02_Q04: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-    
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const castle = scene.add.image(410, 293, "castle")
-        .setOrigin(0.5)
-        .setScale(0.3);
-      scene["castle"] = castle;
-      sandbox["castle"] = castle;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },    
-    
-    C03_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C03_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C03_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C03_Q04: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "plain_mountain").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const win_flag = scene.physics.add.staticImage(250, 80, "win_flag")
-        .setScale(0.2);
-      scene.win_flag = win_flag;
-      sandbox["win_flag"] = win_flag;
-      sandbox.platforms.add(win_flag);
-    
-      const flyGroundData = [
-        [600, 130],
-        [800, 230],
-        [670, 300],
-        [540, 370],
-        [300, 130],
-      ];
-    
-      flyGroundData.forEach(([x, y], index) => {
-        const ref = `fly_ground_${index + 1}`;
-        const g = scene.physics.add.staticImage(x, y, "fly_ground")
-          .setScale(0.15)
-          .refreshBody();
-        scene[ref] = g;
-        sandbox[ref] = g;
-        sandbox.platforms.add(g);
-      });
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
 
-    C04_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sunset_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const monster = scene.physics.add.sprite(100, 100, "monster_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["monster"] = monster;
-    
-      scene.physics.add.collider(monster, sandbox.platforms);
-    },
-    
-    C04_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sunset_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const monster = scene.physics.add.sprite(100, 100, "monster_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["monster"] = monster;
-    
-      scene.physics.add.collider(monster, sandbox.platforms);
-    },
-    
-    C04_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "sunset_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const monster = scene.physics.add.sprite(100, 100, "monster_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["monster"] = monster;
-    
-      scene.physics.add.collider(monster, sandbox.platforms);
-    },
-    
-    C04_Q04: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "ice_mountain").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 470);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox["player"] = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },    
+    const castle = scene.add
+      .image(500, 308, "laudai_1")
+      .setOrigin(0.5)
+      .setScale(0.3)
+      .setTint(0x404040);
 
-    C05_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      const castle = scene.add.image(660, 293, "castle").setOrigin(0.5).setScale(0.3);
-      scene.castle = castle;
-      sandbox.castle = castle;
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C05_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      const castle = scene.add.image(660, 293, "castle").setOrigin(0.5).setScale(0.3);
-      scene.castle = castle;
-      sandbox.castle = castle;
-    
-      const sword = scene.add.image(660, 293, "sword").setOrigin(0.5).setScale(0.3);
-      scene.sword = sword;
-      sandbox.sword = sword;
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C05_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      const castle = scene.add.image(660, 293, "castle").setOrigin(0.5).setScale(0.3);
-      scene.castle = castle;
-      sandbox.castle = castle;
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C05_Q04: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      const castle = scene.add.image(660, 293, "castle").setOrigin(0.5).setScale(0.3);
-      scene.castle = castle;
-      sandbox.castle = castle;
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C05_Q05: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    
-    C06_Q01: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-    },
-    
-    C06_Q02: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      const boss = scene.physics.add.sprite(600, 100, "boss_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-      sandbox.boss = boss;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-      scene.physics.add.collider(boss, sandbox.platforms);
-    },
-    
-    C06_Q03: (scene, sandbox) => {
-      scene.bg = scene.add.image(0, 0, "blue_sky").setOrigin(0).setScale(0.51);
-    
-      sandbox.platforms ??= scene.physics.add.staticGroup();
-      const floor = sandbox.setFloor("ground_2", 425, 453);
-      scene.floor = floor;
-    
-      const player = scene.physics.add.sprite(100, 100, "player_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      const boss = scene.physics.add.sprite(600, 100, "boss_idle")
-        .setScale(1.5)
-        .setCollideWorldBounds(true);
-      sandbox.player = player;
-      sandbox.boss = boss;
-    
-      scene.physics.add.collider(player, sandbox.platforms);
-      scene.physics.add.collider(boss, sandbox.platforms);
-    }
-  };
+    sandbox.castle = castle;
+  },
 
-  export function getBaseCodeForQuest(questId: string): ((scene: any, sandbox: any) => void) | undefined {
-    return baseCodeFunctions[questId];
-  }
-  
+  C01_Q02: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C01_Q03: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    const castle = scene.add
+      .image(500, 308, "laudai_1")
+      .setOrigin(0.5)
+      .setScale(0.3);
+
+    sandbox.castle = castle;
+  },
+
+  C01_Q04: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C02_Q01: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C02_Q02: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    const castle = scene.add
+      .image(700, 308, "laudai_1")
+      .setOrigin(0.5)
+      .setScale(0.3);
+
+    sandbox.castle = castle;
+  },
+
+  C02_Q03: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C02_Q04: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_1");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C03_Q01: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_5");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    const flag = scene.add
+      .image(750, 385, "laco_1")
+      .setOrigin(0.5)
+      .setScale(0.3);
+
+    sandbox.flag = flag;
+  },
+
+  C03_Q02: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_5");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    const flag = scene.add
+      .image(150, 385, "laco_1")
+      .setOrigin(0.5)
+      .setScale(0.3);
+
+    sandbox.flag = flag;
+  },
+
+  C03_Q03: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_5");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.setFloor("nendat_2", 0, 480);
+    sandbox.setFloor("nendat_2", 340, 480);
+    const flag = scene.add
+      .image(450, 260, "laco_1")
+      .setOrigin(0.5)
+      .setScale(0.3);
+
+    sandbox.flag = flag;
+  },
+
+  C03_Q04: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_5");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.setFloor("nendat_2", 200, 280);
+    sandbox.setFloor("nendat_2", 200, 80);
+    sandbox.setFloor("nendat_2", 540, 480);
+
+    const flag = scene.add
+      .image(250, 130, "laco_1")
+      .setOrigin(0.5)
+      .setScale(0.3);
+
+    sandbox.flag = flag;
+  },
+
+  C04_Q01: (scene, sandbox) => {
+    sandbox.setBackground("nui_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C04_Q02: (scene, sandbox) => {
+    sandbox.setBackground("nui_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C04_Q03: (scene, sandbox) => {
+    sandbox.setBackground("nui_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C04_Q04: (scene, sandbox) => {
+    sandbox.setBackground("nui_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.setHealth("kiemsi", 100);
+    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
+
+    // sandbox.interact("kiemsi", "quaivat", "lose", "hp", 100);
+    sandbox.when("hp:kiemsi <= 0", "end", "lose");
+    // sandbox.when("time <= 30", "end", "win");
+  },
+
+  C05_Q01: (scene, sandbox) => {
+    sandbox.setBackground("rung_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C05_Q02: (scene, sandbox) => {
+    sandbox.setBackground("rung_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C05_Q03: (scene, sandbox) => {
+    sandbox.setBackground("rung_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.setPower("kiemsi", 10);
+    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
+
+    // sandbox.setTimer(60);
+
+    sandbox.when("power:kiemsi >=200", "end", "win");
+  },
+
+  C05_Q04: (scene, sandbox) => {
+    sandbox.setBackground("rung_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C05_Q05: (scene, sandbox) => {
+    sandbox.setBackground("rung_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.setPower("kiemsi", 10);
+    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
+
+    sandbox.setHealth("quaivat", 100);
+    // sandbox.setTimer(60);
+
+    sandbox.when("hp:quaivat <=0", "end", "win");
+    sandbox.when("hp:kiemsi <=0", "end", "lose");
+  },
+
+  C06_Q01: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C06_Q02: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+
+  C06_Q03: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.spawn("kiemsi_chay", 650, 200, { animation: "chay" }, "kiemsi");
+    sandbox.scale("kiemsi", 2);
+  },
+
+  C06_Q04: (scene, sandbox) => {
+    sandbox.setBackground("rung_3");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+
+    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
+    // sandbox.spawnRandom("quycay_chay", 200, 600, 200, "heart", 100);?
+
+    // sandbox.setTimer(60);
+
+    sandbox.when("hp:kiemsi >=200", "end", "win");
+  },
+
+  C07_Q01: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+  C07_Q02: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+  C07_Q03: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+  C07_Q04: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+  C07_Q05: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+  C07_Q06: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+  C07_Q07: (scene, sandbox) => {
+    sandbox.setBackground("bautroi_4");
+
+    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
+    sandbox.setFloor("nendat_2", 0, 680);
+    sandbox.setFloor("nendat_2", 340, 680);
+    sandbox.setFloor("nendat_2", 680, 680);
+    sandbox.setFloor("nendat_2", 1020, 680);
+    sandbox.setFloor("nendat_2", 1360, 680);
+  },
+};
+
+export function getBaseCodeForQuest(
+  questId: string
+): ((scene: any, sandbox: any) => void) | undefined {
+  return baseCodeFunctions[questId];
+}
