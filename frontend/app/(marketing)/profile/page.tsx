@@ -1,50 +1,46 @@
 'use client';
 
 import EditProfilePopup from '@/components/edit-profile-popup';
-import Footer from '@/components/footer';
-import Header from '@/components/header';
-import { faArrowLeft, faCamera, faCircle, faClock, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faClock, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
-import React from 'react';
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ProfilePage() {
-    const [activeTab, setActiveTab] = React.useState('Bài đăng');
-    const [isEditOpen, setIsEditOpen] = React.useState(false);
+    const [activeTab, setActiveTab] = useState('Bài đăng');
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const user = useAuth();
 
     return (
-        <div className="w-full overflow-x-hidden bg-[#0a0a23] font-mono text-white min-h-screen flex flex-col">
-            <Header />
+        <div className="w-full overflow-x-hidden bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] font-mono text-white min-h-screen flex flex-col">
 
             {/* Chỉ giới hạn chiều rộng bên trong */}
             <div className="w-full max-w-6xl px-6 mx-auto pt-18">
 
                 {/* ✅ Banner CHỈ NẰM TRONG max-w-6xl container */}
-                <div className="relative h-44 rounded-t-md overflow-hidden">
+                <div className="relative h-44 rounded-t-[5px] overflow-hidden">
                     <img
-                        src="assets/9285000.jpg"
+                        src={user.user?.bannerUrl || 'assets/9285000.jpg'}
                         alt="Banner"
                         className="w-full h-full object-cover"
                     />
-                    <button className="absolute gap-2 top-3 right-3 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded-[5px] text-sm transition duration-150 ease-in-out flex items-center">
-                        <FontAwesomeIcon icon={faCamera} /> Đổi ảnh nền
-                    </button>
-                    <Link href={'/home'} className="absolute gap-2 top-3 left-3 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded-[5px] text-sm transition duration-150 ease-in-out flex items-center">
-                        <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
-                    </Link>
                 </div>
 
                 {/* Avatar + name */}
-                <div className="relative px-6 pt-4">
+                <div className="bg-[#1c1c2e] relative px-6 py-6 rounded-b-[5px]">
                     <div className="flex justify-between items-start">
                         {/* Left: Avatar + info */}
                         <div className="flex items-center space-x-4">
-                            <div className="w-20 h-20 rounded-full bg-gray-300 border-4 border-[#0a0a23] flex items-center justify-center overflow-hidden">
-                                <span className="text-black text-sm">Avatar</span>
+                            <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden [box-shadow:0_0_10px_rgba(3,155,229),0_0_15px_rgba(79,195,247)]">
+                                <img
+                                    src={user.user?.avatarUrl || '/assets/default-avatar.png'}
+                                    alt="Avatar"
+                                />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-shadow">Lê Minh Quân</h1>
-                                <div className="text-md text-gray-300 text-shadow-sm">@leminhquan760</div>
+                                <h1 className="text-xl font-bold text-shadow">{user.user?.displayName}</h1>
+                                <div className="text-md text-gray-300 text-shadow-sm">@{user.user?.username}</div>
                                 <div className="text-sm text-gray-400 text-shadow-sm">
                                     <span>0 đang theo dõi</span>
                                     <span><FontAwesomeIcon icon={faCircle} className="text-white fa-2xs px-2" /></span>
@@ -74,8 +70,9 @@ export default function ProfilePage() {
                                 <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">Tiểu sử</h2>
                                 <div className="text-orange-400 font-bold mb-1">Lvl 1</div>
                                 <p className="text-sm text-gray-400 mb-3">
-                                    Bạn chưa có gì trong tiểu sử. Hãy chỉnh sửa trang cá nhân để giới thiệu những điều thú vị về bản thân nhé!
+                                    {user.user?.bio?.trim() || 'Bạn chưa có gì trong tiểu sử. Hãy chỉnh sửa trang cá nhân để giới thiệu những điều thú vị về bản thân nhé!'}
                                 </p>
+
                                 <p className="text-sm text-gray-500">
                                     <FontAwesomeIcon icon={faClock} className="pr-2" />
                                     <span>Tham gia vào ngày 19 tháng 4, 2025</span>
@@ -95,8 +92,8 @@ export default function ProfilePage() {
                                     <div className="w-6 text-white font-bold text-center">47</div>
                                     <div className="w-8 h-8 bg-gray-500 rounded-full mx-3"></div>
                                     <div className="flex flex-col text-sm text-white">
-                                        <span className="font-semibold">leminhquan760</span>
-                                        <span className="text-gray-400">@leminhquan760</span>
+                                        <span className="font-semibold">{user.user?.displayName}</span>
+                                        <span className="text-gray-400">@{user.user?.username}</span>
                                     </div>
                                     <div className="ml-auto font-semibold text-blue-400 text-sm">
                                         1200 XP
@@ -169,7 +166,6 @@ export default function ProfilePage() {
 
             <EditProfilePopup isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
 
-            <Footer />
         </div>
     );
 }
