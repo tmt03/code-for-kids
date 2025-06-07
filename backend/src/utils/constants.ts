@@ -17,5 +17,5 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   when: 4,
   setHealth: 2,
   setPower: 2,
-  startTimer: 1,
+  setTimer: 1,
 };

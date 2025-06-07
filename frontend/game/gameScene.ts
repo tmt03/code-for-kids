@@ -9,6 +9,7 @@
 
 import { getBaseCodeForQuest } from "@/features/quests/questMap";
 import { createStudentAPI } from "@/game/api/learning-api";
+import { setupAnimations } from "./animationConfigs";
 import { preloadAssets } from "./preloadAssets";
 
 import * as Phaser from "phaser";
@@ -86,7 +87,7 @@ export class Game_Scene extends Phaser.Scene {
    */
   create(): void {
     this.initializeScaleFactor();
-    this.setupAnimations();
+    setupAnimations(this);
     this.initializeSandbox();
     this.setupResizeListener();
     this.runPreviewCodeIfAvailable();
@@ -126,106 +127,6 @@ export class Game_Scene extends Phaser.Scene {
       this.cameras.main.width / Game_Scene.LOGICAL_WIDTH,
       this.cameras.main.height / Game_Scene.LOGICAL_HEIGHT
     );
-  }
-
-  /**
-   * Thiết lập tất cả animation cho sprite
-   * Tạo các chuỗi animation cho các trạng thái di chuyển của người chơi
-   */
-  private setupAnimations(): void {
-    // Animation chạy
-    this.anims.create({
-      key: "player_run_run",
-      frames: this.anims.generateFrameNumbers("player_run", {
-        start: 0,
-        end: 5,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    // Animation đứng yên
-    this.anims.create({
-      key: "player_run_idle",
-      frames: this.anims.generateFrameNumbers("player_idle", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    // Animation nhảy
-    this.anims.create({
-      key: "player_run_jump",
-      frames: this.anims.generateFrameNumbers("player_jump", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 4,
-      repeat: 0,
-    });
-    // Tạo animation cho quai
-    this.anims.create({
-      key: "mrun",
-      frames: this.anims.generateFrameNumbers("monster_run", {
-        start: 0,
-        end: 5,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "midle",
-      frames: this.anims.generateFrameNumbers("monster_idle", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "mjump",
-      frames: this.anims.generateFrameNumbers("monster_jump", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 4,
-      repeat: 0,
-    });
-
-    // Tạo animation cho boss
-    this.anims.create({
-      key: "brun",
-      frames: this.anims.generateFrameNumbers("boss_run", {
-        start: 0,
-        end: 11,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "bidle",
-      frames: this.anims.generateFrameNumbers("boss_idle", {
-        start: 0,
-        end: 9,
-      }),
-      frameRate: 8,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "fireball",
-      frames: this.anims.generateFrameNumbers("fireball_anim", {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 2,
-      repeat: -1,
-    });
   }
 
   /**
@@ -548,6 +449,7 @@ export class Game_Scene extends Phaser.Scene {
       this.sandbox = createStudentAPI(this, this.scaleFactor);
       previewFn(this, this.sandbox);
       this.scaleObjects();
+      this.setupColliders();
     } catch (err) {
       console.error("Lỗi khi chạy code preview:", err);
     }
