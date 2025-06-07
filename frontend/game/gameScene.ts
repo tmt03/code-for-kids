@@ -89,7 +89,6 @@ export class Game_Scene extends Phaser.Scene {
     this.setupAnimations();
     this.initializeSandbox();
     this.setupResizeListener();
-    this.setupHealthListener(); // Thêm lắng nghe sự kiện update-health
     this.runPreviewCodeIfAvailable();
     this.setupRunUserCodeListener();
   }
@@ -99,7 +98,7 @@ export class Game_Scene extends Phaser.Scene {
    * Được gọi mỗi frame bởi Phaser
    * Xử lý di chuyển, tấn công và cập nhật vật lý
    */
-  update(): void {
+  update(time: number, delta: number): void {
     if (!this.sandbox.controls && !this.sandbox.attackControls) return;
 
     // Theo dõi trạng thái cho mỗi sprite
@@ -219,12 +218,12 @@ export class Game_Scene extends Phaser.Scene {
     });
 
     this.anims.create({
-      key: "fireball_anim",
+      key: "fireball",
       frames: this.anims.generateFrameNumbers("fireball_anim", {
         start: 0,
         end: 3,
       }),
-      frameRate: 10,
+      frameRate: 2,
       repeat: -1,
     });
   }
@@ -252,42 +251,6 @@ export class Game_Scene extends Phaser.Scene {
       );
       this.scaleObjects();
     });
-  }
-
-  /**
-   * Lắng nghe sự kiện update-health từ createStudentAPI
-   * Cập nhật trạng thái sprite (ví dụ: tiêu diệt sprite khi máu = 0)
-   */
-  private setupHealthListener(): void {
-    this.events.on(
-      "update-health",
-      ({ refName, health }: { refName: string; health: number }) => {
-        console.log(`Sprite ${refName} cập nhật máu: ${health}`);
-        if (health <= 0) {
-          const sprite = this.sandbox[refName];
-          if (sprite) {
-            sprite.destroy();
-            delete this.sandbox[refName];
-            console.log(`Sprite ${refName} đã bị tiêu diệt`);
-          }
-        }
-      }
-    );
-
-    // Tương thích với API interact (nếu có)
-    this.events.on(
-      "lose-health",
-      ({ refName, value }: { refName: string; value: number }) => {
-        console.log(`Sprite ${refName} mất ${value} máu`);
-        const sprite = this.sandbox[refName];
-        if (sprite) {
-          const currHealth = (this as any)[`${refName}.health`] ?? 100;
-          const newHealth = Math.max(0, currHealth - value);
-          (this as any)[`${refName}.health`] = newHealth;
-          this.events.emit("update-health", { refName, health: newHealth });
-        }
-      }
-    );
   }
 
   // ===== Các Phương Thức Di Chuyển và Điều Khiển =====
@@ -534,18 +497,21 @@ export class Game_Scene extends Phaser.Scene {
   }
 
   /**
-   * Thiết lập phát hiện va chạm giữa sprite và platform
+   * Thiết lập phát hiện va chạm giữa sprite đơn/mảng và platform
    */
   private setupColliders(): void {
     const platforms = this.sandbox.platforms?.getChildren() || [];
     console.log("Platforms sau khi chạy code người dùng:", platforms);
     for (const spriteKey in this.sandbox) {
-      const sprite = this.sandbox[spriteKey];
-      if (sprite && sprite.body && platforms.length > 0) {
-        this.physics.add.collider(sprite, this.sandbox.platforms, () => {
-          console.log(`Phát hiện va chạm giữa ${spriteKey} và platforms`);
-        });
-      }
+      const spriteOrArray = this.sandbox[spriteKey];
+      const sprites = Array.isArray(spriteOrArray)
+        ? spriteOrArray
+        : [spriteOrArray];
+      sprites.forEach((sprite: Phaser.GameObjects.Sprite) => {
+        if (sprite && sprite.body && platforms.length > 0) {
+          this.physics.add.collider(sprite, this.sandbox.platforms);
+        }
+      });
     }
   }
 
