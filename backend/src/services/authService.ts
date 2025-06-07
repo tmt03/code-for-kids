@@ -5,7 +5,8 @@ import { userModel } from "../models/userModel";
 
 const generateAccessToken = (user: any) => {
   return jwt.sign(
-    { username: user.username,
+    { userId: user._id.toString(), 
+      username: user.username,
       role: user.role,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
@@ -17,9 +18,13 @@ const generateAccessToken = (user: any) => {
 };
 
 const generateRefreshToken = (user: any) => {
-  return jwt.sign({ username: user.username }, env.JWT_SECRET_REFRESH_TOKEN, {
-    expiresIn: "7d",
-  });
+  return jwt.sign(
+    { userId: user._id.toString(), username: user.username },
+    env.JWT_SECRET_REFRESH_TOKEN,
+    {
+      expiresIn: "7d",
+    }
+  );
 };
 
 // const JWT_SECRET = process.env.JWT_SECRET || "default-key";
@@ -41,6 +46,7 @@ const login = async (username: string, password: string) => {
     accessToken,
     refreshToken,
     user: {
+      userId: user._id.toString(),
       username: user.username,
       role: user.role,
       displayName: user.displayName,

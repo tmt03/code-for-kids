@@ -3,21 +3,21 @@ import { API_ROOT } from "@/lib/utils/constants";
 import axios from "axios";
 
 export const fetchQuestDetails = async (questId: string) => {
-  const res = await axios.get(`${API_ROOT}/v1/quests/${questId}`);
+  const res = await axiosInstance.get(`/v1/quests/${questId}`);
   return res.data;
 };
 
 export const fetchAllChapters = async () => {
-  const res = await axios.get(`${API_ROOT}/v1/chapters/`);
+  const res = await axiosInstance.get("/v1/chapters/");
   return res.data;
 };
 
 // Hàm mới: Gửi code lên server
-export const submitCode = async (userCode: string) => {
+export const fetchSubmitCode = async (userCode: string, questId: string) => {
   try {
-    console.log("Code content:", userCode);
-    const res = await axios.post(`${API_ROOT}/v1/submissions/submit`, {
+    const res = await axiosInstance.post(`/v1/submissions/submit`, {
       code: userCode,
+      questId: questId,
     });
 
     console.log("Response:", res.data);
@@ -58,6 +58,7 @@ export const logoutUser = async () => {
   await axiosInstance.post("/v1/auth/logout");
 };
 
+
 export const updateUserProfile = async (displayName: string, bio: string) => {
   const res = await axiosInstance.put("v1/users/profile", {displayName,bio})
   return res.data;
@@ -75,3 +76,20 @@ export const fetchLeaderboard = async () => {
   const res = await axiosInstance.get("/v1/users/leaderboard");
   return res.data.users;
 };
+
+export const fetchInitUserProgress = async () => {
+  try {
+    await axiosInstance.post("/v1/progress/init");
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      throw new Error("Vui lòng đăng nhập để bắt đầu");
+    }
+    throw new Error(`Lỗi khi khởi tạo tiến trình: ${error.message}`);
+  }
+};
+
+export const fetchLearnProgress = async () => {
+  const res = await axiosInstance.get("/v1/progress/learn-progress");
+  return res.data;
+};
+

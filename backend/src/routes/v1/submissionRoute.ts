@@ -1,9 +1,15 @@
 import express from "express";
 import { submissionController } from "../../controllers/submissionController";
+import { verifyToken } from "../../middlewares/authMiddleware";
+import { requirePermission } from "../../middlewares/permissionMiddleware";
 
 const Router = express.Router();
-console.log(22);
 
-Router.route("/submit").post(submissionController.submitCode);
+Router.post(
+  "/submit",
+  verifyToken,
+  requirePermission("submitQuest"),
+  submissionController.submitCode
+);
 
 export const submissionRoute = Router;
