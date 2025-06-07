@@ -35,6 +35,20 @@ export const fetchCheckLogin = async (username: string, password: string) => {
   return res.data;
 };
 
+export const uploadUserAvatar = async (file: File) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const res = await axiosInstance.post("/v1/users/avatar", formData);
+  return res.data;
+};
+
+export const uploadUserBanner = async (file: File) => {
+  const formData = new FormData();
+  formData.append("banner", file);
+  const res = await axiosInstance.post("/v1/users/banner", formData);
+  return res.data;
+};
+
 export const getCurrentUser = async () => {
   const res = await axiosInstance.get("/v1/auth/me");
   return res.data.user;
@@ -42,6 +56,25 @@ export const getCurrentUser = async () => {
 
 export const logoutUser = async () => {
   await axiosInstance.post("/v1/auth/logout");
+};
+
+
+export const updateUserProfile = async (displayName: string, bio: string) => {
+  const res = await axiosInstance.put("v1/users/profile", {displayName,bio})
+  return res.data;
+};
+
+export const changeUserPassword = async (oldPassword: string, newPassword: string) => {
+  const res = await axiosInstance.put("v1/users/change-password", {
+    oldPassword,
+    newPassword,
+  });
+  return res.data;
+};
+
+export const fetchLeaderboard = async () => {
+  const res = await axiosInstance.get("/v1/users/leaderboard");
+  return res.data.users;
 };
 
 export const fetchInitUserProgress = async () => {
@@ -59,3 +92,4 @@ export const fetchLearnProgress = async () => {
   const res = await axiosInstance.get("/v1/progress/learn-progress");
   return res.data;
 };
+

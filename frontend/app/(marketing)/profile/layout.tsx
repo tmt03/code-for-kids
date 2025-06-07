@@ -1,4 +1,6 @@
 import RequireAuth from "@/components/auth/RequireAuth";
+import Footer from '@/components/footer';
+import Header from '@/components/header';
 import RequirePermission from "@/components/auth/RequirePermission";
 
 type Props = {
@@ -10,7 +12,9 @@ const ProfileLayout = ({ children }: Props) => {
         <RequireAuth>
             <RequirePermission permission="viewProfile">
                 <div className="">
-                    {children}
+                    <Header />
+                       {children}
+                    <Footer />
                 </div>
             </RequirePermission>
         </RequireAuth>

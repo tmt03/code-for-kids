@@ -103,15 +103,15 @@ export default function Header() {
 
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <Link href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
-                                        <Link href="/" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <Link href="/settings" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
                                             <FontAwesomeIcon icon={faGear} /> Cài đặt
                                         </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                            className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                         >
                                             <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                                         </button>
@@ -176,15 +176,15 @@ export default function Header() {
                         <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
                     </button>
 
-                    <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <Link href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </Link>
-                    <Link href="/" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <Link href="/settings" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
                         <FontAwesomeIcon icon={faGear} /> Cài đặt
                     </Link>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors"
+                        className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors cursor-pointer"
                     >
                         <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                     </button>
