@@ -51,7 +51,7 @@ export const uploadUserBanner = async (file: File) => {
 
 export const getCurrentUser = async () => {
   const res = await axiosInstance.get("/v1/auth/me");
-  return res.data.user;
+  return res.data;
 };
 
 export const logoutUser = async () => {
