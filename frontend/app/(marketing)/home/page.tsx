@@ -115,9 +115,9 @@ export default function HomePage() {
                 </div>
 
                 {/* Welcome Section (Luôn ở đầu) */}
-                <section className="text-white py-6 px-4">
-                    <div className="max-w-7xl mx-auto flex items-center gap-4">
-                        <img src="/assets/window.svg" alt="Computer Icon" className="w-10 h-10" />
+                <section className="text-white py-4 px-4">
+                    <div className="max-w-7xl mx-auto flex items-center">
+                        <img src="/assets/knight-avatar.png" alt="Computer Icon" className="w-20 h-20" />
                         <div className="bg-[#1e1e3f] border border-white rounded px-4 py-2 text-sm">
                             Chào mừng bạn quay trở lại, <span className="font-bold">{user?.displayName}</span> Cùng học thôi nào!
                         </div>
@@ -195,62 +195,59 @@ export default function HomePage() {
                     {/* Small screen: order-3 (Thứ 4) */}
                     {/* Medium screen: order-4, cột 3, hàng 2 */}
                     {/* Lưu ý: order-4 trên md vì Explore More (md:order-3) sẽ đẩy cái này xuống trực quan */}
-                    <div className="bg-[#0a0a23] border border-white rounded-lg p-4 text-white shadow-lg order-3 md:order-4 md:col-start-3 md:row-start-2 md:row-span-1">
-                        <h3 className="text-lg font-bold mb-4">Các sự kiện sắp tới</h3>
-                        <ul className="space-y-4 text-sm">
-                            <li className="flex gap-4 items-start">
-                                <div className="flex flex-col items-center bg-yellow-500 text-black font-bold rounded p-2 w-14 text-center">
-                                    <span className="text-lg leading-tight">23</span>
-                                    <span className="text-xs">Thg 4</span>
-                                </div>
-                                <div>
-                                    <p className="font-semibold">Node.js Workshop</p>
-                                    <p className="text-gray-400">Thứ 4, 15:00 (GMT+7)</p>
-                                </div>
-                            </li>
-                            <li className="flex gap-4 items-start">
-                                <div className="flex flex-col items-center bg-green-500 text-black font-bold rounded p-2 w-14 text-center">
-                                    <span className="text-lg leading-tight">7</span>
-                                    <span className="text-xs">Thg 12</span>
-                                </div>
-                                <div>
-                                    <p className="font-semibold">Resume Review Workshop</p>
-                                    <p className="text-gray-400">Thứ 4, 09:00 (GMT+7)</p>
-                                </div>
-                            </li>
-                            <li className="flex gap-4 items-start">
-                                <div className="flex flex-col items-center bg-red-400 text-black font-bold rounded p-2 w-14 text-center">
-                                    <span className="text-lg leading-tight">29</span>
-                                    <span className="text-xs">Thg 5</span>
-                                </div>
-                                <div>
-                                    <p className="font-semibold">Meet 'n Greet</p>
-                                    <p className="text-gray-400">Thứ 5, 14:00 (GMT+7)</p>
-                                </div>
-                            </li>
-                        </ul>
+                    <div className="bg-[#0a0a23] border border-white rounded-lg p-4 text-white shadow-lg order-3 md:order-3 md:col-start-3 md:row-start-2 md:row-span-1 flex flex-col justify-between">
+                        <h3 className="text-center text-lg font-bold mb-4">🏆 Bảng xếp hạng - Top 3 toàn thời gian</h3>
+                        <ol className="space-y-2">
+                            {topUsers.map((u, i) => (
+                                <li key={u.username || i} className="flex items-center gap-2">
+                                    <span
+                                        className={`font-bold ${i === 0 ? "text-yellow-400"
+                                                              : i === 1 ? "text-gray-300"
+                                                              : i === 2 ? "text-orange-500" : "text-white"}`}>
+                                        {i + 1}
+                                    </span>
+                                    <img
+                                        src={u.avatarUrl || "/assets/knight-avatar.png"}
+                                        alt={u.displayName || u.username}
+                                        className="w-8 h-8 rounded-full border"
+                                    />
+                                    <span className="font-semibold">{u.displayName || u.username}</span>
+                                    <span className="ml-auto text-blue-300">{u.ratingPoints} điểm</span>
+                                </li>
+                            ))}
+                            {topUsers.length === 0 && (
+                                <li className="text-gray-400">Chưa có dữ liệu</li>
+                            )}
+                        </ol>
+                        <h4 className='text-center text-lg py-2'>
+                            <FontAwesomeIcon icon={faFlagCheckered} className='px-1'/> Bạn đang ở đâu trong cuộc đua này?
+                        </h4>
+                        <Link
+                            href={"/leaderboard"}
+                            className="mt-4 block text-center bg-blue-600 hover:bg-blue-500 transition rounded-md py-1.5 font-semibold text-white">
+                            Hãy cùng xem bảng xếp hạng nhé!
+                        </Link>
                     </div>
 
                     {/* Explore More */}
                     {/* Small screen: order-4 (Thứ 5) */}
                     {/* Medium screen: order-3, chiếm 2 cột, hàng 2 */}
-                    <section className="order-4 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
+                    {/* <section className="order-4 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
                         <h2 className="text-2xl font-bold mb-4">Khám phá thêm</h2>
                         <div className="text-white grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {['Thử thách hàng ngày', 'Xây dựng một dự án', 'Quản lý mã nguồn dự án bằng GitHub', '#CodeRace25'].map((item, i) => (
                                 <Link key={i} href="/" className="block border border-white rounded-md p-4 bg-[#1b1b35] hover:bg-[#2a2a4a] transition duration-200 cursor-pointer">
-                                    {/* Thêm class để con trỏ chuột thay đổi khi hover */}
                                     <h3 className="font-bold mb-2">{item}</h3>
                                     <p className="text-sm text-gray-300">Description for {item}...</p>
                                 </Link>
                             ))}
                         </div>
-                    </section>
+                    </section> */}
 
                     {/* New Tutorials */}
                     {/* Small screen: order-5 (Thứ 6) */}
                     {/* Medium screen: order-5, chiếm 2 cột, hàng 3 */}
-                    <section className="order-5 md:order-5 md:col-span-2 md:row-start-3 md:row-span-1">
+                    <section className="order-3 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-bold">Hướng dẫn các khóa học mới</h2>
                             <a href="#" className="text-blue-500 hover:text-blue-400 text-xl font-bold">

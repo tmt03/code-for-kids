@@ -19,11 +19,6 @@ export default function Landing() {
                         </p>
                     </div>
 
-                    <div className="mt-6">
-                        <button className="bg-yellow-400 hover:bg-yellow-300 transition-all px-8 py-4 rounded text-2xl font-bold text-black shadow-xl [box-shadow:0_0_20px_rgba(255,255,0,0.8),0_0_40px_rgba(255,255,0,0.6)]">
-                            Đi thôi nào!
-                        </button>
-                    </div>
                 </div>
 
                 <div

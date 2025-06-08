@@ -15,7 +15,6 @@ export default function Footer() {
           <h4 className="font-bold mb-4 text-gray-400">VỀ CÔNG TY</h4>
           <ul className="space-y-2">
             <li><a href="#">Giới thiệu</a></li>
-            <li><a href="#">Blog</a></li>
             <li><a href="#">Điều khoản & Chính sách</a></li>
             <li><a href="#">Bảo vệ quyền riêng tư</a></li>
             <li><a href="#">Trung tâm trợ giúp</a></li>
@@ -27,17 +26,17 @@ export default function Footer() {
           <ul className="space-y-2">
             <li><a href="#">Thử thách</a></li>
             <li><a href="#">Dự án</a></li>
-            <li><a href="#">#ABCXYZ</a></li>
+            {/* <li><a href="#">#ABCXYZ</a></li> */}
           </ul>
         </div>
 
         <div>
           <h4 className="font-bold mb-4 text-gray-400">KHÓA HỌC</h4>
           <ul className="space-y-2">
-            <li><a href="#">HTML</a></li>
-            <li><a href="#">CSS</a></li>
-            <li><a href="#">JavaScript</a></li>
-            <li><a href="#">React.js</a></li>
+            <li><a href="#">Phiêu lưu ở Vương quốc Codeland</a></li>
+            <li><a href="#">Sách 2</a></li>
+            <li><a href="#">Sách 3</a></li>
+            <li><a href="#">Sách 4</a></li>
             <li><a href="#">Lập trình game với Phaser.js</a></li>
           </ul>
         </div>
@@ -45,10 +44,10 @@ export default function Footer() {
         <div>
           <h4 className="font-bold mb-4 text-gray-400">&nbsp;</h4>
           <ul className="space-y-2">
-            <li><a href="#">C++</a></li>
-            <li><a href="#">Java</a></li>
-            <li><a href="#">Git & GitHub</a></li>
-            <li><a href="#">Command Line</a></li>
+            <li><a href="#">HTML</a></li>
+            <li><a href="#">CSS</a></li>
+            <li><a href="#">JavaScript</a></li>
+            <li><a href="#">Git, GitHub & Command Line</a></li>
           </ul>
         </div>
       </div>

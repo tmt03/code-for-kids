@@ -12,4 +12,7 @@ Router.post("/login", authController.login);
 Router.post("/refresh-token", authController.refreshToken);
 Router.post("/logout", authController.logout);
 Router.get("/me", verifyToken, authController.me);
+Router.post("/forgot-password", authController.forgotPassword);
+Router.post("/reset-password", authController.resetPassword);
+
 export const authRoute = Router;

@@ -80,6 +80,21 @@ export const fetchLeaderboard = async () => {
   return res.data.users;
 };
 
+export const forgotPassword = async (email: string) => {
+  const res = await axiosInstance.post("/v1/auth/forgot-password", { email });
+  return res.data;
+}
+
+export const resetPassword = async (email: string, otp: string, newPassword: string, confirmPassword: string) => {
+  const res = await axiosInstance.post("/v1/auth/reset-password", {
+    email,
+    otp,
+    newPassword,
+    confirmPassword,
+  });
+  return res.data;
+}
+
 export const fetchInitUserProgress = async () => {
   try {
     await axiosInstance.post("/v1/progress/init");
