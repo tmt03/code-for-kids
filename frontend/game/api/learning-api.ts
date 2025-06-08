@@ -74,7 +74,7 @@ export function createStudentAPI(
     scene.add
       .image(0, 0, bgKey)
       .setOrigin(0)
-      .setScale(scaleFactor * 0.85)
+      .setScale(scaleFactor * 0.95)
       .setDepth(0);
   };
 
@@ -186,15 +186,21 @@ export function createStudentAPI(
 
     const animationToPlay = options.animation
       ? `${spriteKey}_${options.animation}`
-      : `${spriteKey}_dung`;
+      : `${spriteKey}_idle`;
 
-    if (sprite.anims.get(animationToPlay)) {
+    if (scene.anims.exists(animationToPlay)) {
       sprite.anims.play(animationToPlay, true);
     } else {
       console.warn(
-        `Animation '${animationToPlay}' không tồn tại cho '${spriteKey}'`
+        `Animation '${animationToPlay}' không tồn tại cho '${spriteKey}'. Hãy kiểm tra lại tên animation trong animationConfigs.ts`
       );
     }
+
+    // Gắn thêm metadata vào sprite
+    (sprite as any).defaultAnimation = animationToPlay;
+    (sprite as any).currentAnimState = "idle"; // idle | run | jump | attack
+
+    sandbox[refName] = sprite;
 
     setupHitbox(sprite, { scaleFactor });
 
@@ -265,30 +271,22 @@ export function createStudentAPI(
     let container = sprite.getData("nameContainer");
     if (!container) {
       container = scene.add
-        .container(sprite.x, sprite.y - 30 * scaleFactor)
+        .container(sprite.x, sprite.y - 20 * scaleFactor)
         .setDepth(3);
 
-      const bg = scene.add.rectangle(
-        0,
-        0,
-        50 * scaleFactor,
-        20 * scaleFactor,
-        0x000000,
-        0.7
-      );
       const text = scene.add
         .text(0, 0, name, {
           font: `${20 * scaleFactor}px Arial`,
-          color: "#fff",
+          color: "#ffff00",
         })
         .setOrigin(0.5);
 
-      container.add([bg, text]);
+      container.add([text]);
       sprite.setData("nameContainer", container);
 
       scene.events.on("update", () => {
         if (sprite.active) {
-          container.setPosition(sprite.x, sprite.y - 40 * scaleFactor);
+          container.setPosition(sprite.x, sprite.y - 20 * scaleFactor);
         } else {
           container.destroy();
         }
@@ -366,15 +364,14 @@ export function createStudentAPI(
     console.log(`Đã scale '${refName}' với factor ${factor}`);
   };
 
-// 8. Move (to absolute position)
-sandbox.move = (refName: string, x: number, y: number) => {
-  const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-  if (!sprite) return;
+  // 8. Move (to absolute position)
+  sandbox.move = (refName: string, x: number, y: number) => {
+    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+    if (!sprite) return;
 
-  sprite.x = x;
-  sprite.y = y;
-};
-
+    sprite.x = x;
+    sprite.y = y;
+  };
 
   // 9. Move random
   sandbox.moveRandom = (
@@ -429,14 +426,8 @@ sandbox.move = (refName: string, x: number, y: number) => {
     valueY: number
   ) => {
     const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite) {
-      console.warn(`Sprite with refName '${refName}' not found`);
-      return;
-    }
-    if (!sprite.body) {
-      console.warn(`Sprite '${refName}' has no physics body`);
-      return;
-    }
+    if (!sprite || !sprite.body) return;
+
     if (Math.abs(valueX) > 500 || Math.abs(valueY) > 1000) {
       console.warn(`Velocity values for ${refName} exceed limit (1000)`);
       return;
@@ -453,20 +444,38 @@ sandbox.move = (refName: string, x: number, y: number) => {
     }
     const keyCode = allowedKeys[upperKey];
     if (!Array.isArray(sandbox.controls)) sandbox.controls = [];
+
+    const finalAnimation = options.animation
+      ? `${spriteKey}_${options.animation}`
+      : `${spriteKey}_run`;
+
     sandbox.controls.push({
       key: keyCode,
       sprite: sprite,
-      animation: options?.animation
-        ? `${spriteKey}_${options.animation}`
-        : null,
-      velocityX: (valueX * 1) / sprite.scaleX, //đảm bảo nhân vật nào nhỏ đi thì sẽ chạy nhanh/tốc độ nhảy lớn hơn — tỉ lệ nghịch với tỉ lệ
-      velocityY: (valueY * 1) / sprite.scaleY, //đảm bảo nhân vật nào nhỏ thì sẽ chạy nhanh/tốc độ nhảy lớn hơn — tỉ lệ nghịch với tỉ lệ
+      animation: finalAnimation,
+      velocityX: valueX * sprite.scaleX, //đảm bảo nhân vật nào to lên thì sẽ chạy nhanh/tốc độ nhảy lớn hơn
+      velocityY: valueY * sprite.scaleY, //đảm bảo nhân vật nào to lên sẽ chạy nhanh/tốc độ nhảy lớn hơn
       refName: refName,
       isJumpKey: upperKey === "SPACE" || upperKey === "UP" || upperKey === "W",
     });
-    console.log(
-      `Added control for ${refName}: key=${key}, keyCode=${keyCode}, velocityX=${valueX}, velocityY=${valueY}`
-    );
+    // Tự động đổi animation idle nếu không bấm phím
+    scene.input.keyboard?.on("keyup-" + upperKey, () => {
+      const defaultAnim =
+        (sprite as any).defaultAnimation || `${spriteKey}_idle`;
+      if (scene.anims.exists(defaultAnim)) {
+        sprite.anims.play(defaultAnim, true);
+        (sprite as any).currentAnimState = "idle";
+      }
+      (sprite as any).setVelocityX(0);
+    });
+
+    // Khi bấm phím → play animation run
+    scene.input.keyboard?.on("keydown-" + upperKey, () => {
+      if (scene.anims.exists(finalAnimation)) {
+        sprite.anims.play(finalAnimation, true);
+        (sprite as any).currentAnimState = "run";
+      }
+    });
   };
 
   // 10b. On attack (lệnh mới) - DONE
@@ -495,9 +504,28 @@ sandbox.move = (refName: string, x: number, y: number) => {
     });
 
     // Lắng nghe phím để kích hoạt tấn công
-    scene.input.keyboard?.on("keydown-" + key.toUpperCase(), () => {
-      if (config.animation) {
-        sprite.anims.play(config.animation, true);
+    scene.input.keyboard?.on("keydown-" + upperKey, () => {
+      const anim = config.animation
+        ? `${sprite.texture.key}_${config.animation}`
+        : null;
+      if (anim && scene.anims.exists(anim)) {
+        sprite.anims.play(anim, true);
+        (sprite as any).currentAnimState = "attack";
+
+        // Sau 500ms, trở lại trạng thái idle hoặc run nếu đang di chuyển
+        setTimeout(() => {
+          if (!sprite.body) return;
+          const vx = sprite.body.velocity.x;
+          const nextAnim =
+            Math.abs(vx) > 10
+              ? `${sprite.texture.key}_run`
+              : (sprite as any).defaultAnimation;
+          if (scene.anims.exists(nextAnim)) {
+            sprite.anims.play(nextAnim, true);
+            (sprite as any).currentAnimState =
+              Math.abs(vx) > 10 ? "run" : "idle";
+          }
+        }, 1000);
       }
       attackHandler(scene, sprite, projectileType, sandbox, DAMAGE);
     });
@@ -607,7 +635,7 @@ sandbox.move = (refName: string, x: number, y: number) => {
       loop: true,
       callback: () => {
         // console.log(`🔁 AutoAttack check: ${refName}`);
-        // if ((sandbox.stats?.[refName]?.hp ?? 0) <= 0) return;
+        if ((sandbox.stats?.[refName]?.hp ?? 0) <= 0) return;
         skillHandlers[skillKey]({
           scene,
           shooter,
@@ -769,13 +797,6 @@ sandbox.move = (refName: string, x: number, y: number) => {
       speed = 300,
       direction = shooter.flipX ? -1 : 1,
     }) => {
-      console.log("🧨 Firing fireball...", {
-        x: shooter.x,
-        y: shooter.y,
-        direction,
-        textureLoaded: scene.textures.exists("fireball_anim"),
-      });
-
       if (!scene.textures.exists("fireball_anim")) {
         return;
       }
@@ -787,7 +808,6 @@ sandbox.move = (refName: string, x: number, y: number) => {
         .setAngle(direction < 0 ? 180 : 0)
         .setVelocityX(direction * speed)
         .setGravity(0, 0);
-
 
       fireball.body.allowGravity = false;
       // const travelTime = (range / speed) * 1000;
@@ -808,74 +828,73 @@ sandbox.move = (refName: string, x: number, y: number) => {
       );
     },
 
-    poison: ({
-      scene,
-      shooter,
-      range = 100,
-      damage = 3,
-    }) => {
+    poison: ({ scene, shooter, range = 100, damage = 3 }) => {
       if (!scene.textures.exists("poison_anim")) {
         return;
       }
-    
+
       // Tạo sprite poison dưới chân shooter
       const poison = scene.physics.add
         .sprite(shooter.x, shooter.y, "poison_anim")
         .play("poison")
         .setScale(range / 100, 1) // scale theo chiều ngang
         .setGravity(0, 0);
-    
+
       poison.body.allowGravity = false;
-    
+
       // Căn đáy của poison và shooter trùng nhau
       poison.setOrigin(0.5, 1);
       poison.y = shooter.getBottomCenter().y;
-    
+
       // Gây sát thương liên tục khi có đối tượng chạm vào
       const interval = scene.time.addEvent({
         delay: 500, // Gây sát thương mỗi 0.5s
         loop: true,
         callback: () => {
-          scene.physics.overlap(poison, scene.children.list, (poisonObj, targetObj) => {
-            const target = targetObj as Phaser.GameObjects.Sprite;
-    
-            const body = target.body as Phaser.Physics.Arcade.Body;
-            if (!body || !body.enable) return
-            if (target === shooter || target === poison) return;
-    
-            // Gọi applyDamage nếu mục tiêu còn sống
-            const targetName = Object.keys(sandbox).find(k => sandbox[k] === target);
-            if (targetName && sandbox.stats?.[targetName]?.hp > 0) {
-              applyDamage(sandbox, scene, shooter, target, damage);
+          scene.physics.overlap(
+            poison,
+            scene.children.list,
+            (poisonObj, targetObj) => {
+              const target = targetObj as Phaser.GameObjects.Sprite;
+
+              const body = target.body as Phaser.Physics.Arcade.Body;
+              if (!body || !body.enable) return;
+              if (target === shooter || target === poison) return;
+
+              // Gọi applyDamage nếu mục tiêu còn sống
+              const targetName = Object.keys(sandbox).find(
+                (k) => sandbox[k] === target
+              );
+              if (targetName && sandbox.stats?.[targetName]?.hp > 0) {
+                applyDamage(sandbox, scene, shooter, target, damage);
+              }
             }
-          });
+          );
         },
       });
-    
+
       scene.time.delayedCall(3000, () => {
         poison.destroy();
         interval.remove();
       });
     },
-    
 
-    healthsteal: ({
-      scene,
-      shooter,
-      range,
-      damage = 2,
-    }) => {
-    
+    healthsteal: ({ scene, shooter, range, damage = 2 }) => {
       if (!scene.textures.exists("healthsteal_anim")) {
         return;
       }
-    
+
       // Tạo animation healthsteal gắn trên đầu chủ thể
-      const healthsteal = scene.add.sprite(shooter.x, shooter.y - shooter.displayHeight, "healthsteal_anim")
+      const healthsteal = scene.add
+        .sprite(
+          shooter.x,
+          shooter.y - shooter.displayHeight,
+          "healthsteal_anim"
+        )
         .play("healthsteal")
         .setScale(0.5)
         .setDepth(10);
-    
+
       // Gắn theo chuyển động của shooter (cập nhật mỗi frame)
       const followInterval = scene.time.addEvent({
         delay: 30,
@@ -886,12 +905,12 @@ sandbox.move = (refName: string, x: number, y: number) => {
             followInterval.remove();
             return;
           }
-    
+
           healthsteal.x = shooter.x;
           healthsteal.y = shooter.y - shooter.displayHeight / 2;
-        }
+        },
       });
-    
+
       // Gây sát thương cho mục tiêu gần và hút máu
       const drainInterval = scene.time.addEvent({
         delay: 500, // mỗi 0.5s gây sát thương & hồi máu
@@ -899,19 +918,23 @@ sandbox.move = (refName: string, x: number, y: number) => {
         callback: () => {
           scene.children.each((child) => {
             const target = child as Phaser.GameObjects.Sprite;
-    
-            // Bỏ qua chính chủ và các object không liên quan
-            if (!target.body || !(target.body as Phaser.Physics.Arcade.Body).enable || target === shooter) return;
 
-    
+            // Bỏ qua chính chủ và các object không liên quan
+            if (
+              !target.body ||
+              !(target.body as Phaser.Physics.Arcade.Body).enable ||
+              target === shooter
+            )
+              return;
+
             const dx = target.x - shooter.x;
             const dy = target.y - shooter.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-    
+
             if (dist <= range) {
               // Gây damage cho target
               applyDamage(sandbox, scene, shooter, target, damage);
-    
+
               // Hồi máu cho shooter
               const shooterStat = sandbox.stats?.[shooter.name];
               if (shooterStat) {
@@ -920,9 +943,9 @@ sandbox.move = (refName: string, x: number, y: number) => {
               }
             }
           });
-        }
+        },
       });
-    
+
       scene.time.delayedCall(3000, () => {
         healthsteal.destroy();
         followInterval.remove();
@@ -938,25 +961,25 @@ sandbox.move = (refName: string, x: number, y: number) => {
       direction = shooter.flipX ? -1 : 1,
     }) => {
       console.log("🔫 Firing lazer...");
-    
+
       if (!scene.textures.exists("lazer_anim")) {
         console.warn("⚠️ lazer_anim not loaded!");
         return;
       }
-    
+
       // Tạo sprite lazer
       const lazer = scene.physics.add.sprite(
         shooter.x,
         shooter.y,
         "lazer_anim"
       );
-    
+
       lazer.play("lazer");
       lazer.body.allowGravity = false;
-    
+
       // Scale chiều ngang theo range
       lazer.setScale(range / 100, 1);
-    
+
       // Đặt lại origin để gốc luôn ở gần shooter
       if (direction > 0) {
         lazer.setOrigin(0, 0.5); // Gốc trái
@@ -966,12 +989,12 @@ sandbox.move = (refName: string, x: number, y: number) => {
         lazer.x = shooter.x - 30; // Gần mặt trái
         lazer.setFlipX(true); // Lật nếu cần
       }
-    
+
       // Biến mất sau 3s
       scene.time.delayedCall(800, () => {
         if (lazer && lazer.destroy) lazer.destroy();
       });
-    
+
       // Gây sát thương khi chạm
       scene.physics.add.overlap(
         lazer,
@@ -984,14 +1007,11 @@ sandbox.move = (refName: string, x: number, y: number) => {
             target === shooter
           )
             return;
-    
+
           applyDamage(sandbox, scene, shooter, target, damage);
         }
       );
-    }
-    
-    
-    
+    },
   };
 
   //==============================================================================//
@@ -1007,14 +1027,15 @@ sandbox.move = (refName: string, x: number, y: number) => {
     const scale = shooter.scaleX || 1;
 
     const projectileSpeed = 300 * scale;
-    const projectileRange = 1000 * scale;
+    const projectileRange = 1000;
     const damage = baseDamage;
 
     const projectile = scene.physics.add
       .sprite(shooter.x + (direction > 0 ? 10 : -10), shooter.y, projectileType)
-      .setScale(0.25 * scale)
+      .setScale(0.1)
       .setVelocityX(direction * projectileSpeed)
-      .setGravity(0, 0);
+      .setGravity(0, 0)
+      .setAngle(direction > 0 ? 45 : 225);
 
     projectile.body.allowGravity = false;
 
@@ -1049,7 +1070,7 @@ sandbox.move = (refName: string, x: number, y: number) => {
     if (!sprite || !sandbox.stats[refName]) return;
 
     const stats = sandbox.stats[refName];
-    const text = `❤ ${stats.hp}  ⚡ ${stats.power}`;
+    const text = `♥️ ${stats.hp}  ️🗡 ${stats.power}`;
 
     if (!sandbox.statTexts[refName]) {
       sandbox.statTexts[refName] = scene.add

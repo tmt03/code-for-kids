@@ -54,7 +54,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   onAttack: 4,
   interact: 5,
   autoAttack: 5,
-  when: 4,
+  when: 3,
   setHealth: 2,
   setPower: 2,
   setTimer: 1,
