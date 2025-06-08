@@ -8,7 +8,6 @@ const getQuestDetails = async (
   next: NextFunction
 ) => {
   try {
-    // console.log("req.params", req.params);
     const questId = req.params.questId; //Lấy questId từ phía frontend gửi về qua fetch
 
     //Dieu huong du lieu sang tang service

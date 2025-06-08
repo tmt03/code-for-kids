@@ -22,6 +22,7 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../backend/src/utils/constants.ts"],
+  "baseUrl": "",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../backend/src/utils/constants.ts", "app/play/shared-game/[slug]"],
   "exclude": ["node_modules"]
 }

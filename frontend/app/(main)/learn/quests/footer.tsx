@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { fetchAllChapters } from "@/apis";
 import ProgressBar from "@/components/progressbar";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Quest = {
     id: string;
@@ -30,12 +30,11 @@ type Chapter = {
 
 export default function FooterChapter() {
     const router = useRouter();
-    const params = useParams(); // Lấy params từ URL
-    const { questId } = params as { questId: string }; // Ép kiểu để lấy questId
-    const [quests, setQuests] = useState<Quest[]>([]); // State để lưu danh sách quests
-    const [currentIndex, setCurrentIndex] = useState<number | null>(null); // Index của quest hiện tại
+    const params = useParams();
+    const { questId } = params as { questId: string };
+    const [quests, setQuests] = useState<Quest[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
-    // Giả lập fetch danh sách quests (thay bằng API thực tế)
     useEffect(() => {
         const fetchQuests = async () => {
             try {
@@ -44,12 +43,9 @@ export default function FooterChapter() {
                     throw new Error("Dữ liệu từ API không phải là mảng chapters");
                 }
 
-                //flatMap lấy các mảng (bao gồm các quests) của từng chapter gộp lại thành 1 mảng
                 const allQuests = chapters.flatMap((chapter: Chapter) => chapter.quests);
                 setQuests(allQuests);
 
-
-                //Tìm vị trí của questId hiện tại
                 const index = allQuests.findIndex((quest: Quest) => quest.id === questId);
                 setCurrentIndex(index >= 0 ? index : null);
             } catch (error: any) {
@@ -58,6 +54,19 @@ export default function FooterChapter() {
         };
         fetchQuests();
     }, [questId]);
+
+    // Chuyển đổi quests thành mảng chapters giả lập
+    const chaptersFromQuests = useMemo(() => {
+        return [{
+            id: "all-quests",
+            quests: quests.map(quest => ({
+                id: parseInt(quest.id),
+                type: quest.type as "quest" | "challenge",
+                point: quest.point,
+            })),
+            status: "active",
+        }];
+    }, [quests]);
 
     // Hàm xử lý chuyển hướng khi nhấn nút
     const handleButtonClick = (direction: "prev" | "next") => {
@@ -87,7 +96,7 @@ export default function FooterChapter() {
                 >
                     Trở Về
                 </Button>
-                <ProgressBar percentage={50} />
+                <ProgressBar chapters={chaptersFromQuests} /> {/* Truyền chapters giả lập */}
                 <Button
                     variant="pixel"
                     className="w-20"

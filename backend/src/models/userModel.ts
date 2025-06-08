@@ -1,5 +1,6 @@
-import { GET_DB } from "../config/mongoDB";
 import bcrypt from "bcryptjs";
+import { ObjectId } from "mongodb";
+import { GET_DB } from "../config/mongoDB";
 
 const USER_COLLECTION_NAME = "users";
 
@@ -12,6 +13,7 @@ const createNew = async (data: any) => {
     role: data.role || "user",
     refreshToken: null,
     email: null,
+    ratingPoints: 0,
     created_at: null,
     updated_at: null,
     _destroy: false,
@@ -131,6 +133,15 @@ const clearOTP = async (username: string) => {
     .updateOne(
         { username },
         { $unset: { resetOTP: "", resetOTPExpires: "" } }
+        );
+};
+
+const increaseRatingPoint = async (userId: string, points: number) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { _id: new ObjectId(userId.toString()) },
+      { $inc: { ratingPoints: points } }
     );
 };
 
@@ -147,4 +158,5 @@ export const userModel = {
   saveOTP,
   getOTP,
   clearOTP,
+  increaseRatingPoint,
 };

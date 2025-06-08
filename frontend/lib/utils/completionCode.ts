@@ -62,6 +62,7 @@ export const getParameterCompletions = (context: CompletionContext) => {
     { name: "spawn(", type: "spawn" },
     { name: "spawnRandom(", type: "spawnRandom" },
     { name: "onKey(", type: "onKey" },
+    { name: "onAttack(", type: "onAttack" },
     { name: "interact(", type: "interact" },
     { name: "setColor(", type: "setColor" },
     { name: "setFloor(", type: "setFloor" },
@@ -113,6 +114,7 @@ export const getParameterCompletions = (context: CompletionContext) => {
       break;
 
     case "onKey":
+    case "onAttack":
       if (
         commandContext.includes("{") &&
         commandContext.includes("animation:")

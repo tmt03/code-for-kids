@@ -1,13 +1,24 @@
 "use client"
 
+import { fetchInitUserProgress } from "@/apis";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function CourseCard() {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleButtonClick = () => {
-        router.push(`/learn/chapters`);
+    const handleButtonClick = async () => {
+        setIsLoading(true);
+        try {
+            const progress = await fetchInitUserProgress(); // Gọi API
+            console.log("Progress initialized:", progress);
+            router.push(`/learn/chapters`);
+        } catch (error: any) {
+            console.error("Error initializing progress:", error);
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -36,8 +47,9 @@ export default function CourseCard() {
                         onClick={handleButtonClick}
                         variant="default"
                         className="bg-[#FF4040] text-white font-bold px-3 py-1 rounded-sm shadow-[2px_2px_0px_0px_#000000] hover:bg-[#FF6666] transition-colors"
+                        disabled={isLoading}
                     >
-                        Bắt đầu
+                        {isLoading ? 'Đang xử lý...' : 'Bắt đầu'}
                     </Button>
                 </div>
             </div>

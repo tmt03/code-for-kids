@@ -1,29 +1,36 @@
+import { useProgress } from "@/hooks/useProgress";
+
 interface CourseProgressProps {
-    chapters: Array<{
-        id: number;
-        title: string;
-        description: string;
-        imageUrl: string;
-        isSpecial?: boolean;
-        quests: Array<{ id: number; title: string; isChallenge?: boolean }>;
-    }>;
+    chapters: {
+        id: string;
+        quests: { id: number; type: "quest" | "challenge"; point?: number }[];
+        status: string;
+    }[];
 }
 
-
-
 export default function CourseProgress({ chapters }: CourseProgressProps) {
-    // Tính toán số Nhiệm Vụ (SỬA SAU)
-    const totalExercises = chapters.reduce((total, chapter) => total + (chapter.quests.length - 1), 0); //Tính tổng Nhiệm Vụ
-    const completedExercises = 2; // 2 chapters hoàn thành × 4 tasks = 8
+    const { progressSummary } = useProgress();
 
-    // Tính toán số Thử Thách (SỬA SAU)
-    const totalChallenge = 10; // Chapter 4 và Chapter 7
-    const completedProjects = 1; // Chapter 4 hoàn thành, Chapter 7 chưa hoàn thành
+    // Tính toán tổng số Nhiệm Vụ hiện có
+    const totalQuesst = chapters.reduce((total, chapter) => {
+        return total + chapter.quests.filter((quest) => quest.type === "quest").length
+    }, 0)
 
-    // Tính toán XP - Giả sử: 5 XP/task, 50 XP/chapter hoàn thành
-    const totalXP = 605; // Tổng XP tối đa
-    const earnedXP = 100;
+    // Tính toán tổng số Thử Thách hiện có
+    const totalChallenge = chapters.reduce((total, chapter) => {
+        return total + chapter.quests.filter((quest) => quest.type === "challenge").length
+    }, 0)
 
+    // Tính toán tổng số Score hiện có
+    const totalScore = chapters.reduce((total, chapter) => {
+        const chapterQuestsScore = chapter.quests.reduce(
+            (questTotal, quest) => questTotal + (quest.point || 10), // Mặc định 10 nếu không có point
+            0
+        );
+        return total + chapterQuestsScore;
+    }, 0);
+
+    const earnedScore = progressSummary.totalScore // Số score đang nhận được
 
     return (
         <div className="mt-4 p-4 bg-[#1C6CA8] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
@@ -41,13 +48,13 @@ export default function CourseProgress({ chapters }: CourseProgressProps) {
                     <div className="flex justify-between text-sm text-white">
                         <span>Nhiệm Vụ</span>
                         <span>
-                            {completedExercises}/{totalExercises}
+                            {progressSummary.completedQuests}/{totalQuesst}
                         </span>
                     </div>
                     <div className="w-full bg-[#4682B4] rounded-full h-2 border-2 border-black mt-1">
                         <div
                             className="bg-[#FFD700] h-1 rounded-full border-r-2 border-black transition-all duration-500"
-                            style={{ width: `${(completedExercises / totalExercises) * 100}%` }}
+                            style={{ width: `${(progressSummary.completedQuests / totalQuesst) * 100}%` }}
                         ></div>
                     </div>
                 </div>
@@ -62,13 +69,13 @@ export default function CourseProgress({ chapters }: CourseProgressProps) {
                     <div className="flex justify-between text-sm text-white">
                         <span>Thử Thách</span>
                         <span>
-                            {completedProjects}/{totalChallenge}
+                            {progressSummary.completedChallenges}/{totalChallenge}
                         </span>
                     </div>
                     <div className="w-full bg-[#4682B4] rounded-full h-2 border-2 border-black mt-1">
                         <div
                             className="bg-[#FFD700] h-1 rounded-full border-r-2 border-black transition-all duration-500"
-                            style={{ width: `${(completedProjects / totalChallenge) * 100}%` }}
+                            style={{ width: `${(progressSummary.completedChallenges / totalChallenge) * 100}%` }}
                         ></div>
                     </div>
                 </div>
@@ -83,13 +90,13 @@ export default function CourseProgress({ chapters }: CourseProgressProps) {
                     <div className="flex justify-between text-sm text-white">
                         <span>Điểm Thành Tựu</span>
                         <span>
-                            {earnedXP}/{totalXP}
+                            {earnedScore}/{totalScore}
                         </span>
                     </div>
                     <div className="w-full bg-[#4682B4] rounded-full h-2 border-2 border-black mt-1">
                         <div
                             className="bg-[#FFD700] h-1 rounded-full border-r-2 border-black transition-all duration-500"
-                            style={{ width: `${(earnedXP / totalXP) * 100}%` }}
+                            style={{ width: `${(earnedScore / totalScore) * 100}%` }}
                         ></div>
                     </div>
                 </div>

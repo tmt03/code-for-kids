@@ -44,9 +44,8 @@ const Leaderboard = () => {
 
       <div className="flex border-b border-gray-600 mb-4">
         <button
-          className={`px-4 py-2 text-2sm font-bold ${
-            activeTab === 'weekly' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'
-          }`}
+          className={`px-4 py-2 text-2sm font-bold ${activeTab === 'weekly' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'
+            }`}
           onClick={() => {
             setActiveTab('weekly');
             setCurrentPage(1);
@@ -55,9 +54,8 @@ const Leaderboard = () => {
           Hàng tuần
         </button>
         <button
-          className={`px-4 py-2 text-2sm font-bold ${
-            activeTab === 'alltime' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'
-          }`}
+          className={`px-4 py-2 text-2sm font-bold ${activeTab === 'alltime' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'
+            }`}
           onClick={() => {
             setActiveTab('alltime');
             setCurrentPage(1);
@@ -100,15 +98,14 @@ const Leaderboard = () => {
             className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm"
             disabled={currentPage === 1}
           >
-            <FontAwesomeIcon icon={faAngleDoubleLeft}/>
+            <FontAwesomeIcon icon={faAngleDoubleLeft} />
           </button>
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i}
               onClick={() => handlePageChange(i + 1)}
-              className={`px-3 py-1 rounded text-sm ${
-                currentPage === i + 1 ? 'bg-blue-500' : 'bg-gray-700 hover:bg-gray-600'
-              }`}
+              className={`px-3 py-1 rounded text-sm ${currentPage === i + 1 ? 'bg-blue-500' : 'bg-gray-700 hover:bg-gray-600'
+                }`}
             >
               {i + 1}
             </button>
@@ -118,7 +115,7 @@ const Leaderboard = () => {
             className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm"
             disabled={currentPage === totalPages}
           >
-            <FontAwesomeIcon icon={faAngleDoubleRight}/>
+            <FontAwesomeIcon icon={faAngleDoubleRight} />
           </button>
         </div>
       )}
