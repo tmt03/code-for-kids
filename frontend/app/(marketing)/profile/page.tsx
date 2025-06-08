@@ -3,7 +3,6 @@
 import EditProfilePopup from '@/components/edit-profile-popup';
 import { faCircle, faClock, faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -82,31 +81,6 @@ export default function ProfilePage() {
                             <div className="bg-[#1c1c2e] rounded p-4 border border-[#3a3a5a] shadow-sm">
                                 <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">Huy hiệu</h2>
                                 <p className="text-sm text-gray-400">Thêm huy hiệu bằng cách chỉnh sửa trang cá nhân</p>
-                            </div>
-
-                            <div className="bg-[#1c1c2e] rounded p-4 border border-[#3a3a5a] shadow-sm">
-                                <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">🏆 Bảng xếp hạng</h2>
-
-                                {/* Thông tin người dùng */}
-                                <div className="flex items-center mt-4">
-                                    <div className="w-6 text-white font-bold text-center">47</div>
-                                    <div className="w-8 h-8 bg-gray-500 rounded-full mx-3"></div>
-                                    <div className="flex flex-col text-sm text-white">
-                                        <span className="font-semibold">{user.user?.displayName}</span>
-                                        <span className="text-gray-400">@{user.user?.username}</span>
-                                    </div>
-                                    <div className="ml-auto font-semibold text-blue-400 text-sm">
-                                        1200 XP
-                                    </div>
-                                </div>
-
-                                {/* Link đến bảng xếp hạng */}
-                                <Link
-                                    href="/leaderboard"
-                                    className="block text-center text-md text-blue-400 mt-4 hover:underline transition"
-                                >
-                                    Xem bảng xếp hạng
-                                </Link>
                             </div>
 
                         </div>

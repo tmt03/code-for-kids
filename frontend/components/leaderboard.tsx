@@ -67,10 +67,12 @@ const Leaderboard = () => {
         </button>
       </div>
 
-      <div className="divide-y divide-gray-700">
+      <div className="bg-[#0a0a23] divide-y divide-gray-700 rounded-md">
         {displayedUsers.map((user, idx) => (
           <div key={user.username || idx} className="flex items-center py-4 space-x-4">
-            <div className="w-6 text-right text-black">
+            <div className={`w-6 text-xl text-right ${idx === 0 ? "text-yellow-400"
+                                                    : idx === 1 ? "text-gray-300"
+                                                    : idx === 2 ? "text-orange-500" : "text-white"}`}>
               {(currentPage - 1) * USERS_PER_PAGE + idx + 1}
             </div>
             <Image
@@ -81,10 +83,10 @@ const Leaderboard = () => {
               className="rounded-full"
             />
             <div className="flex-1">
-              <div className="font-semibold text-black">{user.displayName || user.username}</div>
-              <div className="text-xs text-gray-600">@{user.username}</div>
+              <div className="font-semibold text-white">{user.displayName || user.username}</div>
+              <div className="text-xs text-gray-400">@{user.username}</div>
             </div>
-            <div className="font-semibold text-black text-2sm">
+            <div className="font-semibold text-blue-300 text-lg px-4">
               {user.ratingPoints ?? 0} điểm
             </div>
           </div>

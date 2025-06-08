@@ -95,7 +95,7 @@ export default function Header() {
                                     className="w-9 h-9 rounded-full overflow-hidden border-2 border-white hover:border-blue-400 transition-all"
                                 >
                                     <img
-                                        src="/assets/globe.svg"
+                                        src={user.avatarUrl}
                                         alt="Profile"
                                         className="w-full h-full object-cover"
                                     />
@@ -155,7 +155,7 @@ export default function Header() {
                                 onClick={toggleMobileProfileDropdown}
                                 className="w-full flex items-center justify-start gap-2 px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"
                             >
-                                <img src="/assets/globe.svg" alt="User Avatar" className="h-6 w-6 rounded-full" />
+                                <img src={user.avatarUrl} alt="User Avatar" className="h-6 w-6 rounded-full" />
                                 <span>Tài khoản</span>
                             </button>
                         )}

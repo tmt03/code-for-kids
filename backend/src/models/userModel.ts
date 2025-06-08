@@ -41,6 +41,20 @@ const findByUsername = async (username: string) => {
   }
 };
 
+const findByEmail = async (email: string) => {
+  try {
+    const user = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .findOne({ email, _destroy: false });
+
+    if (!user) return null;
+
+    return user;
+  } catch (error) {
+    throw Error(error as string);
+  };
+};
+
 // Cập nhật refreshToken
 const updateRefreshToken = async (username: string, refreshToken: string) => {
   return await GET_DB()
@@ -94,8 +108,35 @@ const getLeaderboard = async () => {
     .toArray();
 };
 
+const saveOTP = async (username: string, otp: string, expires: number) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne({ username },
+        { $set: { resetOTP: otp, resetOTPExpires: expires } }
+    );
+};
+
+const getOTP = async (username: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .findOne(
+        { username },
+        { projection: { resetOTP: 1, resetOTPExpires: 1 } }
+    );
+};
+
+const clearOTP = async (username: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+        { username },
+        { $unset: { resetOTP: "", resetOTPExpires: "" } }
+    );
+};
+
 export const userModel = {
   findByUsername,
+  findByEmail,
   createNew,
   updateRefreshToken,
   updateAvatar,
@@ -103,4 +144,7 @@ export const userModel = {
   updateProfile,
   changePassword,
   getLeaderboard,
+  saveOTP,
+  getOTP,
+  clearOTP,
 };

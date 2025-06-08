@@ -86,6 +86,7 @@ const getUserInfo = async (username: string) => {
     avatarUrl: user.avatarUrl,
     bannerUrl: user.bannerUrl,
     bio: user.bio,
+    email: user.email,
   };
 };
 
