@@ -1,18 +1,35 @@
 'use client'
 
-import { fetchLearnProgress } from "@/apis";
+import { fetchLeaderboard, fetchLearnProgress } from "@/apis";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/hooks/useAuth';
 import { useProgress } from "@/hooks/useProgress";
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useEffect, useState } from "react";
+
+
 
 export default function HomePage() {
     const { user, isLoading: isAuthLoading } = useAuth();
     const { progressSummary, setProgressSummary } = useProgress();
     const [isLoading, setIsLoading] = useState(true);
+
+
+    type LeaderboardUser = {
+        username?: string;
+        displayName?: string;
+        avatarUrl?: string;
+        ratingPoints?: number;
+    };
+    const [topUsers, setTopUsers] = useState<LeaderboardUser[]>([]);
+
+    useEffect(() => {
+        fetchLeaderboard()
+            .then(users => setTopUsers((users || []).slice(0, 3)))
+            .catch(() => setTopUsers([]));
+    }, []);
 
     // Tải dữ liệu tiến trình
     useEffect(() => {
@@ -202,8 +219,8 @@ export default function HomePage() {
                                 <li key={u.username || i} className="flex items-center gap-2">
                                     <span
                                         className={`font-bold ${i === 0 ? "text-yellow-400"
-                                                              : i === 1 ? "text-gray-300"
-                                                              : i === 2 ? "text-orange-500" : "text-white"}`}>
+                                            : i === 1 ? "text-gray-300"
+                                                : i === 2 ? "text-orange-500" : "text-white"}`}>
                                         {i + 1}
                                     </span>
                                     <img
@@ -220,7 +237,7 @@ export default function HomePage() {
                             )}
                         </ol>
                         <h4 className='text-center text-lg py-2'>
-                            <FontAwesomeIcon icon={faFlagCheckered} className='px-1'/> Bạn đang ở đâu trong cuộc đua này?
+                            <FontAwesomeIcon icon={faFlagCheckered} className='px-1' /> Bạn đang ở đâu trong cuộc đua này?
                         </h4>
                         <Link
                             href={"/leaderboard"}
