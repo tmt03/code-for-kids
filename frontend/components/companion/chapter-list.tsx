@@ -36,7 +36,6 @@ export default function ChapterList({ chapters }: Props) {
     const router = useRouter();
 
     const chapterStatus = progressSummary.badgeChapters
-    console.log(chapterStatus)
 
     const handleCardClick = (chapter: Chapter, e: React.MouseEvent<HTMLDivElement>) => {
         if ((e.target as HTMLElement).closest("button")) {

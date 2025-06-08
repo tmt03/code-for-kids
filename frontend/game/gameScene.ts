@@ -23,7 +23,8 @@ import * as Phaser from "phaser";
  */
 interface Quest {
   id: string;
-  mode: "guided" | "free";
+  mode: "creative" | "learning";
+  code?: string;
 }
 
 /**
@@ -67,8 +68,9 @@ export class Game_Scene extends Phaser.Scene {
   private attackCooldown = 500; // Thời gian hồi tấn công (ms)
 
   constructor(quest: Quest) {
-    super("Game_Scene");
+    super({ key: "Game_Scene" });
     this.quest = quest;
+    console.log("Game_Scene initialized with quest:", quest);
   }
 
   // ===== Các Phương Thức Vòng Đời Scene =====
@@ -86,12 +88,26 @@ export class Game_Scene extends Phaser.Scene {
    * Được gọi tự động bởi Phaser sau preload()
    */
   create(): void {
+    console.log("Game_Scene create() called");
     this.initializeScaleFactor();
     setupAnimations(this);
     this.initializeSandbox();
     this.setupResizeListener();
     this.runPreviewCodeIfAvailable();
     this.setupRunUserCodeListener();
+    if (this.quest.id === "shared" && this.quest.code) {
+      this.runUserCode(this.quest.code);
+    }
+
+    // Lắng nghe sự kiện run-user-code
+    this.events.on("run-user-code", (code: string) => {
+      console.log("Game_Scene received code to run:", code);
+      try {
+        this.runUserCode(code);
+      } catch (error) {
+        console.error("Error running user code:", error);
+      }
+    });
   }
 
   /**
@@ -378,7 +394,8 @@ export class Game_Scene extends Phaser.Scene {
    * Thực thi code người dùng trong môi trường sandbox
    * @param code - Chuỗi code cần thực thi
    */
-  runUserCode(code: string): void {
+  private runUserCode(code: string): void {
+    console.log("Running user code in sandbox");
     try {
       const wrapped = `
         with (sandbox) {
@@ -393,7 +410,7 @@ export class Game_Scene extends Phaser.Scene {
         Object.keys(this.sandbox)
       );
     } catch (err) {
-      console.error("Lỗi khi chạy code người dùng:", err);
+      console.error("Error in user code execution:", err);
     }
   }
 

@@ -9,7 +9,8 @@ import type * as Phaser from "phaser";
 interface GameCanvasProps {
   quest: {
     id: string;
-    mode: "guided" | "free";
+    mode: "creative" | "learning";
+    code?: string;
   };
 }
 
@@ -17,13 +18,14 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
   const gameRef = useRef<Phaser.Game | null>(null);
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   useEffect(() => {
-    if (!isClient || !canvasRef.current) return;
+    if (!isClient || !canvasRef.current || isInitializedRef.current) return;
 
     const initPhaser = async () => {
       const Phaser = (await import("phaser")).default;
@@ -61,6 +63,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
 
       const game = new Phaser.Game(config);
       gameRef.current = game;
+      isInitializedRef.current = true;
 
       const resizeObserver = new ResizeObserver(() => {
         if (gameRef.current) {
@@ -76,6 +79,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
         if (gameRef.current) {
           gameRef.current.destroy(true);
           gameRef.current = null;
+          isInitializedRef.current = false;
         }
       };
     };
@@ -84,7 +88,48 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
     return () => {
       initPhaserPromise.then((cleanupFn) => cleanupFn?.());
     };
-  }, [isClient, quest]);
+  }, [isClient, quest.id, quest.mode]); // Chỉ khởi tạo lại khi id hoặc mode thay đổi
+
+  // Lắng nghe sự kiện reset-canvas
+  useEffect(() => {
+    const handleReset = () => {
+      if (gameRef.current) {
+        gameRef.current.scene.scenes.forEach((scene) => {
+          scene.scene.restart();
+        });
+      }
+    };
+
+    window.addEventListener("reset-canvas", handleReset);
+    return () => {
+      window.removeEventListener("reset-canvas", handleReset);
+    };
+  }, []);
+
+  // Lắng nghe sự kiện run-user-code
+  useEffect(() => {
+    const handleRunCode = (event: CustomEvent) => {
+      console.log("GameCanvas received run-user-code event:", event.detail);
+      if (gameRef.current) {
+        console.log("Emitting run-user-code to scene");
+        gameRef.current.scene.scenes.forEach((scene) => {
+          scene.sys.events.emit("run-user-code", event.detail.code);
+        });
+      } else {
+        console.warn("Game not initialized when run-user-code event received");
+      }
+    };
+
+    window.addEventListener("run-user-code", handleRunCode as EventListener);
+    return () => {
+      window.removeEventListener("run-user-code", handleRunCode as EventListener);
+    };
+  }, []);
+
+  // Nếu quest là null, không render canvas
+  if (!quest) {
+    return <div className="w-full h-full flex items-center justify-center text-gray-500">Chưa tải được nhiệm vụ</div>;
+  }
 
   return (
     <div

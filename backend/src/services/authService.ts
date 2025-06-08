@@ -5,13 +5,15 @@ import { userModel } from "../models/userModel";
 
 const generateAccessToken = (user: any) => {
   return jwt.sign(
-    { userId: user._id.toString(), 
+    {
+      userId: user._id.toString(),
       username: user.username,
       role: user.role,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
       bannerUrl: user.bannerUrl,
-      bio: user.bio, },
+      bio: user.bio,
+    },
     env.JWT_SECRET_ACCESS_TOKEN,
     { expiresIn: "1h" }
   );
@@ -86,12 +88,14 @@ const getUserInfo = async (username: string) => {
   if (!user) return null;
   // Trả về thông tin an toàn, không trả password
   return {
+    userId: user._id,
     username: user.username,
     role: user.role,
     displayName: user.displayName,
     avatarUrl: user.avatarUrl,
     bannerUrl: user.bannerUrl,
     bio: user.bio,
+    ratingPoints: user.ratingPoints,
   };
 };
 
