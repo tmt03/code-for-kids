@@ -42,7 +42,8 @@ export const baseCodeFunctions: Record<string, (scene: any, sandbox: any) => voi
         .setScale(0.51);
     
       // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
-      const floor = sandbox.setFloor("ground_2", 425, 453);
+      const floor = sandbox.setFloor("ground_2", 100, 753)
+      .setScale(0.6);
       scene.floor = floor;
     },
     

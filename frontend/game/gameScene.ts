@@ -223,9 +223,40 @@ export class Game_Scene extends Phaser.Scene {
         start: 0,
         end: 3,
       }),
-      frameRate: 2,
+      frameRate: 10,
       repeat: -1,
     });
+
+    this.anims.create({
+      key: "healthsteal",
+      frames: this.anims.generateFrameNumbers("healthsteal_anim", {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "lazer",
+      frames: this.anims.generateFrameNumbers("lazer_anim", {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: 0,
+    });
+
+    this.anims.create({
+      key: "poison",
+      frames: this.anims.generateFrameNumbers("poison_anim", {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
   }
 
   /**
