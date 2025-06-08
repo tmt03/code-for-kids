@@ -31,7 +31,7 @@ interface Quest {
  * Cấu hình điều khiển cho di chuyển người chơi
  * Định nghĩa cách một phím ảnh hưởng đến di chuyển và animation của sprite
  */
-interface ControlConfig {
+interface ControlConfig { 
   key: number; // Mã phím bàn phím
   sprite: Phaser.GameObjects.Sprite; // Sprite cần điều khiển
   animation?: string; // Animation phát khi nhấn phím

@@ -13,18 +13,3 @@ export const slugify = (val: any) => {
     .replace(/\s+/g, "-") // replace spaces with hyphens
     .replace(/-+/g, "-"); // remove consecutive hyphens
 };
-
-/**
- * Example:
- */
-const originalStringTest = "TrungQuanDev Một Lập Trình Viên";
-const slug = slugify(originalStringTest);
-
-console.log("originalStringTest:", originalStringTest);
-console.log("slug:", slug);
-/**
- * Results:
- *
- * Original String Test: 'TrungQuanDev Một Lập Trình Viên'
- * Slug Result: trungquandev-mot-lap-trinh-vien
- */
