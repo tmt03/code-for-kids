@@ -1,7 +1,6 @@
-// Mô phỏng môi trường game ở backend (không dùng Phaser)
 export function createBackendSandbox() {
   const refs: Record<string, any> = {}; // Lưu tất cả đối tượng được tạo
-  const events: string[] = []; // Theo dõi các hành động có điều kiện hoặc hiệu ứng
+  const events: { condition: string; action: string; effect: string }[] = []; // Theo dõi các hành động có điều kiện hoặc hiệu ứng
 
   const clamp = (val: number, min: number, max: number) =>
     Math.max(min, Math.min(max, val));
@@ -130,9 +129,19 @@ export function createBackendSandbox() {
       }
     },
 
-    // 13. Điều kiện thắng/thua
-    when: (target: string, value: number, action: string, effect: string) => {
-      events.push(`when ${target} == ${value} => ${effect}`);
+    // 13. Điều kiện thắng/thua (đã sửa)
+    when: (condition: string, action: string, effect: string) => {
+      // Phân tích điều kiện: "thuộc_tính:tên >= số"
+      const [propertyRef, comparatorValue] = condition.split(" ");
+      const [property, refName] = propertyRef.split(":");
+      const [comparator, value] = comparatorValue
+        .split(/(\d+)/)
+        .filter(Boolean);
+
+      if (refs[refName] && property && comparator && value) {
+        const conditionStr = `${refName}.${property} ${comparator} ${value}`;
+        events.push({ condition: conditionStr, action, effect });
+      }
     },
 
     // 14. Thiết lập máu
@@ -142,14 +151,14 @@ export function createBackendSandbox() {
       }
     },
 
-    // 14. Thiết lập máu
+    // 15. Thiết lập sức mạnh
     setPower: (refName: string, power: number) => {
       if (refs[refName]) {
         refs[refName].power = clamp(power, 0, 100);
       }
     },
 
-    // 15. Hẹn giờ kết thúc
+    // 16. Hẹn giờ kết thúc
     setTimer: (ms: number) => {
       refs.timer = clamp(ms, 1000, 600000); // tối đa 10 phút
     },

@@ -62,27 +62,58 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
 
 // Danh sách sprite
 export const SPRITES = [
-  "knight",
-  "wizard",
-  "dragon",
-  "castle_1",
-  "village",
-  "sword",
+  "kiemsi",
+  "thosan",
+  "kisi",
+  "orcxanh",
+  "orccam",
+  "orcdo",
+  "boxuong",
+  "traubac",
+  "trauvang",
+  "quylua",
+  "quycay",
 ] as const;
 
 // Danh sách background
 export const BACKGROUNDS = [
-  "sky_1",
-  "sky_2",
-  "sky_3",
-  "sky_4",
-  "sky_5",
-  "sky_6",
-  "sky_7",
+  "bautroi_1",
+  "bautroi_2",
+  "bautroi_3",
+  "bautroi_4",
+  "bautroi_5",
+  "bautroi_6",
+  "bautroi_7",
+  "nui_1",
+  "nui_2",
+  "nui_3",
+  "nui_4",
+  "nui_5",
+  "nui_6",
+  "rung_1",
+  "rung_2",
+  "rung_3",
+  "rung_4",
+  "rung_5",
+  "rung_6",
 ] as const;
 
 // Danh sách sàn
-export const FLOORS = ["ground_1", "ground_2"] as const;
+export const FLOORS = [
+  "nendat_1",
+  "nendat_2",
+  "nendat_3",
+  "laco_1",
+  "laudai_1",
+  "cay_1",
+  "cay_2",
+  "cay_3",
+  "cay_4",
+  "cucda_1",
+  "cucda_2",
+  "cucda_3",
+  "cucda_4",
+] as const;
 
 // Danh sách màu
 export const COLORS = [
@@ -109,93 +140,122 @@ export const COLORS = [
 ] as const;
 
 // Danh sách animation
-export const ANIMATIONS = [
-  "jump",
-  "idle",
-  "run",
-  "walk",
-  "dead",
-  "attack",
-] as const;
+export const ANIMATIONS = ["jump", "idle", "run", "attack"] as const;
+
+// Danh sách vũ khí cho onAttack
+export const ONATTACK_WEAPONS = ["kiem", "riu", "thuong", "tim"] as const;
 
 // Danh sách hành động cho interact
 export const INTERACT_ACTIONS = ["gain", "lose"] as const;
 
+// Danh sách kết quả cho when
+export const WHEN_RESULTS = ["win", "lose"] as const;
+
 // Danh sách thuộc tính cho interact
 export const INTERACT_ATTRIBUTES = ["power", "hp"] as const;
+// Danh sách hành động cho phím
+export const ALLOWED_KEYS = [
+  "LEFT",
+  "RIGHT",
+  "UP",
+  "DOWN",
+  "A",
+  "S",
+  "W",
+  "D",
+  "SPACE",
+  "ENTER",
+  "X",
+  "B",
+  "C",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "T",
+  "U",
+  "V",
+  "Y",
+  "Z",
+] as const;
 
 export const COMMANDS = [
   {
     name: "setBackground",
-    syntax: 'setBackground("cảnh");',
+    syntax: 'setBackground("Cảnh nền");',
   },
   {
     name: "setFloor",
-    syntax: 'setFloor("tên_nền", x, y);',
+    syntax: 'setFloor("Tên_nền", x, y);',
   },
   {
     name: "setColor",
-    syntax: 'setColor("tên_ref", "màu");',
+    syntax: 'setColor("Tên", "màu");',
   },
   {
     name: "spawn",
-    syntax:
-      'spawn("tên_sprite", x, y, { animation: "tên_animation" }, "tên_ref");',
+    syntax: 'spawn("Nhân_vật", x, y, { animation: "hoạt_ảnh" }, "tên");',
   },
   {
     name: "spawnRandom",
-    syntax:
-      'spawnRandom("tên_sprite", x_min, x_max, y, "tên_ref", khoảng_thời_gian);',
+    syntax: 'spawnRandom("Nhân_vật", x_min, x_max, y, "tên", thời_gian);',
   },
   {
     name: "setName",
-    syntax: 'setName("tên_ref", "tên");',
+    syntax: 'setName("Tên", "biệt_danh");',
   },
   {
     name: "scale",
-    syntax: 'scale("tên_ref", tỉ_lệ);',
+    syntax: 'scale("Tên", tỉ_lệ);',
   },
   {
     name: "move",
-    syntax: 'move("tên_ref", delta_x, delta_y);',
+    syntax: 'move("Tên", x, y);',
   },
   {
     name: "moveRandom",
-    syntax: 'moveRandom("tên_ref", x_min, x_max, thời_gian_ms);',
+    syntax: 'moveRandom("Tên", x_min, x_max, thời_gian);',
   },
   {
     name: "onKey",
-    syntax:
-      'onKey("phím", { animation: "tên_animation" }, "tên_ref", giá_trị_x, giá_trị_y);',
+    syntax: 'onKey("phím", { animation: "hoạt_ảnh" }, "tên", x, y);',
   },
   {
     name: "onAttack",
-    syntax:
-      'onAttack("phím", { animation: "tên_animation" }, kiểu_skill, "tên_ref");',
+    syntax: 'onAttack("phím", { animation: "hoạt_ảnh" }, "vũ_khí", "tên");',
   },
   {
     name: "interact",
-    syntax:
-      'interact("tên_ref_1", "tên_ref_2", "hành_động", "thuộc_tính", giá_trị);',
+    syntax: 'interact("tên_1", "tên_2", "hành_động", "thuộc_tính", giá_trị);',
   },
   {
     name: "autoAttack",
-    syntax: 'autoAttack("tên_ref", tầm_đánh, tên_skill, damage, cooldown);',
+    syntax: 'autoAttack("tên", tầm_đánh, "kĩ_năng", sát_thương, hồi_chiêu);',
   },
   {
     name: "when",
-    syntax: 'when("tên_ref.health", giá_trị, "hành_động", "hiệu_ứng");',
+    syntax: 'when("thuộc_tính:tên >= số", "end", "kết_quả");',
   },
   {
     name: "setHealth",
-    syntax: 'setHealth("tên_ref", máu);',
+    syntax: 'setHealth("Tên", máu);',
   },
   {
     name: "setPower",
-    syntax: 'setPower("tên_ref", sức mạnh);',
+    syntax: 'setPower("tên", sức_mạnh);',
   },
   {
     name: "setTimer",
-    syntax: "setTimer(milliseconds);",
+    syntax: "setTimer(thời_gian);",
   },
 ] as const;

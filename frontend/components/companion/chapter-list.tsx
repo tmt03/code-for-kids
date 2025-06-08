@@ -50,7 +50,7 @@ export default function ChapterList({ chapters }: Props) {
     };
 
     return (
-        <div className="w-full p-4 bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] rounded-lg shadow-[4px_4px_0px_0px_#1C6CA8]">
+        <div className="w-full p-4 bg-gradient-to-b from-[#E8F2F2] to-[#D3E0E1] rounded-lg shadow-[4px_4px_4px_4px_#1C6CA8]">
             <h2 className="text-4xl font-extrabold text-[#104A7A] text-center mb-6 animate-bounce">
                 Chọn Chương Bạn Muốn Học
             </h2>

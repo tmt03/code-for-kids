@@ -37,14 +37,14 @@ export default function LearnPage() {
                 <div className="flex flex-col px-4 py-4 w-full max-w-7xl mx-auto ">
                     {/* Header + Search Bar */}
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 py-6 text-center sm:text-left">
-                        <div className="text-4xl font-bold text-[#104A7A]">
+                        <div className="text-4xl font-bold text-[#00A8B5]">
                             Các Khóa Học
                         </div>
                         <div className="w-full sm:w-auto">
                             <SearchBar />
                         </div>
                     </div>
-                    <div className="w-full p-4 bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] rounded-lg">
+                    <div className="w-full p-4 bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1] rounded-lg">
                         {/* Course Cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
                             <CourseCard />
