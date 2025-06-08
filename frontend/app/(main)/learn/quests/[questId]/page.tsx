@@ -185,6 +185,58 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
     };
 
+    // Nếu đang tải, hiển thị giao diện tải cho toàn bộ trang
+    if (isLoading) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
+                <div className="text-lg font-semibold text-gray-700">Đang tải nhiệm vụ...</div>
+                <div className="mt-4">
+                    {/* Có thể thêm spinner hoặc skeleton loader để cải thiện UX */}
+                    <svg
+                        className="animate-spin h-8 w-8 text-blue-500"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                        ></circle>
+                        <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z"
+                        ></path>
+                    </svg>
+                </div>
+            </div>
+        );
+    }
+
+    // Nếu không tìm thấy quest, hiển thị thông báo lỗi
+    if (!selectedQuest) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
+                <InteractionBox
+                    message={{ error: "Không tìm thấy nhiệm vụ", smartHints: "Kiểm tra lại questId hoặc thử lại sau!" }}
+                    showHint={true}
+                />
+                <Button
+                    onClick={() => window.location.reload()}
+                    variant="pixel"
+                    size="lg"
+                    className="mt-4"
+                >
+                    Thử lại
+                </Button>
+            </div>
+        );
+    }
+
 
     return (
         <div className="w-full h-full flex flex-col md:flex-row p-1 gap-2 md:gap-4">
@@ -231,4 +283,4 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             </div>
         </div>
     );
-}; 
+};
