@@ -14,6 +14,7 @@ import { use, useEffect, useState } from 'react';
 interface Quest {
     id: string;
     type: "quest" | "challenge";
+    mode: "guided" | "free";
     baseCode?: string;
     codeHelp?: string;
 }
@@ -45,6 +46,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const [codeHelp, setCodeHelp] = useState("");
     const [helpIndex, setHelpIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [isResetting, setIsResetting] = useState(false);
 
     // Load quest and progress data
     useEffect(() => {
@@ -170,20 +172,86 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
     };
 
-    // Nút Xóa code và đặt lại về baseCode
-    const handleClear = () => {
-        if (selectedQuest) {
-            setUserCode(selectedQuest.baseCode || ""); // Đặt lại về baseCode
-            setHintMessage({ smartHints: "Code đã được xóa và đặt lại về trạng thái ban đầu!" });
-            setShowHint(true);
-            speak("Code đã được xóa và đặt lại về trạng thái ban đầu!");
-        } else {
-            setUserCode(""); // Nếu selectedQuest chưa tải, chỉ clear
-            setHintMessage({ smartHints: "Code đã được xóa, nhưng chưa tải được base code!" });
-            setShowHint(true);
-            speak("Code đã được xóa, nhưng chưa tải được base code!");
+    // Nút Làm lại
+    const handleClear = async () => {
+        setIsResetting(true);
+        setShowHint(true);
+
+        try {
+            const quest = await fetchQuestDetails(questId);
+            if (!quest) {
+                setHintMessage({ error: "Không tìm thấy nhiệm vụ", smartHints: "Kiểm tra lại kết nối hoặc thử lại sau!" });
+                setUserCode("");
+                setIsResetting(false);
+                return;
+            }
+
+            setSelectedQuest(quest);
+            setUserCode(quest?.baseCode || "");
+            setHintMessage({ smartHints: "Đã làm mới nhiệm vụ và đặt lại code về trạng thái ban đầu!" });
+            speak("Đã làm mới nhiệm vụ và đặt lại code về trạng thái ban đầu!");
+
+            window.dispatchEvent(new CustomEvent("reset-canvas"));
+        } catch (error) {
+            setHintMessage({ error: "Lỗi khi làm mới dữ liệu", smartHints: "Hãy thử lại!" });
+            setUserCode("");
+        } finally {
+            setIsResetting(false);
         }
     };
+
+    // Nếu đang tải hoặc làm mới
+    if (isLoading || isResetting) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
+                <div className="text-lg font-semibold text-gray-700">
+                    {isResetting ? "Đang làm mới nhiệm vụ..." : "Đang tải nhiệm vụ..."}
+                </div>
+                <div className="mt-4">
+                    <svg
+                        className="animate-spin h-8 w-8 text-blue-500"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                        ></circle>
+                        <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z"
+                        ></path>
+                    </svg>
+                </div>
+            </div>
+        );
+    }
+
+    // Nếu không tìm thấy quest, hiển thị thông báo lỗi
+    if (!selectedQuest) {
+        return (
+            <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
+                <InteractionBox
+                    message={{ error: "Không tìm thấy nhiệm vụ", smartHints: "Kiểm tra lại kết nối hoặc thử lại sau!" }}
+                    showHint={true}
+                />
+                <Button
+                    onClick={() => window.location.reload()}
+                    variant="pixel"
+                    size="lg"
+                    className="mt-4"
+                >
+                    Thử lại
+                </Button>
+            </div>
+        );
+    }
 
 
     return (
@@ -231,4 +299,4 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             </div>
         </div>
     );
-}; 
+};

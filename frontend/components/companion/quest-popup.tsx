@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import { Button } from "../ui/button";
 
 type Quest = {
   id: string;
@@ -96,17 +97,17 @@ export default function ChapterTaskPopup({ chapter, onClose }: Props) {
                   rel="noopener noreferrer"
                   className="text-[#1C6CA8] underline text-sm mb-2"
                 >
-                  Xem Video
+                  Xem Video Hướng Dẫn
                 </a>
               )}
-              <button
+              <Button
+                variant={"pixelDanger"}
+                size={"md"}
                 onClick={() => handleStartClick(quest.id)}
-                className={`mt-2 bg-[#104A7A] text-white text-lg px-4 py-2 rounded-full w-full hover:bg-[#1C6CA8] transition-colors shadow-[2px_2px_0px_0px_#000000] 
-                  ${quest.type === "challenge" ? "bg-[#87CEEB] hover:bg-[#1C6CA8]" : ""
-                  }`}
+                className={`mt-2 text-white text-lg px-4 py-2 w-full`}
               >
                 ▶ Bắt đầu
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
@@ -115,37 +116,37 @@ export default function ChapterTaskPopup({ chapter, onClose }: Props) {
       {/* Scrollbar + animation */}
       <style jsx global>{`
         @keyframes popup-appear {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
+                from {
+                opacity: 0;
+              transform: scale(0.95);
           }
-          to {
-            opacity: 1;
-            transform: scale(1);
+              to {
+                opacity: 1;
+              transform: scale(1);
           }
         }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
+              @keyframes bounce {
+                0 %, 100 % { transform: translateY(0); }
+          50% {transform: translateY(-10px); }
         }
-        .animate-popup-appear {
-          animation: popup-appear 0.2s ease-out forwards;
+              .animate-popup-appear {
+                animation: popup-appear 0.2s ease-out forwards;
         }
-        .animate-bounce {
-          animation: bounce 2s infinite;
+              .animate-bounce {
+                animation: bounce 2s infinite;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
+              .custom-scrollbar::-webkit-scrollbar {
+                width: 8px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #E6F0FA;
+              .custom-scrollbar::-webkit-scrollbar-track {
+                background: #E6F0FA;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #1C6CA8;
-          border-radius: 4px;
+              .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: #1C6CA8;
+              border-radius: 4px;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #104A7A;
+              .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #104A7A;
         }
       `}</style>
     </div>
