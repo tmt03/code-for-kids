@@ -86,6 +86,47 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
     };
   }, [isClient, quest]);
 
+
+  // Lắng nghe sự kiện reset-canvas
+  useEffect(() => {
+    const handleReset = () => {
+      if (gameRef.current) {
+        gameRef.current.scene.scenes.forEach((scene) => {
+          scene.scene.restart(); // Restart scene để reset trạng thái
+        });
+      }
+    };
+
+    window.addEventListener("reset-canvas", handleReset);
+
+    return () => {
+      window.removeEventListener("reset-canvas", handleReset);
+    };
+  }, []);
+
+  // Lắng nghe sự kiện run-user-code
+  useEffect(() => {
+    const handleRunCode = (event: CustomEvent) => {
+      if (gameRef.current) {
+        // Gửi code đến Game_Scene để xử lý
+        gameRef.current.scene.scenes.forEach((scene) => {
+          scene.sys.events.emit("run-user-code", event.detail.code);
+        });
+      }
+    };
+
+    window.addEventListener("run-user-code", handleRunCode as EventListener);
+
+    return () => {
+      window.removeEventListener("run-user-code", handleRunCode as EventListener);
+    };
+  }, []);
+
+  // Nếu quest là null, không render canvas
+  if (!quest) {
+    return <div className="w-full h-full flex items-center justify-center text-gray-500">Chưa tải được nhiệm vụ</div>;
+  }
+
   return (
     <div
       ref={canvasRef}
