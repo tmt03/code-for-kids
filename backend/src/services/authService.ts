@@ -5,7 +5,15 @@ import { userModel } from "../models/userModel";
 
 const generateAccessToken = (user: any) => {
   return jwt.sign(
-    { userId: user._id.toString(), username: user.username, role: user.role },
+    {
+      userId: user._id.toString(),
+      username: user.username,
+      role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bannerUrl: user.bannerUrl,
+      bio: user.bio,
+    },
     env.JWT_SECRET_ACCESS_TOKEN,
     { expiresIn: "1h" }
   );
@@ -21,7 +29,7 @@ const generateRefreshToken = (user: any) => {
   );
 };
 
-const JWT_SECRET = process.env.JWT_SECRET || "default-key";
+// const JWT_SECRET = process.env.JWT_SECRET || "default-key";
 
 const login = async (username: string, password: string) => {
   const user = await userModel.findByUsername(username);
@@ -43,6 +51,10 @@ const login = async (username: string, password: string) => {
       userId: user._id.toString(),
       username: user.username,
       role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bannerUrl: user.bannerUrl,
+      bio: user.bio,
     },
   };
 };
@@ -71,10 +83,28 @@ const logout = async (username: string) => {
   return await userModel.updateRefreshToken(username, "");
 };
 
+const getUserInfo = async (username: string) => {
+  const user = await userModel.findByUsername(username);
+  if (!user) return null;
+  // Trả về thông tin an toàn, không trả password
+  return {
+    userId: user._id,
+    username: user.username,
+    role: user.role,
+    displayName: user.displayName,
+    avatarUrl: user.avatarUrl,
+    bannerUrl: user.bannerUrl,
+    bio: user.bio,
+    email: user.email,
+    ratingPoints: user.ratingPoints,
+  };
+};
+
 export const authService = {
   login,
   generateAccessToken,
   generateRefreshToken,
   refreshAccessToken,
   logout,
+  getUserInfo,
 };

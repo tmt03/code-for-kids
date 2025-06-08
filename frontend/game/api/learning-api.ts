@@ -74,7 +74,7 @@ export function createStudentAPI(
     scene.add
       .image(0, 0, bgKey)
       .setOrigin(0)
-      .setScale(scaleFactor * 0.55)
+      .setScale(scaleFactor * 0.85)
       .setDepth(0);
   };
 
@@ -186,7 +186,7 @@ export function createStudentAPI(
 
     const animationToPlay = options.animation
       ? `${spriteKey}_${options.animation}`
-      : `${spriteKey}_idle`;
+      : `${spriteKey}_dung`;
 
     if (sprite.anims.get(animationToPlay)) {
       sprite.anims.play(animationToPlay, true);
@@ -618,16 +618,21 @@ sandbox.move = (refName: string, x: number, y: number) => {
     });
   };
 
-  // 13. When
   sandbox.when = (
-    condition: string, // ví dụ "hp" hoặc "hp:enemy1"
-    value: number,
+    condition: string, // ví dụ: "power:kiemsi >= 200"
     action: "end", // hiện tại chỉ hỗ trợ "end"
     effect: "win" | "lose"
   ) => {
-    const [statKey, refName] = condition.includes(":")
-      ? condition.split(":")
-      : [condition, null];
+    const comparisonRegex = /^(\w+)(?::(\w+))?\s*(>=|<=|==|>|<)\s*(\d+)$/;
+    const match = condition.match(comparisonRegex);
+
+    if (!match) {
+      console.error(`[when] Invalid condition format: "${condition}"`);
+      return;
+    }
+
+    const [, statKey, refName, operator, valueStr] = match;
+    const value = Number(valueStr);
 
     let hasEnded = false;
 
@@ -651,16 +656,36 @@ sandbox.move = (refName: string, x: number, y: number) => {
           );
         }
 
+        // So sánh
+        let isConditionMet = false;
+        switch (operator) {
+          case ">=":
+            isConditionMet = statValue >= value;
+            break;
+          case "<=":
+            isConditionMet = statValue <= value;
+            break;
+          case ">":
+            isConditionMet = statValue > value;
+            break;
+          case "<":
+            isConditionMet = statValue < value;
+            break;
+          case "==":
+            isConditionMet = statValue == value;
+            break;
+        }
+
         console.log(
-          `[when] Checking ${statKey}:${refName ?? "*"} = ${statValue}`
+          `[when] Checking ${statKey}:${
+            refName ?? "*"
+          } ${operator} ${value} => ${statValue} => ${isConditionMet}`
         );
 
-        if (statValue <= value) {
-          if (action === "end") {
-            hasEnded = true;
-            console.log(`[when] Triggering endGame(${effect})`);
-            sandbox.endGame(effect);
-          }
+        if (isConditionMet && action === "end") {
+          hasEnded = true;
+          console.log(`[when] Triggering endGame(${effect})`);
+          sandbox.endGame(effect);
         }
       },
     });

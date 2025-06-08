@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import { authService } from "../services/authService";
 import jwt from "jsonwebtoken";
 import { env } from "../config/environment";
+import { userModel } from "../models/userModel";
+import { sendMail } from "../utils/emailService";
 
 // const getUserInfo = async (
 //   req: Request,
@@ -81,13 +83,56 @@ const logout = async (req: Request, res: Response) => {
 };
 
 const me = async (req: Request, res: Response) => {
-  const user = (req as any).user; // lấy từ verifyToken
+  const userFromToken = (req as any).user; // lấy từ verifyToken
 
-  if (!user) {
+  if (!userFromToken) {
     return res.status(401).json({ error: "Chưa xác thực" });
   }
 
+  // Lấy user mới nhất từ DB
+  const user = await authService.getUserInfo(userFromToken.username);
+  if (!user) {
+    return res.status(404).json({ error: "Không tìm thấy user" });
+  }
+
   res.status(200).json({ user });
+};
+
+const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const user = await userModel.findByEmail(email);
+  if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = Date.now() + 10 * 60 * 1000;
+
+  await userModel.saveOTP(user.username, otp, expires);
+  await sendMail(email, "[Scriptbies] Mã OTP đặt lại mật khẩu", `Mã OTP của bạn là: ${otp}. KHÔNG CHIA SẺ MÃ NÀY CHO BẤT KỲ AI. Bạn có 10 phút để sử dụng mã này. Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Bạn cũng nên thay đổi mật khẩu của mình thường xuyên để bảo mật tài khoản.`);
+  res.json({ message: "Đã gửi OTP về email" });
+
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+    const { email, otp, newPassword, confirmPassword } = req.body;
+    if (newPassword !== confirmPassword)
+        return res.status(400).json({ error: "Mật khẩu không khớp" });
+
+    const user = await userModel.findByEmail(email);
+    if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+
+    const otpRecord = await userModel.getOTP(user.username);
+    if (
+        !otpRecord ||
+        otpRecord.resetOTP !== otp ||
+        otpRecord.resetOTPExpires < Date.now()
+    ) {
+        return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
+    }
+
+    await userModel.changePassword(user.username, newPassword);
+    await userModel.clearOTP(user.username);
+
+    res.json({ message: "Đổi mật khẩu thành công" });
 };
 
 export const authController = {
@@ -95,4 +140,6 @@ export const authController = {
   refreshToken,
   logout,
   me,
+  forgotPassword,
+  resetPassword
 };

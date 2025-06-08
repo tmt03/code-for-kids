@@ -1,5 +1,6 @@
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { API_ROOT } from "@/lib/utils/constants";
+import { SaveGameRequest, SaveGameResponse } from "@/types/game";
 import axios from "axios";
 
 export const fetchQuestDetails = async (questId: string) => {
@@ -35,14 +36,64 @@ export const fetchCheckLogin = async (username: string, password: string) => {
   return res.data;
 };
 
+export const uploadUserAvatar = async (file: File) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const res = await axiosInstance.post("/v1/users/avatar", formData);
+  return res.data;
+};
+
+export const uploadUserBanner = async (file: File) => {
+  const formData = new FormData();
+  formData.append("banner", file);
+  const res = await axiosInstance.post("/v1/users/banner", formData);
+  return res.data;
+};
+
 export const getCurrentUser = async () => {
   const res = await axiosInstance.get("/v1/auth/me");
-  return res.data.user;
+  return res.data;
 };
 
 export const logoutUser = async () => {
   await axiosInstance.post("/v1/auth/logout");
 };
+
+export const updateUserProfile = async (displayName: string, bio: string) => {
+  const res = await axiosInstance.put("v1/users/profile", { displayName, bio });
+  return res.data;
+};
+
+export const changeUserPassword = async (
+  oldPassword: string,
+  newPassword: string
+) => {
+  const res = await axiosInstance.put("v1/users/change-password", {
+    oldPassword,
+    newPassword,
+  });
+  return res.data;
+};
+
+export const fetchLeaderboard = async () => {
+  const res = await axiosInstance.get("/v1/users/leaderboard");
+  return res.data.users;
+};
+
+export const forgotPassword = async (email: string) => {
+  const res = await axiosInstance.post("/v1/auth/forgot-password", { email });
+  return res.data;
+}
+
+export const resetPassword = async (email: string, otp: string, newPassword: string, confirmPassword: string) => {
+  const res = await axiosInstance.post("/v1/auth/reset-password", {
+    email,
+    otp,
+    newPassword,
+    confirmPassword,
+  });
+  return res.data;
+}
 
 export const fetchInitUserProgress = async () => {
   try {
@@ -58,4 +109,16 @@ export const fetchInitUserProgress = async () => {
 export const fetchLearnProgress = async () => {
   const res = await axiosInstance.get("/v1/progress/learn-progress");
   return res.data;
+};
+
+export const saveUserGame = async (gameData: SaveGameRequest) => {
+  try {
+    const res = await axiosInstance.post("/v1/user-game/save-game", gameData);
+    return res.data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      throw new Error("Vui lòng đăng nhập để lưu game");
+    }
+    throw new Error(error.response?.data?.message || "Lỗi khi lưu game");
+  }
 };

@@ -1,95 +1,142 @@
 'use client';
 
-import { useState } from 'react';
-import { Plus, Minus } from 'lucide-react';
-import ProductCard from "@/components/shop/product-card";
-import ConsultationForm from "@/components/shop/consultation-form";
-
-// Sample product data
-const products = [
-    {
-        id: 1,
-        image: "/assets/products/product1.jpg",
-        name: "SÁCH CODE_FOR_KIDS",
-        quantity: 50,
-        price: 200000,
-        description: "Để phục vụ cho việc học lập trình dễ dàng hơn, Scriptbies phát triển một nền tảng web hỗ trợ học lập trình thông qua việc thiết kế game. Ứng dụng phát triển dựa trên việc cá nhân hóa thông qua việc cho trẻ học theo các hướng dẫn để làm quen với các cơ chế tạo ra trò chơi, từ đó cho phép trẻ tùy chỉnh thông qua việc thay đổi mã nguồn để tạo ra trò chơi với màu sắc riêng của mình."
-    },
-    {
-        id: 2,
-        image: "/assets/products/product2.jpg",
-        name: "Khóa học Web Development",
-        quantity: 30,
-        price: 1490000,
-        description: "Xây dựng website chuyên nghiệp với HTML, CSS, JavaScript và React."
-    },
-    {
-        id: 3,
-        image: "/assets/products/product3.jpg",
-        name: "Khóa học Data Science",
-        quantity: 25,
-        price: 1990000,
-        description: "Phân tích dữ liệu và machine learning với Python."
-    }
-];
+import { useEffect, useState } from "react";
+import axiosInstance from "@/lib/utils/axiosInstance";
+import { useAuth } from "@/hooks/useAuth";
+import OrderPopup from "@/components/shop/GuestOrderPopup";
+import { Product } from "../../../types/product";
+import { toast } from "sonner";
 
 export default function ShopPage() {
-    const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
-    const [errors, setErrors] = useState<{ [key: number]: string }>({});
+  const { user } = useAuth();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-    const handleQuantityChange = (productId: number, value: number) => {
-        const product = products.find(p => p.id === productId);
-        
-        if (product && value > product.quantity) {
-            setErrors(prev => ({
-                ...prev,
-                [productId]: `Chỉ còn ${product.quantity} sản phẩm trong kho`
-            }));
-            return;
-        }
+  useEffect(() => {
+    axiosInstance
+      .get("/api/products")
+      .then((res) => {
+        console.log("Dữ liệu sản phẩm:", res.data); // <== Thêm dòng này
+        setProducts(res.data);
+      })
+      .catch((err) => {
+        console.error("Lỗi lấy sản phẩm:", err);
+      });
+  }, []);
 
-        setErrors(prev => ({
-            ...prev,
-            [productId]: ''
-        }));
 
-        setQuantities(prev => ({
-            ...prev,
-            [productId]: value
-        }));
-    };
+  const handleBuyClick = (product: Product) => {
+    if (user?.role === "user") {
+      // Redirect sang /shop/order nếu là user
+      window.location.href = `/shop/order?pid=${product.pid}`;
+    } else if (!user || user.role === "guest") {
+      // Nếu là guest thì mở popup nhập thông tin
+      setSelectedProduct(product);
+      setIsPopupOpen(true);
+    }
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-100 py-8">
-            <div className="container mx-auto px-4">
-                <h1 className="text-3xl font-bold text-center mb-8">Cửa hàng khóa học</h1>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Product display section */}
-                    <div>
-                        <div className="space-y-6">
-                            {products.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    image={product.image}
-                                    name={product.name}
-                                    quantity={product.quantity}
-                                    price={product.price}
-                                    description={product.description}
-                                    currentQuantity={quantities[product.id] || 0}
-                                    onQuantityChange={(value) => handleQuantityChange(product.id, value)}
-                                    error={errors[product.id]}
-                                />
-                            ))}
-                        </div>
-                    </div>
+  const handleSubmitGuestOrder = (data: any) => {
+    console.log("Guest order:", data);
+    toast.success("Yêu cầu của bạn đã được gửi...");
+    setIsPopupOpen(false);
+  };
 
-                    {/* Consultation form section */}
-                    <div>
-                        <ConsultationForm />
-                    </div>
-                </div>
-            </div>
+
+  return (
+    <div className="min-h-screen p-6 bg-gray-50">
+      <h1 className="text-3xl font-bold text-center mb-10">🛍️ Danh sách sản phẩm</h1>
+      {user?.role === "admin" && (
+        <div className="flex justify-end max-w-6xl mx-auto mb-6">
+          <button
+            onClick={() => window.location.href = "/shop/create"}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M12 4v16m8-8H4" />
+            </svg>
+            Thêm sản phẩm
+          </button>
         </div>
-    );
-}
+      )}
+
+      <div className="grid gap-8 max-w-6xl mx-auto">
+        {products.map((product) => (
+          <div
+            key={product.pid}
+            className="bg-white rounded-xl shadow-md p-6 flex flex-col md:flex-row items-start md:items-center transition hover:shadow-lg"
+          >
+            {/* Hình ảnh */}
+            <div className="md:w-2/5 w-full">
+              <img
+                src={product.pimg}
+                alt={product.pname}
+                className="w-full h-60 object-contain bg-gray-100 rounded-md"
+              />
+            </div>
+
+            {/* Thông tin */}
+            <div className="md:w-3/5 w-full md:ml-6 mt-4 md:mt-0 flex flex-col justify-between">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">{product.pname}</h2>
+                <p className="text-gray-700 text-sm mb-2">{product.pdescription}</p>
+                <p className="text-green-600 font-semibold text-lg mb-1">
+                  {typeof product.pprice === "number"
+                    ? product.pprice.toLocaleString("vi-VN") + "₫"
+                    : "Không xác định"}
+                </p>
+                <p className="text-sm text-gray-500">Số lượng còn: {product.pquantity}</p>
+              </div>
+
+              {user?.role !== "admin" && (
+                <button
+                  onClick={() => handleBuyClick(product)}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded shadow"
+                >
+                  MUA NGAY
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {
+        selectedProduct && (
+          <OrderPopup
+            open={isPopupOpen}
+            onClose={() => setIsPopupOpen(false)}
+            product={selectedProduct}
+            onSubmit={handleSubmitGuestOrder}
+          />
+        )
+      }
+    </div >
+  );
+  {
+    !user && selectedProduct && (
+      <OrderPopup
+        open={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        product={selectedProduct}
+      />
+    )
+  }
+  {
+    !user && !selectedProduct && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
+          <h2 className="text-xl font-bold mb-4">Vui lòng đăng nhập để mua hàng</h2>
+          <button
+            onClick={() => window.location.href = "/login"}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Đăng nhập
+          </button>
+        </div>
+      </div>
+    )
+  }

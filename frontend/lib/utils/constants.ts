@@ -18,7 +18,7 @@ export const VALID_GAME_COMMANDS = [
   "when",
   "setHealth",
   "setPower",
-  "startTimer",
+  "setTimer",
 ];
 
 // Danh sách animation hợp lệ
@@ -57,7 +57,7 @@ export const API_PARAM_COUNTS: { [key: string]: number } = {
   when: 4,
   setHealth: 2,
   setPower: 2,
-  startTimer: 1,
+  setTimer: 1,
 };
 
 // Danh sách sprite
@@ -195,7 +195,7 @@ export const COMMANDS = [
     syntax: 'setPower("tên_ref", sức mạnh);',
   },
   {
-    name: "startTimer",
-    syntax: "startTimer(milliseconds);",
+    name: "setTimer",
+    syntax: "setTimer(milliseconds);",
   },
 ] as const;

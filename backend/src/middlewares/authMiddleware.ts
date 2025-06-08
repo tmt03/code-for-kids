@@ -7,13 +7,19 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
+  // Lấy token từ header hoặc cookie
+  let token: string | undefined;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Token không hợp lệ hoặc thiếu" });
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  } else if (req.cookies && req.cookies.accessToken) {
+    token = req.cookies.accessToken;
   }
 
-  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Token không hợp lệ hoặc thiếu" });
+  }
 
   try {
     const decoded = jwt.verify(token, env.JWT_SECRET_ACCESS_TOKEN);

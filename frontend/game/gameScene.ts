@@ -9,6 +9,7 @@
 
 import { getBaseCodeForQuest } from "@/features/quests/questMap";
 import { createStudentAPI } from "@/game/api/learning-api";
+import { setupAnimations } from "./animationConfigs";
 import { preloadAssets } from "./preloadAssets";
 
 import * as Phaser from "phaser";
@@ -22,7 +23,8 @@ import * as Phaser from "phaser";
  */
 interface Quest {
   id: string;
-  mode: "guided" | "free";
+  mode: "creative" | "learning";
+  code?: string;
 }
 
 /**
@@ -66,8 +68,9 @@ export class Game_Scene extends Phaser.Scene {
   private attackCooldown = 500; // Thời gian hồi tấn công (ms)
 
   constructor(quest: Quest) {
-    super("Game_Scene");
+    super({ key: "Game_Scene" });
     this.quest = quest;
+    console.log("Game_Scene initialized with quest:", quest);
   }
 
   // ===== Các Phương Thức Vòng Đời Scene =====
@@ -85,12 +88,26 @@ export class Game_Scene extends Phaser.Scene {
    * Được gọi tự động bởi Phaser sau preload()
    */
   create(): void {
+    console.log("Game_Scene create() called");
     this.initializeScaleFactor();
-    this.setupAnimations();
+    setupAnimations(this);
     this.initializeSandbox();
     this.setupResizeListener();
     this.runPreviewCodeIfAvailable();
     this.setupRunUserCodeListener();
+    if (this.quest.id === "shared" && this.quest.code) {
+      this.runUserCode(this.quest.code);
+    }
+
+    // Lắng nghe sự kiện run-user-code
+    this.events.on("run-user-code", (code: string) => {
+      console.log("Game_Scene received code to run:", code);
+      try {
+        this.runUserCode(code);
+      } catch (error) {
+        console.error("Error running user code:", error);
+      }
+    });
   }
 
   /**
@@ -133,90 +150,6 @@ export class Game_Scene extends Phaser.Scene {
    * Tạo các chuỗi animation cho các trạng thái di chuyển của người chơi
    */
   private setupAnimations(): void {
-    // Animation chạy
-    this.anims.create({
-      key: "player_run_run",
-      frames: this.anims.generateFrameNumbers("player_run", {
-        start: 0,
-        end: 5,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    // Animation đứng yên
-    this.anims.create({
-      key: "player_run_idle",
-      frames: this.anims.generateFrameNumbers("player_idle", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    // Animation nhảy
-    this.anims.create({
-      key: "player_run_jump",
-      frames: this.anims.generateFrameNumbers("player_jump", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 4,
-      repeat: 0,
-    });
-    // Tạo animation cho quai
-    this.anims.create({
-      key: "mrun",
-      frames: this.anims.generateFrameNumbers("monster_run", {
-        start: 0,
-        end: 5,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "midle",
-      frames: this.anims.generateFrameNumbers("monster_idle", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "mjump",
-      frames: this.anims.generateFrameNumbers("monster_jump", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 4,
-      repeat: 0,
-    });
-
-    // Tạo animation cho boss
-    this.anims.create({
-      key: "brun",
-      frames: this.anims.generateFrameNumbers("boss_run", {
-        start: 0,
-        end: 11,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "bidle",
-      frames: this.anims.generateFrameNumbers("boss_idle", {
-        start: 0,
-        end: 9,
-      }),
-      frameRate: 8,
-      repeat: -1,
-    });
-
     this.anims.create({
       key: "fireball",
       frames: this.anims.generateFrameNumbers("fireball_anim", {
@@ -508,7 +441,8 @@ export class Game_Scene extends Phaser.Scene {
    * Thực thi code người dùng trong môi trường sandbox
    * @param code - Chuỗi code cần thực thi
    */
-  runUserCode(code: string): void {
+  private runUserCode(code: string): void {
+    console.log("Running user code in sandbox");
     try {
       const wrapped = `
         with (sandbox) {
@@ -523,7 +457,7 @@ export class Game_Scene extends Phaser.Scene {
         Object.keys(this.sandbox)
       );
     } catch (err) {
-      console.error("Lỗi khi chạy code người dùng:", err);
+      console.error("Error in user code execution:", err);
     }
   }
 
@@ -579,6 +513,7 @@ export class Game_Scene extends Phaser.Scene {
       this.sandbox = createStudentAPI(this, this.scaleFactor);
       previewFn(this, this.sandbox);
       this.scaleObjects();
+      this.setupColliders();
     } catch (err) {
       console.error("Lỗi khi chạy code preview:", err);
     }

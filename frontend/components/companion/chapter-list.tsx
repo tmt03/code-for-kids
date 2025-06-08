@@ -1,5 +1,6 @@
 "use client";
 
+import { useProgress } from "@/hooks/useProgress";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ChapterQuestPopup from "./quest-popup"; // <- Import component mới
@@ -30,19 +31,17 @@ type Props = {
 };
 
 export default function ChapterList({ chapters }: Props) {
+    const { progressSummary } = useProgress();
     const [selectedChapterForPopup, setSelectedChapterForPopup] = useState<Chapter | null>(null);
     const router = useRouter();
+
+    const chapterStatus = progressSummary.badgeChapters
 
     const handleCardClick = (chapter: Chapter, e: React.MouseEvent<HTMLDivElement>) => {
         if ((e.target as HTMLElement).closest("button")) {
             return;
         }
         setSelectedChapterForPopup(chapter);
-    };
-
-    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>, chapterId: string) => {
-        e.stopPropagation();
-        router.push(`/learn/chapters/${chapterId}`);
     };
 
     // Hàm đóng popup giờ đơn giản chỉ là set state về null
@@ -67,11 +66,22 @@ export default function ChapterList({ chapters }: Props) {
                         onClick={(e) => handleCardClick(chapter, e)}
                     >
                         {/* Ô trạng thái - Đã giữ nguyên code bạn thêm */}
-                        <div
-                            className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000000] bg-[#32CD32] text-white `}
-                        >
-                            Đã Hoàn Thành
-                        </div>
+                        {chapterStatus.find((c) => c.chapterId === chapter.id)?.status && (
+                            <div
+                                className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000000] ${chapterStatus.find((c) => c.chapterId === chapter.id)?.status === "completed"
+                                    ? "bg-[#32CD32] text-white"
+                                    : chapterStatus.find((c) => c.chapterId === chapter.id)?.status === "in-progress"
+                                        ? "bg-[#FFA500] text-white"
+                                        : "bg-[#FF4500] text-white"
+                                    }`}
+                            >
+                                {chapterStatus.find((c) => c.chapterId === chapter.id)?.status === "completed"
+                                    ? "Đã Hoàn Thành"
+                                    : chapterStatus.find((c) => c.chapterId === chapter.id)?.status === "in-progress"
+                                        ? "Đang Tiến Hành"
+                                        : "Chưa Bắt Đầu"}
+                            </div>
+                        )}
 
                         {/* Nội dung */}
                         <div className="flex flex-col items-center justify-center h-full pt-6">
