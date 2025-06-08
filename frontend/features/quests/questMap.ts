@@ -4,7 +4,6 @@
  * Trả về đoạn mã khởi tạo scene (dưới dạng hàm) cho mỗi quest cụ thể.
  * Dùng cho chế độ "guided" hoặc preview quest.
  */
-
 export const baseCodeFunctions: Record<
   string,
   (scene: any, sandbox: any) => void

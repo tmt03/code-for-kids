@@ -146,6 +146,53 @@ export class Game_Scene extends Phaser.Scene {
   }
 
   /**
+   * Thiết lập tất cả animation cho sprite
+   * Tạo các chuỗi animation cho các trạng thái di chuyển của người chơi
+   */
+  private setupAnimations(): void {
+    this.anims.create({
+      key: "fireball",
+      frames: this.anims.generateFrameNumbers("fireball_anim", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "healthsteal",
+      frames: this.anims.generateFrameNumbers("healthsteal_anim", {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "lazer",
+      frames: this.anims.generateFrameNumbers("lazer_anim", {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: 0,
+    });
+
+    this.anims.create({
+      key: "poison",
+      frames: this.anims.generateFrameNumbers("poison_anim", {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+  }
+
+  /**
    * Khởi tạo môi trường sandbox cho code người dùng
    * Tạo các hàm và đối tượng API có thể truy cập từ code người dùng
    */

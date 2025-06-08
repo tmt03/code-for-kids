@@ -4,8 +4,22 @@ import * as Phaser from "phaser";
 export function preloadAssets(scene: Phaser.Scene) {
   scene.load.setPath("/assets/game_assets");
 
+  //============================== animation ==============================//
+
   // 🔥 Skill Animations
   scene.load.spritesheet("fireball_anim", "/skill/fireball_anim.png", {
+    frameWidth: 20,
+    frameHeight: 20,
+  });
+  scene.load.spritesheet("poison_anim", "/skill/poison_anim.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
+  scene.load.spritesheet("healthsteal_anim", "/skill/healthsteal_anim.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
+  scene.load.spritesheet("lazer_anim", "/skill/lazer_anim.png", {
     frameWidth: 72,
     frameHeight: 72,
   });
@@ -143,7 +157,7 @@ export function preloadAssets(scene: Phaser.Scene) {
     frameWidth: 96,
     frameHeight: 96,
   });
-
+  
   //---------------------
   // 🧌 Monster - Orc 2
   scene.load.spritesheet("orccam_dung", "/monster/Orc_2/Idle.png", {

@@ -366,13 +366,15 @@ export function createStudentAPI(
     console.log(`Đã scale '${refName}' với factor ${factor}`);
   };
 
-  // 8. Move
-  sandbox.move = (refName: string, deltaX: number, deltaY: number) => {
-    const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite || Math.abs(deltaX) > 50 || Math.abs(deltaY) > 50) return;
-    sprite.x += deltaX;
-    sprite.y += deltaY;
-  };
+// 8. Move (to absolute position)
+sandbox.move = (refName: string, x: number, y: number) => {
+  const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
+  if (!sprite) return;
+
+  sprite.x = x;
+  sprite.y = y;
+};
+
 
   // 9. Move random
   sandbox.moveRandom = (
@@ -775,19 +777,17 @@ export function createStudentAPI(
       });
 
       if (!scene.textures.exists("fireball_anim")) {
-        console.warn("⚠️ fireball_anim not loaded!");
         return;
       }
 
       const fireball = scene.physics.add
         .sprite(shooter.x, shooter.y, "fireball_anim")
         .play("fireball")
-        .setScale(0.5)
-        .setAngle(direction > 0 ? 180 : 0)
+        .setScale(3)
+        .setAngle(direction < 0 ? 180 : 0)
         .setVelocityX(direction * speed)
         .setGravity(0, 0);
 
-      console.log("🔥 Created fireball:", fireball);
 
       fireball.body.allowGravity = false;
       // const travelTime = (range / speed) * 1000;
@@ -807,6 +807,191 @@ export function createStudentAPI(
         }
       );
     },
+
+    poison: ({
+      scene,
+      shooter,
+      range = 100,
+      damage = 3,
+    }) => {
+      if (!scene.textures.exists("poison_anim")) {
+        return;
+      }
+    
+      // Tạo sprite poison dưới chân shooter
+      const poison = scene.physics.add
+        .sprite(shooter.x, shooter.y, "poison_anim")
+        .play("poison")
+        .setScale(range / 100, 1) // scale theo chiều ngang
+        .setGravity(0, 0);
+    
+      poison.body.allowGravity = false;
+    
+      // Căn đáy của poison và shooter trùng nhau
+      poison.setOrigin(0.5, 1);
+      poison.y = shooter.getBottomCenter().y;
+    
+      // Gây sát thương liên tục khi có đối tượng chạm vào
+      const interval = scene.time.addEvent({
+        delay: 500, // Gây sát thương mỗi 0.5s
+        loop: true,
+        callback: () => {
+          scene.physics.overlap(poison, scene.children.list, (poisonObj, targetObj) => {
+            const target = targetObj as Phaser.GameObjects.Sprite;
+    
+            const body = target.body as Phaser.Physics.Arcade.Body;
+            if (!body || !body.enable) return
+            if (target === shooter || target === poison) return;
+    
+            // Gọi applyDamage nếu mục tiêu còn sống
+            const targetName = Object.keys(sandbox).find(k => sandbox[k] === target);
+            if (targetName && sandbox.stats?.[targetName]?.hp > 0) {
+              applyDamage(sandbox, scene, shooter, target, damage);
+            }
+          });
+        },
+      });
+    
+      scene.time.delayedCall(3000, () => {
+        poison.destroy();
+        interval.remove();
+      });
+    },
+    
+
+    healthsteal: ({
+      scene,
+      shooter,
+      range,
+      damage = 2,
+    }) => {
+    
+      if (!scene.textures.exists("healthsteal_anim")) {
+        return;
+      }
+    
+      // Tạo animation healthsteal gắn trên đầu chủ thể
+      const healthsteal = scene.add.sprite(shooter.x, shooter.y - shooter.displayHeight, "healthsteal_anim")
+        .play("healthsteal")
+        .setScale(0.5)
+        .setDepth(10);
+    
+      // Gắn theo chuyển động của shooter (cập nhật mỗi frame)
+      const followInterval = scene.time.addEvent({
+        delay: 30,
+        loop: true,
+        callback: () => {
+          if (!shooter.scene) {
+            healthsteal.destroy();
+            followInterval.remove();
+            return;
+          }
+    
+          healthsteal.x = shooter.x;
+          healthsteal.y = shooter.y - shooter.displayHeight / 2;
+        }
+      });
+    
+      // Gây sát thương cho mục tiêu gần và hút máu
+      const drainInterval = scene.time.addEvent({
+        delay: 500, // mỗi 0.5s gây sát thương & hồi máu
+        loop: true,
+        callback: () => {
+          scene.children.each((child) => {
+            const target = child as Phaser.GameObjects.Sprite;
+    
+            // Bỏ qua chính chủ và các object không liên quan
+            if (!target.body || !(target.body as Phaser.Physics.Arcade.Body).enable || target === shooter) return;
+
+    
+            const dx = target.x - shooter.x;
+            const dy = target.y - shooter.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+    
+            if (dist <= range) {
+              // Gây damage cho target
+              applyDamage(sandbox, scene, shooter, target, damage);
+    
+              // Hồi máu cho shooter
+              const shooterStat = sandbox.stats?.[shooter.name];
+              if (shooterStat) {
+                shooterStat.hp += damage;
+                sandbox.setStatDisplay(shooter.name);
+              }
+            }
+          });
+        }
+      });
+    
+      scene.time.delayedCall(3000, () => {
+        healthsteal.destroy();
+        followInterval.remove();
+        drainInterval.remove();
+      });
+    },
+
+    lazer: ({
+      scene,
+      shooter,
+      range,
+      damage = 15,
+      direction = shooter.flipX ? -1 : 1,
+    }) => {
+      console.log("🔫 Firing lazer...");
+    
+      if (!scene.textures.exists("lazer_anim")) {
+        console.warn("⚠️ lazer_anim not loaded!");
+        return;
+      }
+    
+      // Tạo sprite lazer
+      const lazer = scene.physics.add.sprite(
+        shooter.x,
+        shooter.y,
+        "lazer_anim"
+      );
+    
+      lazer.play("lazer");
+      lazer.body.allowGravity = false;
+    
+      // Scale chiều ngang theo range
+      lazer.setScale(range / 100, 1);
+    
+      // Đặt lại origin để gốc luôn ở gần shooter
+      if (direction > 0) {
+        lazer.setOrigin(0, 0.5); // Gốc trái
+        lazer.x = shooter.x + 30; // Gần mặt phải
+      } else {
+        lazer.setOrigin(1, 0.5); // Gốc phải
+        lazer.x = shooter.x - 30; // Gần mặt trái
+        lazer.setFlipX(true); // Lật nếu cần
+      }
+    
+      // Biến mất sau 3s
+      scene.time.delayedCall(800, () => {
+        if (lazer && lazer.destroy) lazer.destroy();
+      });
+    
+      // Gây sát thương khi chạm
+      scene.physics.add.overlap(
+        lazer,
+        scene.children.list,
+        (lazerObj, targetObj) => {
+          const target = targetObj as Phaser.GameObjects.Sprite;
+          if (
+            !target.body ||
+            !(target.body as Phaser.Physics.Arcade.Body).enable ||
+            target === shooter
+          )
+            return;
+    
+          applyDamage(sandbox, scene, shooter, target, damage);
+        }
+      );
+    }
+    
+    
+    
   };
 
   //==============================================================================//
