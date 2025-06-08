@@ -1,5 +1,6 @@
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { API_ROOT } from "@/lib/utils/constants";
+import { SaveGameRequest, SaveGameResponse } from "@/types/game";
 import axios from "axios";
 
 export const fetchQuestDetails = async (questId: string) => {
@@ -58,13 +59,15 @@ export const logoutUser = async () => {
   await axiosInstance.post("/v1/auth/logout");
 };
 
-
 export const updateUserProfile = async (displayName: string, bio: string) => {
-  const res = await axiosInstance.put("v1/users/profile", {displayName,bio})
+  const res = await axiosInstance.put("v1/users/profile", { displayName, bio });
   return res.data;
 };
 
-export const changeUserPassword = async (oldPassword: string, newPassword: string) => {
+export const changeUserPassword = async (
+  oldPassword: string,
+  newPassword: string
+) => {
   const res = await axiosInstance.put("v1/users/change-password", {
     oldPassword,
     newPassword,
@@ -93,3 +96,14 @@ export const fetchLearnProgress = async () => {
   return res.data;
 };
 
+export const saveUserGame = async (gameData: SaveGameRequest) => {
+  try {
+    const res = await axiosInstance.post("/v1/user-game/save-game", gameData);
+    return res.data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      throw new Error("Vui lòng đăng nhập để lưu game");
+    }
+    throw new Error(error.response?.data?.message || "Lỗi khi lưu game");
+  }
+};
