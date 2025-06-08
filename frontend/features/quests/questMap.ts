@@ -9,6 +9,13 @@ export const baseCodeFunctions: Record<
   string,
   (scene: any, sandbox: any) => void
 > = {
+  creative: (scene, sandbox) => {
+    scene.bg = scene.add
+      .image(0, 0, "bautroi_1")
+      .setOrigin(0)
+      .setScale(0.55)
+      .setTint(0x404040);
+  },
   C00_H01: (scene, sandbox) => {
     scene.bg = scene.add
       .image(0, 0, "bautroi_1")

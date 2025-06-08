@@ -88,6 +88,7 @@ const getUserInfo = async (username: string) => {
   if (!user) return null;
   // Trả về thông tin an toàn, không trả password
   return {
+    userId: user._id,
     username: user.username,
     role: user.role,
     displayName: user.displayName,

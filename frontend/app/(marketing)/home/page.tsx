@@ -101,6 +101,19 @@ export default function HomePage() {
         <div className="w-full overflow-x-hidden">
 
             <div className="pt-14 bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA]">
+                {/* Nút chế độ sáng tạo */}
+                <div className="flex justify-center mt-10">
+                    <Link href="/learn/quests/creative">
+                        <Button
+                            variant="pixelGreen"
+                            size="lg"
+                            className="shadow-lg text-lg px-8 py-3 rounded-full border-2 border-green-400 hover:scale-105 transition-transform duration-200"
+                        >
+                            🚀 Chế độ sáng tạo
+                        </Button>
+                    </Link>
+                </div>
+
                 {/* Welcome Section (Luôn ở đầu) */}
                 <section className="text-white py-6 px-4">
                     <div className="max-w-7xl mx-auto flex items-center gap-4">

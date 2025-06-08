@@ -4,11 +4,19 @@ import { fetchLearnProgress } from "@/apis"; // Giả sử API này có sẵn
 import EditProfilePopup from "@/components/edit-profile-popup";
 import { useAuth } from "@/hooks/useAuth";
 import { useProgress } from "@/hooks/useProgress";
+import axiosInstance from "@/lib/utils/axiosInstance";
 import { faCircle, faClock, faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface SharedGame {
+    slug: string;
+    title: string;
+    description: string;
+    updatedAt: string;
+}
 
 export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState("Bài đăng");
@@ -16,6 +24,8 @@ export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(true);
     const { user, isLoading: isAuthLoading } = useAuth();
     const { progressSummary, setProgressSummary } = useProgress();
+    const [sharedGames, setSharedGames] = useState<SharedGame[]>([]);
+    const router = useRouter();
 
 
     // Mảng icon cho huy hiệu
@@ -57,6 +67,20 @@ export default function ProfilePage() {
             isMounted = false;
         };
     }, [isAuthLoading, setProgressSummary]);
+
+    useEffect(() => {
+        // Tải game đã chia sẻ
+        const fetchSharedGames = async () => {
+            try {
+                const res = await axiosInstance.get("/v1/user-game/my-shared-games");
+                setSharedGames(res.data || []);
+            } catch (e) {
+                console.error("Error fetching shared games:", e);
+                setSharedGames([]);
+            }
+        };
+        if (!isAuthLoading && user) fetchSharedGames();
+    }, [isAuthLoading, user]);
 
     // Giao diện tải
     if (isLoading || isAuthLoading) {
@@ -144,6 +168,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
+
                 {/* Content */}
                 <div className="w-full pt-6 pb-10 flex-grow">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -216,11 +241,41 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="md:col-span-2 space-y-6">
+
+                            {/* Game đã chia sẻ/ghim */}
                             <div className="bg-[#1c1c2e] rounded p-4 border border-[#3a3a5a] shadow-sm">
-                                <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">Game đã ghim</h2>
-                                <div className="border-2 border-dashed border-gray-600 rounded p-6 flex items-center justify-center min-h-[80px]">
-                                    <div className="text-center text-gray-500 text-sm">Ghim một dự án game của bạn!</div>
-                                </div>
+                                <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#3a3a5a]">Game đã chia sẻ</h2>
+                                {sharedGames.length === 0 ? (
+                                    <div className="text-gray-400 text-center py-6 bg-[#1c1c2e] rounded-lg border border-[#3a3a5a]">
+                                        Bạn chưa chia sẻ game nào.
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {sharedGames.map((game) => (
+                                            <div key={game.slug} className="bg-[#1c1c2e] rounded-lg border border-[#3a3a5a] shadow-md p-5 flex flex-col justify-between hover:scale-[1.03] transition-transform">
+                                                <div>
+                                                    <h3 className="text-lg font-bold text-white mb-2 truncate">{game.title}</h3>
+                                                    <p className="text-sm text-gray-400 mb-2 truncate">{game.description}</p>
+                                                    <p className="text-xs text-gray-500 mb-2">Cập nhật: {new Date(game.updatedAt).toLocaleDateString("vi-VN")}</p>
+                                                </div>
+                                                <div className="flex gap-2 mt-4">
+                                                    <button
+                                                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition"
+                                                        onClick={() => router.push(`/play/shared-game/${game.slug}`)}
+                                                    >
+                                                        Chơi ngay
+                                                    </button>
+                                                    <button
+                                                        className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded transition"
+                                                        onClick={() => navigator.clipboard.writeText(`${window.location.origin}/play/shared-game/${game.slug}`)}
+                                                    >
+                                                        Sao chép link
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Phần thành tích */}
