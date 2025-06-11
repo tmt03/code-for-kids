@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { fetchAllChapters, fetchLearnProgress } from "@/apis";
 import ChapterList from "@/components/companion/chapter-list";
@@ -13,6 +13,7 @@ export default function ChapterPage() {
     const { setProgressSummary } = useProgress();
     const [chapters, setChapters] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         let isMounted = true;
 
@@ -45,7 +46,7 @@ export default function ChapterPage() {
     }, [setProgressSummary]);
 
     if (isLoading) {
-        return <div className="p-4">Đang tải dữ liệu...</div>;
+        return <div className="p-4 text-gray-700">Đang tải dữ liệu...</div>;
     }
 
     return (
@@ -58,7 +59,7 @@ export default function ChapterPage() {
                 style={{ backgroundImage: "url('/assets/learn-page-bg.png')" }}
             ></div>
 
-            <main className="w-full px-4 py-6 bg-gray-50">
+            <main className="w-full px-4 py-6 bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1]">
                 <div className="max-w-6xl mx-auto flex flex-col lg:flex-row flex-1 w-full">
                     {/* Phần hiển thị các chapter */}
                     <div className="w-full lg:w-4/5">
@@ -78,8 +79,7 @@ export default function ChapterPage() {
                     </div>
                 </div>
             </main>
-            <div className="w-full h-40 bg-gradient-to-r from-[#4682B4] to-[#1C6CA8]">
-
+            <div className="w-full h-40 bg-gradient-to-r from-[#006D77] to-[#0A3D62]">
                 <Footer />
             </div>
         </div>

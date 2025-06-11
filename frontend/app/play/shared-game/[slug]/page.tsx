@@ -95,10 +95,10 @@ export default function SharedGamePage() {
 
     if (isLoading) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA]">
+            <div className="w-full h-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1]">
                 <div className="text-lg font-semibold text-gray-700">Đang tải game...</div>
                 <svg
-                    className="animate-spin h-8 w-8 text-blue-500 mt-4"
+                    className="animate-spin h-8 w-8 text-[#00A8B5] mt-4"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -123,13 +123,13 @@ export default function SharedGamePage() {
 
     if (error || !gameData) {
         return (
-            <div className="w-full h-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA]">
+            <div className="w-full h-screen flex flex-col justify-center items-center bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1]">
                 <div className="text-lg font-semibold text-gray-700">{error || "Không tìm thấy game"}</div>
                 <Button
                     onClick={() => router.push("/")}
                     variant="pixel"
                     size="lg"
-                    className="mt-4"
+                    className="mt-4 bg-[#00A8B5] text-white hover:bg-[#0096A5]"
                 >
                     Quay lại trang chủ
                 </Button>
@@ -138,14 +138,14 @@ export default function SharedGamePage() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-gradient-to-b from-[#B0E2FF] to-[#E6F0FA] p-4">
+        <div className="w-full min-h-screen bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1] p-4">
             <div className="max-w-7xl mx-auto">
                 {/* Game Info */}
-                <div className="bg-[#1c1c2e] rounded-lg p-6 border border-[#3a3a5a] mb-4">
+                <div className="bg-[#0A3D62] rounded-lg p-6 border border-[#006D77] mb-4">
                     <h1 className="text-2xl font-bold text-white">{gameData.title}</h1>
-                    <p className="text-sm text-gray-300 mt-2">Tạo bởi: {gameData.username}</p>
-                    <p className="text-sm text-gray-400 mt-2">{gameData.description}</p>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-sm text-gray-200 mt-2">Tạo bởi: {gameData.username}</p>
+                    <p className="text-sm text-gray-300 mt-2">{gameData.description}</p>
+                    <p className="text-xs text-gray-400 mt-2">
                         Cập nhật: {new Date(gameData.updatedAt).toLocaleDateString("vi-VN")}
                     </p>
                 </div>
@@ -161,6 +161,7 @@ export default function SharedGamePage() {
                         onClick={() => router.push("/")}
                         variant="pixel"
                         size="lg"
+                        className="bg-[#00A8B5] text-white hover:bg-[#0096A5]"
                     >
                         Quay lại trang chủ
                     </Button>

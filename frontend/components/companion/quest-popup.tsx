@@ -139,14 +139,14 @@ export default function ChapterTaskPopup({ chapter, onClose }: Props) {
                 width: 8px;
         }
               .custom-scrollbar::-webkit-scrollbar-track {
-                background: #E6F0FA;
+                background: #E8F1F2;
         }
               .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: #1C6CA8;
+                background:rgb(48, 174, 215);
               border-radius: 4px;
         }
               .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: #104A7A;
+                background:rgb(10, 113, 197);
         }
       `}</style>
     </div>

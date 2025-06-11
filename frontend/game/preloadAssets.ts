@@ -4,8 +4,22 @@ import * as Phaser from "phaser";
 export function preloadAssets(scene: Phaser.Scene) {
   scene.load.setPath("/assets/game_assets");
 
+  //============================== animation ==============================//
+
   // 🔥 Skill Animations
   scene.load.spritesheet("fireball_anim", "/skill/fireball_anim.png", {
+    frameWidth: 20,
+    frameHeight: 20,
+  });
+  scene.load.spritesheet("poison_anim", "/skill/poison_anim.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
+  scene.load.spritesheet("healthsteal_anim", "/skill/healthsteal_anim.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
+  scene.load.spritesheet("lazer_anim", "/skill/lazer_anim.png", {
     frameWidth: 72,
     frameHeight: 72,
   });
@@ -68,7 +82,7 @@ export function preloadAssets(scene: Phaser.Scene) {
   //==========================================================================//
 
   // 🧍 Knight Players (Knight 1, 2, 3)
-  scene.load.spritesheet("kiemsi_dung", "/player/knight_1/Idle.png", {
+  scene.load.spritesheet("kiemsi", "/player/knight_1/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -87,7 +101,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
 
-  scene.load.spritesheet("thosan_dung", "/player/knight_2/Idle.png", {
+  scene.load.spritesheet("thosan", "/player/knight_2/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -106,7 +120,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
 
-  scene.load.spritesheet("kisi_dung", "/player/knight_3/Idle.png", {
+  scene.load.spritesheet("kisi", "/player/knight_3/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -118,7 +132,7 @@ export function preloadAssets(scene: Phaser.Scene) {
     frameWidth: 96,
     frameHeight: 96,
   });
-  scene.load.spritesheet("kisi_danh", "/player/knight_3/Jump.png", {
+  scene.load.spritesheet("kisi_danh", "/player/knight_3/Attack.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -127,7 +141,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧌 Monster - Orc 1
-  scene.load.spritesheet("orcxanh_dung", "/monster/Orc_1/Idle.png", {
+  scene.load.spritesheet("orcxanh", "/monster/Orc_1/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -146,7 +160,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧌 Monster - Orc 2
-  scene.load.spritesheet("orccam_dung", "/monster/Orc_2/Idle.png", {
+  scene.load.spritesheet("orccam", "/monster/Orc_2/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -165,7 +179,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧌 Monster - Orc 3
-  scene.load.spritesheet("orcdo_dung", "/monster/Orc_3/Idle.png", {
+  scene.load.spritesheet("orcdo", "/monster/Orc_3/Idle.png", {
     frameWidth: 96,
     frameHeight: 96,
   });
@@ -184,7 +198,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧌 Monster - Skeleton
-  scene.load.spritesheet("boxuong_dung", "/monster/Skeleton/Idle.png", {
+  scene.load.spritesheet("boxuong", "/monster/Skeleton/Idle.png", {
     frameWidth: 128,
     frameHeight: 128,
   });
@@ -205,7 +219,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧟 Boss - Minotaur 1
-  scene.load.spritesheet("traubac_dung", "/boss/Minotaur_1/Idle.png", {
+  scene.load.spritesheet("traubac", "/boss/Minotaur_1/Idle.png", {
     frameWidth: 128,
     frameHeight: 128,
   });
@@ -220,7 +234,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧟 Boss - Minotaur 2
-  scene.load.spritesheet("trauvang_dung", "/boss/Minotaur_2/Idle.png", {
+  scene.load.spritesheet("trauvang", "/boss/Minotaur_2/Idle.png", {
     frameWidth: 128,
     frameHeight: 128,
   });
@@ -235,7 +249,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧟 Boss - Fire_Spirit
-  scene.load.spritesheet("quylua_dung", "/boss/Fire_Spirit/Idle_2.png", {
+  scene.load.spritesheet("quylua", "/boss/Fire_Spirit/Idle_2.png", {
     frameWidth: 128,
     frameHeight: 128,
   });
@@ -250,7 +264,7 @@ export function preloadAssets(scene: Phaser.Scene) {
 
   //---------------------
   // 🧟 Boss - Plent
-  scene.load.spritesheet("quycay_dung", "/boss/Plent/Idle.png", {
+  scene.load.spritesheet("quycay", "/boss/Plent/Idle.png", {
     frameWidth: 128,
     frameHeight: 128,
   });

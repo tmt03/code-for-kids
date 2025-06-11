@@ -1,17 +1,20 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/hooks/useAuth';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import {
-    faArrowLeft, faBars, faGear,
+    faArrowLeft,
+    faBars,
+    faGear,
     faHouse,
-    faSignOut, faUser
-} from '@fortawesome/free-solid-svg-icons';
+    faSignOut,
+    faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 config.autoAddCss = false;
 
@@ -23,16 +26,16 @@ export default function Header() {
     const router = useRouter();
 
     const toggleMenu = () => {
-        setIsMenuOpen(prev => !prev);
+        setIsMenuOpen((prev) => !prev);
         setIsMobileProfileDropdownOpen(false);
     };
 
     const toggleProfileDropdown = () => {
-        setIsProfileDropdownOpen(prev => !prev);
+        setIsProfileDropdownOpen((prev) => !prev);
     };
 
     const toggleMobileProfileDropdown = () => {
-        setIsMobileProfileDropdownOpen(prev => !prev);
+        setIsMobileProfileDropdownOpen((prev) => !prev);
         setIsMenuOpen(false);
     };
 
@@ -48,34 +51,55 @@ export default function Header() {
                 setIsMobileProfileDropdownOpen(false);
             }
         };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     return (
         <div>
-            <header className="fixed top-0 left-0 w-full z-10 text-white bg-[#28284f] backdrop-blur-md">
-                <nav className="flex items-center justify-between px-6 h-14">
+            <header className="fixed top-0 left-0 w-full z-50 text-white bg-gradient-to-r from-[#006D77] to-[#0A3D62] backdrop-blur-md shadow-lg">
+                <nav className="flex items-center justify-between px-6 h-16 max-w-7xl mx-auto">
                     {/* Logo */}
                     <div className="flex items-center gap-4">
-                        <img src="/assets/logo_scriptbies.png" alt="Scriptbies Logo" className="h-10 w-auto" />
-                        <Link href="/" className={`text-2xl`}>Scriptbies</Link>
+                        <img
+                            src="/assets/logo_scriptbies.png"
+                            alt="Scriptbies Logo"
+                            className="h-10 w-auto transition-transform duration-300 hover:scale-105"
+                        />
+                        <Link
+                            href="/"
+                            className="text-2xl font-extrabold text-white hover:text-blue-200 transition-colors"
+                        >
+                            Scriptbies
+                        </Link>
                     </div>
 
                     {/* Nav links */}
-                    <ul className="hidden lg:flex gap-6">
+                    <ul className="hidden lg:flex gap-6 items-center">
                         {user && (
-                            <Link href="/home" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
-                                <FontAwesomeIcon icon={faHouse} className='pr-1' /> Trang chủ
+                            <Link
+                                href="/home"
+                                className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200 flex items-center"
+                            >
+                                <FontAwesomeIcon icon={faHouse} className="mr-2" /> Trang chủ
                             </Link>
                         )}
-                        <Link href="/learn/courses" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                        <Link
+                            href="/learn/courses"
+                            className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
+                        >
                             Khóa học
                         </Link>
-                        <Link href="/" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                        <Link
+                            href="/"
+                            className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
+                        >
                             Cộng đồng
                         </Link>
-                        <Link href="/shop" className="text-md font-semibold px-3 py-2 rounded hover:bg-gray-600 hover:text-blue-300">
+                        <Link
+                            href="/shop"
+                            className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
+                        >
                             Cửa hàng
                         </Link>
                     </ul>
@@ -83,7 +107,10 @@ export default function Header() {
                     {/* Right-side buttons */}
                     <div className="flex items-center gap-4">
                         {!user && (
-                            <Link href="/login" className="hidden lg:block bg-blue-500 font-bold px-3 py-2 rounded hover:bg-blue-400 transition-colors">
+                            <Link
+                                href="/login"
+                                className="hidden lg:block bg-[#00A8B5] font-bold px-4 py-2 rounded-lg hover:bg-[#0096A5] transition-all duration-200"
+                            >
                                 Đăng nhập
                             </Link>
                         )}
@@ -92,26 +119,32 @@ export default function Header() {
                             <div className="relative hidden lg:block">
                                 <button
                                     onClick={toggleProfileDropdown}
-                                    className="w-9 h-9 rounded-full overflow-hidden border-2 border-white hover:border-blue-400 transition-all"
+                                    className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#00A8B5] hover:border-blue-300 transition-all duration-200"
                                 >
                                     <img
-                                        src="/assets/globe.svg"
+                                        src={user.avatarUrl}
                                         alt="Profile"
                                         className="w-full h-full object-cover"
                                     />
                                 </button>
 
                                 {isProfileDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg text-sm font-semibold text-gray-800 z-20">
-                                        <Link href="/profile" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl text-sm font-semibold text-gray-800 z-50">
+                                        <Link
+                                            href="/profile"
+                                            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                        >
                                             <FontAwesomeIcon icon={faUser} /> Hồ sơ
                                         </Link>
-                                        <Link href="/settings" className="flex items-center gap-2 block px-4 py-2 hover:bg-gray-100">
+                                        <Link
+                                            href="/settings"
+                                            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                                        >
                                             <FontAwesomeIcon icon={faGear} /> Cài đặt
                                         </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="flex items-center gap-2 block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                            className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
                                         >
                                             <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                                         </button>
@@ -121,8 +154,8 @@ export default function Header() {
                         )}
 
                         {/* Mobile menu toggle */}
-                        <button className="lg:hidden" onClick={toggleMenu}>
-                            <FontAwesomeIcon icon={faBars} className="fa-lg" />
+                        <button className="lg:hidden text-white hover:text-blue-200" onClick={toggleMenu}>
+                            <FontAwesomeIcon icon={faBars} className="text-xl" />
                         </button>
                     </div>
                 </nav>
@@ -130,32 +163,51 @@ export default function Header() {
 
             {/* Mobile dropdown */}
             {isMenuOpen && (
-                <div className="fixed top-14 left-0 w-full z-10 bg-[#28284f]/90 text-white flex flex-col items-start">
+                <div className="fixed top-16 left-0 w-full z-50 bg-[#006D77]/90 text-white flex flex-col items-start shadow-lg">
                     <ul className="flex flex-col items-start w-full">
                         {user && (
-                            <Link href="/home" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
-                                <FontAwesomeIcon icon={faHouse} className='pr-1' /> Trang chủ
+                            <Link
+                                href="/home"
+                                className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200 flex items-center"
+                            >
+                                <FontAwesomeIcon icon={faHouse} className="mr-2" /> Trang chủ
                             </Link>
                         )}
-                        <Link href="/learn/courses" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                        <Link
+                            href="/learn/courses"
+                            className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                        >
                             Khóa học
                         </Link>
-                        <Link href="/" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                        <Link
+                            href="/"
+                            className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                        >
                             Cộng đồng
                         </Link>
-                        <Link href="/shop" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                        <Link
+                            href="/shop"
+                            className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                        >
                             Cửa hàng
                         </Link>
                         {!user ? (
-                            <Link href="/login" className="w-full text-left px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                            <Link
+                                href="/login"
+                                className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                            >
                                 Đăng nhập
                             </Link>
                         ) : (
                             <button
                                 onClick={toggleMobileProfileDropdown}
-                                className="w-full flex items-center justify-start gap-2 px-3 py-2 font-semibold hover:bg-gray-600 hover:text-blue-300 transition-colors"
+                                className="w-full flex items-center justify-start gap-3 px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
                             >
-                                <img src="/assets/globe.svg" alt="User Avatar" className="h-6 w-6 rounded-full" />
+                                <img
+                                    src={user.avatarUrl}
+                                    alt="User Avatar"
+                                    className="h-6 w-6 rounded-full"
+                                />
                                 <span>Tài khoản</span>
                             </button>
                         )}
@@ -165,9 +217,9 @@ export default function Header() {
 
             {/* Mobile profile dropdown */}
             {isMobileProfileDropdownOpen && (
-                <div className="fixed top-14 left-0 w-full z-20 bg-[#28284f]/90 text-white flex flex-col items-start">
+                <div className="fixed top-16 left-0 w-full z-50 bg-[#006D77]/90 text-white flex flex-col items-start shadow-lg">
                     <button
-                        className="w-full text-left px-2 py-2 font-semibold text-blue-400 hover:text-blue-200"
+                        className="w-full text-left px-4 py-3 font-semibold text-blue-200 hover:text-blue-100 transition-colors duration-200"
                         onClick={() => {
                             setIsMobileProfileDropdownOpen(false);
                             setIsMenuOpen(true);
@@ -176,15 +228,21 @@ export default function Header() {
                         <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
                     </button>
 
-                    <Link href="/profile" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <Link
+                        href="/profile"
+                        className="w-full flex items-center justify-start gap-3 font-bold px-4 py-3 hover:bg-[#008080]/40 transition-all duration-200"
+                    >
                         <FontAwesomeIcon icon={faUser} /> Hồ sơ
                     </Link>
-                    <Link href="/settings" className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors">
+                    <Link
+                        href="/settings"
+                        className="w-full flex items-center justify-start gap-3 font-bold px-4 py-3 hover:bg-[#008080]/40 transition-all duration-200"
+                    >
                         <FontAwesomeIcon icon={faGear} /> Cài đặt
                     </Link>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-start gap-3 font-bold px-2 py-2 hover:bg-gray-600 hover:text-blue-300 transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-start gap-3 font-bold px-4 py-3 hover:bg-[#008080]/40 transition-all duration-200"
                     >
                         <FontAwesomeIcon icon={faSignOut} /> Đăng xuất
                     </button>

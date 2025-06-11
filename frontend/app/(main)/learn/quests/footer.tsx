@@ -86,11 +86,11 @@ export default function FooterChapter() {
     };
 
     return (
-        <div className="lg:block h-20 w-full border-slate-200 p-2">
+        <div className="lg:block h-20 w-full border-[#006D77] p-2">
             <div className="max-w-screen-lg flex items-center justify-around h-full mx-auto">
                 <Button
                     variant="pixel"
-                    className="w-20"
+                    className="w-20 bg-[#00A8B5] text-white hover:bg-[#0096A5] transition-colors duration-200"
                     onClick={() => handleButtonClick("prev")}
                     disabled={currentIndex === 0 || currentIndex === null}
                 >
@@ -99,7 +99,7 @@ export default function FooterChapter() {
                 <ProgressBar chapters={chaptersFromQuests} /> {/* Truyền chapters giả lập */}
                 <Button
                     variant="pixel"
-                    className="w-20"
+                    className="w-20 bg-[#00A8B5] text-white hover:bg-[#0096A5] transition-colors duration-200"
                     onClick={() => handleButtonClick("next")}
                     disabled={currentIndex === quests.length - 1 || currentIndex === null}
                 >

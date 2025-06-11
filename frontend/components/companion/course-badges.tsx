@@ -5,13 +5,12 @@ export default function CourseBadges() {
     const badgeChapters = progressSummary.badgeChapters || [];
 
     const totalBadges = badgeChapters.length;
-    const earnedBadges = badgeChapters.filter(ch => ch.badgeEarned).length;
+    const earnedBadges = badgeChapters.filter((ch) => ch.badgeEarned).length;
 
     const badgeIcons = ["🔵", "🟣", "🔴", "🟡", "🟢", "🟠", "⭐"];
 
-
     return (
-        <div className="mt-4 p-4 bg-[#1C6CA8] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+        <div className="mt-4 p-4 bg-[#0A3D62] rounded-lg border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
             {/* Tiêu đề */}
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-bold text-white">
@@ -23,7 +22,7 @@ export default function CourseBadges() {
             </div>
 
             {/* Mô tả */}
-            <p className="text-1sm text-white mb-4">
+            <p className="text-sm text-gray-300 mb-4">
                 Hoàn thành các Chapter để nhận được tất cả các huy hiệu
             </p>
 
@@ -40,7 +39,7 @@ export default function CourseBadges() {
                                     : "bg-gray-400 opacity-50 grayscale"
                                 }`}
                         >
-                            <span className="text-xl">{badgeIcons[index]}</span>
+                            <span className="text-xl">{badgeIcons[index % badgeIcons.length]}</span>
                         </div>
                     </div>
                 ))}

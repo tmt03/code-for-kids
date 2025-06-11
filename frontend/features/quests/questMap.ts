@@ -4,7 +4,6 @@
  * Trả về đoạn mã khởi tạo scene (dưới dạng hàm) cho mỗi quest cụ thể.
  * Dùng cho chế độ "guided" hoặc preview quest.
  */
-
 export const baseCodeFunctions: Record<
   string,
   (scene: any, sandbox: any) => void
@@ -38,13 +37,13 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    const castle = scene.add
+    const laudai = scene.add
       .image(500, 308, "laudai_1")
       .setOrigin(0.5)
       .setScale(0.3)
       .setTint(0x404040);
 
-    sandbox.castle = castle;
+    sandbox.castle = laudai;
   },
 
   C01_Q02: (scene, sandbox) => {
@@ -259,15 +258,16 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.spawn("kiemsi", 900, 200, { animation: "idle" }, "kiemsi");
     sandbox.setHealth("kiemsi", 100);
     sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
     sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
     sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
 
-    // sandbox.interact("kiemsi", "quaivat", "lose", "hp", 100);
-    sandbox.when("hp:kiemsi <= 0", "end", "lose");
-    // sandbox.when("time <= 30", "end", "win");
+    sandbox.interact("kiemsi", "quaivat2", "lose", "hp", 100);
+    sandbox.interact("kiemsi", "quaivat1", "lose", "hp", 100);
+    sandbox.when("hp:kiemsi <=0", "end", "lose");
+    sandbox.when("time =0", "end", "win");
   },
 
   C05_Q01: (scene, sandbox) => {
@@ -302,7 +302,7 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.spawn("kiemsi", 900, 200, { animation: "idle" }, "kiemsi");
     sandbox.setPower("kiemsi", 10);
     sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
     sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
@@ -334,17 +334,20 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
-    sandbox.setPower("kiemsi", 10);
-    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
-    sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
-    sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
+    sandbox.spawn("kiemsi", 900, 200, { animation: "idle" }, "kiemsinhi");
+    sandbox.setPower("kiemsinhi", 10);
+    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsinhi", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "kiemsinhi", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "kiemsinhi", 0, 500);
+    sandbox.spawn("boxuong", 900, 200, { animation: "idle" }, "quaivat");
+    sandbox.moveRandom("quaivat", 100, 800, 300);
+    sandbox.interact("kiemsinhi", "quaivat", "lose", "hp", 50);
 
     sandbox.setHealth("quaivat", 100);
     // sandbox.setTimer(60);
 
     sandbox.when("hp:quaivat <=0", "end", "win");
-    sandbox.when("hp:kiemsi <=0", "end", "lose");
+    sandbox.when("hp:kiemsinhi <=0", "end", "lose");
   },
 
   C06_Q01: (scene, sandbox) => {
@@ -379,8 +382,10 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi_chay", 650, 200, { animation: "chay" }, "kiemsi");
-    sandbox.scale("kiemsi", 2);
+    sandbox.spawn("kiemsi", 650, 200, { animation: "run" }, "kiemsinhi");
+    sandbox.setHealth("kiemsinhi", 100);
+    sandbox.setPower("kiemsinhi", 100);
+    sandbox.scale("kiemsinhi", 1);
   },
 
   C06_Q04: (scene, sandbox) => {
@@ -393,7 +398,7 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi_chay", 900, 200, { animation: "chay" }, "kiemsi");
+    sandbox.spawn("kiemsi", 900, 200, { animation: "idle" }, "kiemsi");
     sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
     sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
     sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
@@ -457,12 +462,29 @@ export const baseCodeFunctions: Record<
   C07_Q06: (scene, sandbox) => {
     sandbox.setBackground("bautroi_4");
 
-    // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
-    sandbox.setFloor("nendat_2", 0, 680);
-    sandbox.setFloor("nendat_2", 340, 680);
-    sandbox.setFloor("nendat_2", 680, 680);
-    sandbox.setFloor("nendat_2", 1020, 680);
-    sandbox.setFloor("nendat_2", 1360, 680);
+    sandbox.setFloor("nendat_1", 0, 680);
+    sandbox.setFloor("nendat_1", 340, 680);
+    sandbox.setFloor("nendat_1", 680, 680);
+    sandbox.setFloor("nendat_1", 1020, 680);
+    sandbox.setFloor("nendat_1", 1360, 680);
+
+    sandbox.spawn("kiemsi", 200, 300, { animation: "idle" }, "hero");
+    sandbox.scale("hero", 1);
+    sandbox.setHealth("hero", 110);
+    sandbox.setPower("hero", 20);
+    sandbox.setName("kiemherosi1", "Siêu Nhân");
+    sandbox.onKey("RIGHT", { animation: "run" }, "hero", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "hero", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "hero", 0, 500);
+    sandbox.onAttack("A", { animation: "attack" }, "thuong", "hero");
+
+    sandbox.spawn("boxuong", 400, 20, { animation: "attack" }, "boss");
+    sandbox.scale("boss", 2);
+    sandbox.setHealth("boss", 300);
+    sandbox.autoAttack("boss", 400, "fireball", 10, 1000);
+    sandbox.moveRandom("boss", 100, 750, 100);
+
+    sandbox.interact("hero", "boss", "lose", "hp", 100);
   },
   C07_Q07: (scene, sandbox) => {
     sandbox.setBackground("bautroi_4");

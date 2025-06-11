@@ -1,5 +1,6 @@
 import { CompletionContext } from "@codemirror/autocomplete";
 import {
+  ALLOWED_KEYS,
   ANIMATIONS,
   BACKGROUNDS,
   COLORS,
@@ -7,7 +8,9 @@ import {
   FLOORS,
   INTERACT_ACTIONS,
   INTERACT_ATTRIBUTES,
+  ONATTACK_WEAPONS,
   SPRITES,
+  WHEN_RESULTS,
 } from "./constants";
 
 // Gợi ý lệnh (chỉ khi ở đầu dòng hoặc sau dấu chấm phẩy)
@@ -67,6 +70,7 @@ export const getParameterCompletions = (context: CompletionContext) => {
     { name: "setColor(", type: "setColor" },
     { name: "setFloor(", type: "setFloor" },
     { name: "setBackground(", type: "setBackground" },
+    { name: "when(", type: "when" },
   ];
 
   let latestCommand = null;
@@ -114,6 +118,31 @@ export const getParameterCompletions = (context: CompletionContext) => {
       break;
 
     case "onKey":
+      if (
+        commandContext.includes("{") &&
+        commandContext.includes("animation:")
+      ) {
+        const animationMatch = commandContext.match(/animation\s*:\s*"[^"]*$/i);
+        if (animationMatch) {
+          return {
+            from: word.from + 1,
+            options: ANIMATIONS.map((animation) => ({
+              label: animation,
+              type: "text",
+            })),
+          };
+        }
+      }
+      if (quoteCount === 1) {
+        return {
+          from: word.from + 1,
+          options: ALLOWED_KEYS.map((action) => ({
+            label: action,
+            type: "text",
+          })),
+        };
+      }
+      break;
     case "onAttack":
       if (
         commandContext.includes("{") &&
@@ -129,6 +158,15 @@ export const getParameterCompletions = (context: CompletionContext) => {
             })),
           };
         }
+      }
+      if (quoteCount === 5) {
+        return {
+          from: word.from + 1,
+          options: ONATTACK_WEAPONS.map((action) => ({
+            label: action,
+            type: "text",
+          })),
+        };
       }
       break;
 
@@ -176,6 +214,18 @@ export const getParameterCompletions = (context: CompletionContext) => {
         return {
           from: word.from + 1,
           options: BACKGROUNDS.map((bg) => ({ label: bg, type: "text" })),
+        };
+      }
+      break;
+
+    case "when":
+      if (quoteCount === 5) {
+        return {
+          from: word.from + 1,
+          options: WHEN_RESULTS.map((attr) => ({
+            label: attr,
+            type: "text",
+          })),
         };
       }
       break;

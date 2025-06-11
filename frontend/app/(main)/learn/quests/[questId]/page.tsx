@@ -14,7 +14,6 @@ import { use, useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
-import { API_ROOT } from '@/lib/utils/constants';
 
 
 interface Quest {
@@ -312,7 +311,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 throw new Error("Không thể lấy thông tin game sau khi lưu");
             }
 
-            const shareUrl = `${API_ROOT}/play/shared-game/${data.slug}`;
+            const shareUrl = `http://localhost:3000/play/shared-game/${data.slug}`;
             setShareLink(shareUrl);
             setHintMessage({ smartHints: "Game đã được lưu thành công! Chia sẻ link với bạn bè nhé!" });
             setShowHint(true);
