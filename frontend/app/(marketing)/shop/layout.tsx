@@ -38,7 +38,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
 
             {/* ✅ Tùy chọn cho admin */}
             {user?.role === "admin" && (
-              <Link href="/admin/orders" className="text-red-600 font-medium hover:underline">
+              <Link href="shop/orders/manage" className="text-red-600 font-medium hover:underline">
                 🛠 Quản lý đơn hàng
               </Link>
             )}

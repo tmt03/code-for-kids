@@ -1,10 +1,11 @@
-// ✅ orderModel.ts
-import mongoose from "mongoose";
+// orderModel.ts
+import { GET_DB } from "../config/mongoDB";
+import { ObjectId } from "mongodb";
 
-// ✅ Chỉ cần khai báo và export trực tiếp ở đây
 export interface OrderData {
+  _id?: ObjectId; // MongoDB documents sẽ có _id
   orderCode: string;
-  role: "guest" | "user";
+  role: 'guest' | 'user';
   products: {
     pid: string;
     pname: string;
@@ -20,34 +21,43 @@ export interface OrderData {
     note?: string;
   };
   createdAt: Date;
-  status: "pending" | "approved" | "rejected" | "done";
+  status: 'pending' | 'approved' | 'rejected' | 'done';
   createdBy: string;
 }
 
-const orderSchema = new mongoose.Schema<OrderData>({
-  orderCode: { type: String, required: true, unique: true },
-  role: { type: String, required: true, enum: ["guest", "user"] },
-  products: [{ pid: String, pname: String, pprice: Number, quantity: Number }],
-  total: { type: Number, required: true },
-  buyer: {
-    name: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true },
-    address: { type: String, required: true },
-    note: { type: String },
-  },
-  createdAt: { type: Date, required: true, default: Date.now },
-  status: {
-    type: String,
-    required: true,
-    enum: ["pending", "approved", "rejected", "done"],
-    default: "pending",
-  },
-  createdBy: { type: String, required: true },
-});
+//Collection name
+const COLLECTION_NAME = "orders";
 
-const OrderModel =
-  mongoose.models.Order || mongoose.model("Order", orderSchema);
+//Insert new order
+export const insertOrder = async (order: OrderData) => {
+  const db = GET_DB();
+  const collection = db.collection<OrderData>(COLLECTION_NAME);
+  await collection.insertOne(order);
+};
 
-//Export model
-export default OrderModel;
+//Find all orders (optionally with filter)
+export const getAllOrders = async (filter: Partial<OrderData> = {}) => {
+  const db = GET_DB();
+  const collection = db.collection<OrderData>(COLLECTION_NAME);
+  return await collection.find(filter).toArray();
+};
+
+//Get order by code
+export const getOrderByCode = async (orderCode: string) => {
+  const db = GET_DB();
+  const collection = db.collection<OrderData>(COLLECTION_NAME);
+  return await collection.findOne({ orderCode });
+};
+
+//Update order status
+export const updateOrderStatus = async (orderCode: string, status: OrderData["status"]) => {
+  const db = GET_DB();
+  const collection = db.collection<OrderData>(COLLECTION_NAME);
+  return await collection.updateOne({ orderCode }, { $set: { status } });
+};
+
+export const updateOrderStatusInDB = async (orderCode: string, status: OrderData["status"]) => {
+  const db = GET_DB();
+  const collection = db.collection<OrderData>("orders");
+  return await collection.updateOne({ orderCode }, { $set: { status } });
+};

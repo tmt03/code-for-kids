@@ -5,21 +5,21 @@
       {
         "pid": "P001",
         "pname": "CODE FOR KIDS",
-        "pprice": 250000,
+        "pprice": 99000,
         "quantity": 1
       }
     ],
-    "total": 270000,
+    "total": 119000,
     "buyer": {
-      "name": "Thân Minh Tâm",
-      "phone": "123456789",
-      "email": "TamTMHE176890@fpt.edu.vn",
-      "address": "Trạm Trôi, Hoài Đức, Hà Nội",
+      "name": "test1",
+      "phone": "1234321234",
+      "email": "test1@gmail.com",
+      "address": "ĐH FPT Hà Nội",
       "note": ""
     },
     "createdBy": "guest",
-    "orderCode": "OD-1648A257",
-    "createdAt": "2025-06-08T14:15:18.145Z",
+    "orderCode": "OD-1F10242D",
+    "createdAt": "2025-06-12T19:40:18.568Z",
     "status": "pending"
   }
 ]
