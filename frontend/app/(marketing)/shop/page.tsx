@@ -17,7 +17,7 @@ export default function ShopPage() {
     axiosInstance
       .get("/api/products")
       .then((res) => {
-        console.log("Dữ liệu sản phẩm:", res.data); // <== Thêm dòng này
+        console.log("Dữ liệu sản phẩm:", res.data);
         setProducts(res.data);
       })
       .catch((err) => {
@@ -46,7 +46,7 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
-      <h1 className="text-3xl font-bold text-center mb-10">🛍️ Danh sách sản phẩm</h1>
+      <h1 className="text-3xl font-bold text-center mb-10 mt-8">🛍️ Danh sách sản phẩm</h1>
       {user?.role === "admin" && (
         <div className="flex justify-end max-w-6xl mx-auto mb-6">
           <button
@@ -82,7 +82,9 @@ export default function ShopPage() {
             <div className="md:w-3/5 w-full md:ml-6 mt-4 md:mt-0 flex flex-col justify-between">
               <div>
                 <h2 className="text-2xl font-bold mb-2">{product.pname}</h2>
-                <p className="text-gray-700 text-sm mb-2">{product.pdescription}</p>
+                <p className="whitespace-pre-line text-gray-700 text-sm mb-2">
+                  {product.pdescription}
+                </p>
                 <p className="text-green-600 font-semibold text-lg mb-1">
                   {typeof product.pprice === "number"
                     ? product.pprice.toLocaleString("vi-VN") + "₫"
