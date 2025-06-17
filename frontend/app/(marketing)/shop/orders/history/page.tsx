@@ -1,8 +1,23 @@
+'use client'
+import React from "react";
+import { useAuth } from "@/hooks/useAuth";
+import GuestOrderPopup from "@/components/shop/GuestOrderPopup";
+import UserOrderHistory from "@/components/shop/UserOrderHistory";
+
 export default function OrderHistoryPage() {
+  const { user } = useAuth();
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Lịch sử đơn hàng</h1>
-      {/* TODO: Nếu là guest: tìm theo tên/ID; nếu là user: hiển thị tự động */}
+    <div className="p-6 max-w-5xl mx-auto">
+      <h1 className="text-2xl font-bold mt-4">Lịch sử đơn hàng</h1>
+      {user?.role === "user" && <UserOrderHistory />}
+      {!user && (
+        <GuestOrderPopup
+          open={true}
+          onClose={() => {}}
+          product={null}
+        />
+      )}
     </div>
   );
 }

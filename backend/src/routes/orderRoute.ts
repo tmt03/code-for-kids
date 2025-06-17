@@ -39,4 +39,12 @@ router.get(
 //9. Admin cập nhật trạng thái đơn hàng (ví dụ: đã giao, đang giao, hủy, v.v.)
 router.put("/:orderCode/status", verifyToken, requirePermission("manageOrders"), orderController.updateOrderStatus);
 
+//10. User tra cứu lịch sử đơn hàng của mình
+router.get("/history", verifyToken, orderController.getUserOrderHistory);
+
+//11. User xem lịch sử đơn hàng của mình
+import { getFullUserOrderHistory } from '../controllers/orderController';
+router.get('/user-orders/full', verifyToken, getFullUserOrderHistory);
+
+
 export default router;

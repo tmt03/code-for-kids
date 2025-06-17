@@ -19,13 +19,20 @@ export const createOrderPending = async (req: Request, res: Response) => {
     };
 
     try {
-        await fs.writeFile(pendingFile, JSON.stringify([order], null, 2));
+        const raw = await fs.readFile(pendingFile, "utf-8");
+        const pendingOrders: OrderData[] = JSON.parse(raw || "[]");
+
+        pendingOrders.push(order);
+
+        await fs.writeFile(pendingFile, JSON.stringify(pendingOrders, null, 2));
+
         res.status(200).json({ message: "Đơn hàng mới đã gửi", order });
     } catch (err) {
         console.error("❌ Lỗi khi gửi đơn hàng:", err);
         res.status(500).json({ error: "Lỗi khi gửi đơn hàng" });
     }
 };
+
 
 //Admin duyệt đơn (từ file JSON → MongoDB)
 export const approveOrder = async (req: Request, res: Response) => {
@@ -94,11 +101,16 @@ export const createUserOrder = async (req: Request, res: Response) => {
         const createdBy = (req as any).user?.username;
         const role = (req as any).user?.role;
 
+        const { products, total, buyer } = req.body;
+
+        if (!products?.every((p: any) => p.pname && typeof p.pprice === 'number' && typeof p.quantity === 'number')) {
+            return res.status(400).json({ error: "Sản phẩm không hợp lệ" });
+        }
+
         if (!createdBy || !role) {
             return res.status(401).json({ error: "Không xác thực được người dùng" });
         }
 
-        const { products, total, buyer } = req.body;
         if (!products?.length || !buyer || typeof total !== "number") {
             return res.status(400).json({ error: "Thiếu thông tin đơn hàng" });
         }
@@ -230,6 +242,52 @@ export const updateOrderStatusController = async (req: Request, res: Response) =
     }
 };
 
+//User tra cứu đơn hàng của mình
+export const getUserOrderHistory = async (req: Request, res: Response) => {
+    try {
+        const username = (req as any).user?.username;
+        if (!username) return res.status(401).json({ error: "Chưa đăng nhập" });
+
+        const allOrders = await getAllOrders();
+        const myOrders = allOrders.filter(order => order.createdBy === username);
+
+        res.status(200).json(myOrders);
+    } catch (err) {
+        console.error("❌ Lỗi lấy lịch sử đơn hàng:", err);
+        res.status(500).json({ error: "Lỗi lấy đơn hàng" });
+    }
+};
+
+export const getFullUserOrderHistory = async (req: Request, res: Response) => {
+  const username = (req as any).user?.username;
+
+  if (!username) return res.status(401).json({ error: 'Chưa đăng nhập' });
+
+  try {
+    // 1. Đọc đơn từ file
+    const raw = await fs.readFile(pendingFile, 'utf-8');
+    const pendingOrders = JSON.parse(raw || '[]');
+
+    // Lọc đơn pending đúng user
+    const userPendingOrders = pendingOrders.filter(
+      (order: any) => order.createdBy === username
+    );
+
+    // 2. Lấy đơn từ MongoDB
+    const allApproved = await getAllOrders();
+    const userApprovedOrders = allApproved.filter(
+      (order) => order.createdBy === username
+    );
+
+    const fullOrders = [...userPendingOrders, ...userApprovedOrders];
+
+    res.status(200).json(fullOrders);
+  } catch (err) {
+    console.error('❌ Lỗi lấy full đơn hàng của user:', err);
+    res.status(500).json({ error: 'Không thể lấy đơn hàng' });
+  }
+};
+
 //Gộp controller xuất ra 1 object
 export const orderController = {
     createOrderPending,
@@ -241,5 +299,7 @@ export const orderController = {
     getOrderDetails,
     listPendingOrders,
     listAllOrdersIncludingPending,
-    updateOrderStatus: updateOrderStatusController
+    updateOrderStatus: updateOrderStatusController,
+    getUserOrderHistory,
+    getFullUserOrderHistory
 };

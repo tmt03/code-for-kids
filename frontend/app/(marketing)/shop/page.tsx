@@ -27,22 +27,29 @@ export default function ShopPage() {
 
 
   const handleBuyClick = (product: Product) => {
-    if (user?.role === "user") {
-      // Redirect sang /shop/order nếu là user
-      window.location.href = `/shop/order?pid=${product.pid}`;
-    } else if (!user || user.role === "guest") {
-      // Nếu là guest thì mở popup nhập thông tin
-      setSelectedProduct(product);
-      setIsPopupOpen(true);
+    setSelectedProduct(product);
+    setIsPopupOpen(true);
+
+  };
+
+  const handleSubmitGuestOrder = async (data: any) => {
+    const payload = {
+      ...data,
+      role: user?.role || "guest", // nếu đang login thì là user
+      createdBy: user?.username || "guest",
+      status: "pending", // status mặc định
+    };
+
+    try {
+      await axiosInstance.post("/api/orders/create", payload);
+      toast.success("Yêu cầu của bạn đã được gửi, vui lòng chờ xác nhận!");
+    } catch (err) {
+      console.error("Lỗi gửi order:", err);
+      toast.error("Gửi đơn hàng thất bại!");
+    } finally {
+      setIsPopupOpen(false);
     }
   };
-
-  const handleSubmitGuestOrder = (data: any) => {
-    console.log("Guest order:", data);
-    toast.success("Yêu cầu của bạn đã được gửi...");
-    setIsPopupOpen(false);
-  };
-
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
