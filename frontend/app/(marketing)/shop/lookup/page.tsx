@@ -53,7 +53,7 @@ export default function GuestOrderLookup() {
     }
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow">
-            <h1 className="text-2xl font-bold mb-4">🔍 Tra cứu đơn hàng</h1>
+            <h1 className="text-2xl font-bold mb-4 mt-8">🔍 Tra cứu đơn hàng</h1>
 
             <div className="flex gap-2 mb-6">
                 <input
