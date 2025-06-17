@@ -14,5 +14,7 @@ Router.post("/logout", authController.logout);
 Router.get("/me", verifyToken, authController.me);
 Router.post("/forgot-password", authController.forgotPassword);
 Router.post("/reset-password", authController.resetPassword);
+Router.post("/register", authController.register);
+Router.post("/verify-email", authController.verifyEmail);
 
 export const authRoute = Router;

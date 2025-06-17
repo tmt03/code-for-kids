@@ -122,3 +122,17 @@ export const saveUserGame = async (gameData: SaveGameRequest) => {
     throw new Error(error.response?.data?.message || "Lỗi khi lưu game");
   }
 };
+
+// Ví dụ: Đăng ký tài khoản
+export const registerUser = async (username: string, email: string, password: string) => {
+  const res = await axiosInstance.post("/v1/auth/register", { username, email, password });
+  return res.data;
+};
+
+// Ví dụ: Xác minh email
+export const verifyEmail = async (email: string, otp: string) => {
+  const res = await axiosInstance.post("/v1/auth/verify-email", { email, otp });
+  return res.data;
+};
+
+

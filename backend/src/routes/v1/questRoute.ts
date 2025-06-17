@@ -12,4 +12,11 @@ Router.get(
   questController.getQuestDetails
 );
 
+Router.put(
+  "/:questId/video-url",
+  verifyToken,
+  requirePermission("updateQuestVideoUrl"), // 🎯 giống chapter, chỉ cần cập nhật videoUrl
+  questController.updateQuestVideoUrl
+);
+
 export const questRoute = Router;
