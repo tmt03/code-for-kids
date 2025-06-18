@@ -8,7 +8,17 @@ A project with a **Node.js** backend and a **Next.js** frontend.
 
 ### Backend
 
-Update later!!!
+1. Navigate to the `backend` folder:
+
+   ```bash
+   cd backend
+   ```
+2. Install dependencies and start the development server:
+3. ```bash
+      npm install
+      npm run dev
+   ```
+   The frontend on http://localhost:5000.
 
 ### Frontend
 
