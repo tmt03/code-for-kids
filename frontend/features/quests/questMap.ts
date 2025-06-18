@@ -399,15 +399,21 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi", 900, 200, { animation: "idle" }, "kiemsi");
-    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsi", 200, 0);
-    sandbox.onKey("LEFT", { animation: "run" }, "kiemsi", -200, 0);
-    sandbox.onKey("UP", { animation: "jump" }, "kiemsi", 0, 500);
+    sandbox.kiemsinhi = sandbox.spawn(
+      "kiemsi",
+      900,
+      200,
+      { animation: "idle" },
+      "kiemsinhi"
+    );
+    sandbox.onKey("RIGHT", { animation: "run" }, "kiemsinhi", 200, 0);
+    sandbox.onKey("LEFT", { animation: "run" }, "kiemsinhi", -200, 0);
+    sandbox.onKey("UP", { animation: "jump" }, "kiemsinhi", 0, 500);
     // sandbox.spawnRandom("quycay_chay", 200, 600, 200, "heart", 100);?
 
     // sandbox.setTimer(60);
 
-    sandbox.when("hp:kiemsi >=200", "end", "win");
+    sandbox.when("hp:kiemsinhi >=200", "end", "win");
   },
 
   C07_Q01: (scene, sandbox) => {
@@ -469,7 +475,13 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_1", 1020, 680);
     sandbox.setFloor("nendat_1", 1360, 680);
 
-    sandbox.spawn("kiemsi", 200, 300, { animation: "idle" }, "hero");
+    sandbox.hero = sandbox.spawn(
+      "kiemsi",
+      200,
+      300,
+      { animation: "idle" },
+      "hero"
+    );
     sandbox.scale("hero", 1);
     sandbox.setHealth("hero", 110);
     sandbox.setPower("hero", 20);
@@ -479,7 +491,13 @@ export const baseCodeFunctions: Record<
     sandbox.onKey("UP", { animation: "jump" }, "hero", 0, 500);
     sandbox.onAttack("A", { animation: "attack" }, "thuong", "hero");
 
-    sandbox.spawn("boxuong", 400, 20, { animation: "attack" }, "boss");
+    sandbox.boss = sandbox.spawn(
+      "boxuong",
+      400,
+      20,
+      { animation: "attack" },
+      "boss"
+    );
     sandbox.scale("boss", 2);
     sandbox.setHealth("boss", 300);
     sandbox.autoAttack("boss", 400, "fireball", 10, 1000);

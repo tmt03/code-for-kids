@@ -16,7 +16,6 @@ import {
     faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TrialBanner } from "./trial/TrialBanner";
 config.autoAddCss = false;
 
 export default function Header() {
@@ -92,7 +91,7 @@ export default function Header() {
                             Khóa học
                         </Link>
                         <Link
-                            href="/"
+                            href="/community"
                             className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
                         >
                             Cộng đồng
@@ -182,7 +181,7 @@ export default function Header() {
                             Khóa học
                         </Link>
                         <Link
-                            href="/"
+                            href="/community"
                             className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
                         >
                             Cộng đồng

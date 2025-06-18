@@ -132,7 +132,7 @@ export default function HomePage() {
                 {/* Welcome Section (Luôn ở đầu) */}
                 <section className="text-white py-4 px-4">
                     <div className="max-w-7xl mx-auto flex items-center">
-                        <img src="/assets/knight-avatar.png" alt="Computer Icon" className="w-20 h-20" />
+                        <img src="/assets/mascots/pose_gioithieu.png" alt="Computer Icon" className="w-20 h-20" />
                         <div className="bg-[#0A3D62] border border-white rounded px-4 py-2 text-sm">
                             Chào mừng bạn quay trở lại, <span className="font-bold">{user?.displayName}</span> Cùng học thôi nào!
                         </div>
