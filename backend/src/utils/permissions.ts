@@ -6,6 +6,7 @@ export const rolePermissions = {
     "viewAllOrders",
     "editProduct",
     "deleteProduct",
+    "updateQuestVideoUrl",
   ],
   user: [
     "viewChapter",

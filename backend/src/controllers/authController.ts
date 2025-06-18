@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../config/environment";
 import { userModel } from "../models/userModel";
 import { sendMail } from "../utils/emailService";
+import bcrypt from "bcryptjs";
 
 // const getUserInfo = async (
 //   req: Request,
@@ -135,11 +136,71 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.json({ message: "Đổi mật khẩu thành công" });
 };
 
+export const register = async (req: Request, res: Response) => {
+  const { username, password, email } = req.body;
+  if (await userModel.findByUsername(username))
+    return res.status(400).json({ error: "Username đã tồn tại" });
+  if (await userModel.findByEmail(email))
+    return res.status(400).json({ error: "Email đã tồn tại" });
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await userModel.createNew({
+    username,
+    password: hashedPassword,
+    email,
+    role: "user",
+    _destroy: false,
+    created_at: new Date(),
+    updated_at: null,
+    avatarUrl: null,
+    bannerUrl: null,
+    bio: null,
+    displayName: null,
+    resetOTP: null,
+    resetOTPExpires: null,
+    isVerified: false,
+    registerOTP: null,
+    registerOTPExpires: null,
+  });
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = Date.now() + 10 * 60 * 1000; // 10 phút
+  await userModel.saveRegisterOTP(email, otp, expires);
+
+  await sendMail(email, "[Scriptbies] Mã xác minh đăng ký tài khoản", `Mã OTP đăng ký tài khoản của bạn là: ${otp}`);
+
+  res.json({ message: "Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản." });
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+
+  const user = await userModel.findByEmail(email);
+  if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+  if (user.isVerified) return res.status(400).json({ error: "Tài khoản đã xác minh" });
+
+  const otpRecord = await userModel.getRegisterOTP(email);
+  if (
+      !otpRecord ||
+      otpRecord.registerOTP !== otp ||
+      otpRecord.registerOTPExpires < Date.now()
+  ) {
+    return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
+  }
+
+  await userModel.verifyUser(email);
+  await userModel.clearRegisterOTP(email);
+
+  res.json({ message: "Xác minh email thành công, bạn có thể đăng nhập!" });
+};
+
 export const authController = {
   login,
   refreshToken,
   logout,
   me,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  register,
+  verifyEmail,
 };

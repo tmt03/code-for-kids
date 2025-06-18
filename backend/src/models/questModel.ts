@@ -65,8 +65,26 @@ const getPointByQuestId = async (questId: string): Promise<number> => {
   }
 };
 
+const updateQuestVideoUrl = async (questId: string, videoUrl: string) => {
+  try{
+    const result = await GET_DB()
+      .collection(CHAPTER_COLLECTION_NAME)
+      .updateOne(
+        { "quests.id": questId },
+        { $set: { "quests.$.videoUrl": videoUrl } }
+      );
+
+    return result.modifiedCount > 0;
+  } catch (error) {
+    throw error instanceof Error
+      ? error
+      : new Error(`Lỗi khi cập nhật videoUrl của quest ${questId}: ${error}`);
+  }
+};
+
 export const questModel = {
   getQuestDetails,
   getBaseCodeByQuestId,
   getPointByQuestId,
+  updateQuestVideoUrl,
 };

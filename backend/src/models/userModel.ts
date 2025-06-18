@@ -6,21 +6,25 @@ const USER_COLLECTION_NAME = "users";
 
 // Tạo tài khoản người dùng mới
 const createNew = async (data: any) => {
-  const hashedPassword = await bcrypt.hash(data.password, 10);
   const newUser = {
     username: data.username,
-    password: hashedPassword,
+    password: data.password,
     role: data.role || "user",
-    refreshToken: null,
-    email: null,
+    refreshToken: "",
+    email: data.email,
     ratingPoints: 0,
-    created_at: null,
+    created_at: new Date(),
     updated_at: null,
     _destroy: false,
     avatarUrl: null,
     bannerUrl: null,
     bio: null,
     displayName: null,
+    resetOTP: null,
+    resetOTPExpires: null,
+    isVerified: false,
+    registerOTP: null,
+    registerOTPExpires: null,
 
     //TRIAL MODE FIELDS
     isActivated: false,
@@ -91,7 +95,7 @@ const updateProfile = async (
 };
 
 const changePassword = async (username: string, newPassword: string) => {
-  const hashed = await bcrypt.hash(newPassword, 12);
+  const hashed = await bcrypt.hash(newPassword, 10);
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
     .updateOne(
@@ -144,6 +148,41 @@ const increaseRatingPoint = async (userId: string, points: number) => {
       { $inc: { ratingPoints: points } }
     );
 };
+
+const saveRegisterOTP = async(email: string, otp: string, expires: number) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { email },
+      { $set: { registerOTP: otp, registerOTPExpires: expires } },
+    );
+};
+
+const getRegisterOTP = async (email: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .findOne(
+      { email },
+      { projection: { registerOTP: 1, registerOTPExpires: 1 } }
+    ); 
+};
+
+const clearRegisterOTP = async (email: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { email },
+      { $unset: { registerOTP: "", registerOTPExpires: "" } }
+    );
+};
+
+const verifyUser = async (email: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { email },
+      { $set: { isVerified: true, updated_at: new Date() } }
+    );
 
 // Thêm các function mới cho trial mode
 const activateUser = async (username: string) => {
@@ -203,6 +242,10 @@ export const userModel = {
   getOTP,
   clearOTP,
   increaseRatingPoint,
+  saveRegisterOTP,
+  getRegisterOTP,
+  clearRegisterOTP,
+  verifyUser,
   activateUser,
   updateTrialChapter,
   getTrialUsers,
