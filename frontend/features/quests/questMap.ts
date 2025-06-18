@@ -38,12 +38,12 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1360, 680);
 
     const laudai = scene.add
-      .image(500, 308, "laudai_1")
+      .image(500, 308, "castle_1")
       .setOrigin(0.5)
       .setScale(0.3)
       .setTint(0x404040);
 
-    sandbox.castle = laudai;
+    sandbox.laudai = laudai;
   },
 
   C01_Q02: (scene, sandbox) => {
@@ -68,11 +68,11 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1360, 680);
 
     const castle = scene.add
-      .image(500, 308, "laudai_1")
+      .image(500, 308, "castle_1")
       .setOrigin(0.5)
       .setScale(0.3);
 
-    sandbox.castle = castle;
+    sandbox.laudai = castle;
   },
 
   C01_Q04: (scene, sandbox) => {
@@ -108,11 +108,11 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1360, 680);
 
     const castle = scene.add
-      .image(700, 308, "laudai_1")
+      .image(500, 308, "castle_1")
       .setOrigin(0.5)
       .setScale(0.3);
 
-    sandbox.castle = castle;
+    sandbox.laudai = castle;
   },
 
   C02_Q03: (scene, sandbox) => {
@@ -152,7 +152,7 @@ export const baseCodeFunctions: Record<
       .setOrigin(0.5)
       .setScale(0.3);
 
-    sandbox.flag = flag;
+    sandbox.co = flag;
   },
 
   C03_Q02: (scene, sandbox) => {
@@ -170,7 +170,7 @@ export const baseCodeFunctions: Record<
       .setOrigin(0.5)
       .setScale(0.3);
 
-    sandbox.flag = flag;
+    sandbox.co = flag;
   },
 
   C03_Q03: (scene, sandbox) => {
@@ -190,7 +190,7 @@ export const baseCodeFunctions: Record<
       .setOrigin(0.5)
       .setScale(0.3);
 
-    sandbox.flag = flag;
+    sandbox.co = flag;
   },
 
   C03_Q04: (scene, sandbox) => {
@@ -212,7 +212,7 @@ export const baseCodeFunctions: Record<
       .setOrigin(0.5)
       .setScale(0.3);
 
-    sandbox.flag = flag;
+    sandbox.co = flag;
   },
 
   C04_Q01: (scene, sandbox) => {
@@ -333,14 +333,15 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 680, 680);
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
+    sandbox.setFloor("nendat_2", 100, 480);
 
-    sandbox.spawn("kiemsi", 900, 200, { animation: "idle" }, "kiemsinhi");
+    sandbox.spawn("kiemsi", 200, 200, { animation: "idle" }, "kiemsinhi");
     sandbox.setPower("kiemsinhi", 10);
     sandbox.onKey("RIGHT", { animation: "run" }, "kiemsinhi", 200, 0);
     sandbox.onKey("LEFT", { animation: "run" }, "kiemsinhi", -200, 0);
     sandbox.onKey("UP", { animation: "jump" }, "kiemsinhi", 0, 500);
-    sandbox.spawn("boxuong", 900, 200, { animation: "idle" }, "quaivat");
-    sandbox.moveRandom("quaivat", 100, 800, 300);
+    sandbox.spawn("boxuong", 900, 200, { animation: "run" }, "quaivat");
+    sandbox.moveRandom("quaivat", 100, 800, 200);
     sandbox.interact("kiemsinhi", "quaivat", "lose", "hp", 50);
 
     sandbox.setHealth("quaivat", 100);
@@ -382,7 +383,7 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    sandbox.spawn("kiemsi", 650, 200, { animation: "run" }, "kiemsinhi");
+    sandbox.spawn("kiemsi", 650, 200, { animation: "idle" }, "kiemsinhi");
     sandbox.setHealth("kiemsinhi", 100);
     sandbox.setPower("kiemsinhi", 100);
     sandbox.scale("kiemsinhi", 1);

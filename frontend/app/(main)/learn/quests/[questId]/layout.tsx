@@ -1,6 +1,7 @@
 'use client';
 
 import Header from '@/components/header';
+import { TrialBanner } from '@/components/trial/TrialBanner';
 import { ProgressProvider } from '@/contexts/ProgresssContext';
 import FooterChapter from '../footer';
 
@@ -15,6 +16,7 @@ const ChapterLayout = ({ children }: Props) => {
                 <div className='pb-14'>
                     <Header />
                 </div>
+                <TrialBanner />
 
                 <main className="flex-1 w-full overflow-hidden pt-2 pb-1">
                     {children}

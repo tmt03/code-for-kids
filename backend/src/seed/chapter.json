@@ -6,6 +6,16 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Chào mừng bạn đến với Code-Land, hỡi anh hùng nhí!",
+        "Vương quốc xinh đẹp này đang chìm trong bóng tối sau khi rồng hắc ám phá hủy pha lê code vĩ đại.",
+        "Thầy Pixel, một nhà thông thái với chiếc mũ pixel lấp lánh, xuất hiện qua màn hình bàn phím ma thuật của bạn.",
+        "“Tí Tẹo, người được chọn để cứu Code-Land! Hãy học câu thần chú đầu tiên để làm sáng bầu trời và đặt nền móng cho vương quốc!”",
+        "Với mỗi dòng code, bạn sẽ mang ánh sáng trở lại và chuẩn bị cho hành trình tìm bốn mảnh pha lê."
+      ],
+      "audioUrl": "/assets/sounds/story-C00.mp3"
+    },
     "quests": [
       {
         "id": "C00_H01",
@@ -40,6 +50,14 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Tí Tẹo, bạn đã mang ánh sáng trở lại bầu trời, nhưng lâu đài pha lê vẫn đang xám xịt và lạc lõng vì lời nguyền của rồng hắc ám.",
+        "Thầy Pixel nói: “Hãy dùng thần chú code để tô màu lâu đài, đặt nó vào trung tâm, và trồng những cây ma thuật để bảo vệ mảnh pha lê đầu tiên!”",
+        "Mỗi dòng code là một viên gạch xây dựng lại hy vọng cho vương quốc."
+      ],
+      "audioUrl": "/assets/sounds/story-C01.mp3"
+    },
     "quests": [
       {
         "id": "C01_Q01",
@@ -98,6 +116,15 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Mảnh pha lê đầu tiên đang chờ đợi một anh hùng xứng đáng.",
+        "Thầy Pixel hướng dẫn: “Tí Tẹo, hãy triệu hồi hình dạng anh hùng của ngươi, đặt tên oai phong, và đưa ngươi đến trước lâu đài!”",
+        "Nhưng cẩn thận, đám quái vật lỗi của rồng hắc ám đã phát hiện ra bạn và đang rình rập.",
+        "Hãy nhanh chóng hoàn thiện Tí Tẹo để nhận sức mạnh của pha lê!"
+      ],
+      "audioUrl": "/assets/sounds/story-C02.mp3"
+    },
     "quests": [
       {
         "id": "C02_Q01",
@@ -156,6 +183,15 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Với mảnh pha lê thứ nhất, Tí Tẹo giờ có thể di chuyển khắp Code-Land.",
+        "Nhưng quái vật lỗi đã giăng bẫy khắp nơi, từ vũng bùn ma thuật đến hố sâu nguy hiểm!",
+        "Thầy Pixel nói: “Học thần chú điều khiển để Tí Tẹo di chuyển và nhảy, rồi chinh phục lá cờ ánh sáng, nơi mảnh pha lê thứ hai đang chờ!”",
+        "Hãy nhanh lên, vì quái vật lỗi đang đến gần!"
+      ],
+      "audioUrl": "/assets/sounds/story-C03.mp3"
+    },
     "quests": [
       {
         "id": "C03_Q01",
@@ -198,8 +234,8 @@
         "name": "Nhiệm vụ 4. Chinh phục lá cờ",
         "description": "Thiết lập điều khiển cơ bản cho anh hùng. Sau đó điều khiển anh hùng đi đến vị trí lá cờ",
         "point": 50,
-        "baseCode": "spawn(\"______\", 450, 200, { animation: \"____\" }, \"herozo\");\nonKey(\"_\", { animation: \"___\" }, \"herozo\", ___, 0);\nonKey(\"_\", { animation: \"___\" }, \"herozo\", ____, 0);\nonKey(\"_\", { animation: \"____\" }, \"herozo\", 0, ___);",
-        "codeHelp": "spawn(\"thosan\", 450, 200, { animation: \"idle\" }, \"herozo\");\nonKey(\"D\", { animation: \"run\" }, \"herozo\", 200, 0);\nonKey(\"A\", { animation: \"run\" }, \"herozo\", -200, 0);\nonKey(\"W\", { animation: \"jump\" }, \"herozo\", 0, 500);",
+        "baseCode": "spawn(\"______\", 950, 200, { animation: \"____\" }, \"herozo\");\nonKey(\"_\", { animation: \"___\" }, \"herozo\", ___, 0);\nonKey(\"_\", { animation: \"___\" }, \"herozo\", ____, 0);\nonKey(\"_\", { animation: \"____\" }, \"herozo\", 0, ___);",
+        "codeHelp": "spawn(\"thosan\", 950, 200, { animation: \"idle\" }, \"herozo\");\nonKey(\"D\", { animation: \"run\" }, \"herozo\", 200, 0);\nonKey(\"A\", { animation: \"run\" }, \"herozo\", -200, 0);\nonKey(\"W\", { animation: \"jump\" }, \"herozo\", 0, 500);",
         "type": "challenge",
         "imageUrl": "",
         "videoUrl": "",
@@ -214,6 +250,15 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Quái vật lỗi, tay sai của rồng hắc ám, đang gây rối khắp Code-Land.",
+        "Chúng làm rối loạn mọi thứ bằng những bước di chuyển khó lường.",
+        "Thầy Pixel nói: “Tí Tẹo, hãy triệu hồi quái vật lỗi và dùng sự khéo léo để né chúng, tìm ra mảnh pha lê thứ ba trong hang ổ của chúng!”",
+        "Mỗi bước né tránh là một bước tiến gần hơn đến việc làm suy yếu rồng hắc ám."
+      ],
+      "audioUrl": "/assets/sounds/story-C04.mp3"
+    },
     "quests": [
       {
         "id": "C04_Q01",
@@ -256,8 +301,8 @@
         "name": "Nhiệm vụ 4. Né quái vật (chơi thử game)",
         "description": "Điều khiển hiệp sĩ né quái vật trong 30 giây.",
         "point": 60,
-        "baseCode": "spawn(\"_____\", 100, 200, { animation: \"____\" }, \"quaivat1\");\nmoveRandom(\"quaivat1\", 100, ___, ___);\nscale(\"quaivat1\", ___);\nspawn(\"_______\", 500, 200, { animation: \"____\" }, \"quaivat2\");\nmoveRandom(\"quaivat2\", ___, 800, ___);\nscale(\"quaivat1\", ___);",
-        "codeHelp": "spawn(\"orcdo\", 100, 200, { animation: \"idle\" }, \"quaivat1\");\nmoveRandom(\"quaivat1\", 100, 500, 200);\nscale(\"quaivat1\", 1.5);\nspawn(\"orcxanh\", 500, 200, { animation: \"idle\" }, \"quaivat2\");\nmoveRandom(\"quaivat2\", 500, 800, 200);\nscale(\"quaivat1\", 1.5);",
+        "baseCode": "spawn(\"_____\", 100, 200, { animation: \"____\" }, \"quaivat1\");\nmoveRandom(\"quaivat1\", 100, ___, ___);\nscale(\"quaivat1\", ___);\nspawn(\"_______\", 500, 200, { animation: \"____\" }, \"quaivat2\");\nmoveRandom(\"quaivat2\", ___, 800, ___);\nscale(\"quaivat2\", ___);",
+        "codeHelp": "spawn(\"orcdo\", 100, 200, { animation: \"idle\" }, \"quaivat1\");\nmoveRandom(\"quaivat1\", 100, 500, 200);\nscale(\"quaivat1\", 1.3);\nspawn(\"orcxanh\", 500, 200, { animation: \"idle\" }, \"quaivat2\");\nmoveRandom(\"quaivat2\", 500, 800, 200);\nscale(\"quaivat2\", 1.3);",
         "type": "challenge",
         "imageUrl": "",
         "videoUrl": "",
@@ -272,14 +317,22 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Mảnh pha lê thứ ba tỏa sáng, trao cho Tí Tẹo khả năng rèn các vũ khí ma thuật: thanh kiếm ánh sáng và rìu sấm sét.",
+        "Thầy Pixel nói: “Dùng thần chú code để tạo vũ khí, thu thập sức mạnh, và đánh bại quái vật lỗi!”",
+        "Nhưng rồng hắc ám, tức giận vì bạn tiến gần đến chiến thắng, gửi thêm nhiều yêu tinh để thử thách bạn."
+      ],
+      "audioUrl": "/assets/sounds/story-C05.mp3"
+    },
     "quests": [
       {
         "id": "C05_Q01",
         "name": "Nhiệm vụ 1. Thêm vũ khí",
         "description": "Đặt thanh kiếm vào vương quốc",
         "point": 20,
-        "baseCode": "spawnRandom(\"____\", 100, 900, \"kiemanhhung\", ____);",
-        "codeHelp": "spawnRandom(\"kiem\", 100, 900, \"kiemanhhung\", 2000);",
+        "baseCode": "spawnRandom(\"____\", 100, 900, 200, \"kiemanhhung\", ____);",
+        "codeHelp": "spawnRandom(\"kiem\", 100, 900, 200, \"kiemanhhung\", 2000);",
         "type": "quest",
         "imageUrl": "",
         "videoUrl": "",
@@ -290,8 +343,8 @@
         "name": "Nhiệm vụ 2. Nhiều vũ khí hơn",
         "description": "Thêm nhiều vũ khí xuất hiện hơn",
         "point": 20,
-        "baseCode": "spawnRandom(\"____\", 100, 300, \"kiemanhhung\", ____);\nspawnRandom(\"___\", 450, 900, \"riuanhhung\", ____);",
-        "codeHelp": "spawnRandom(\"kiem\", 100, 450, \"kiemanhhung\", 2000);\nspawnRandom(\"riu\", 450, 900, \"riuanhhung\", 2000);",
+        "baseCode": "spawnRandom(\"____\", 100, 300, 200, \"kiemanhhung\", ____);\nspawnRandom(\"___\", 450, 900, 200, \"riuanhhung\", ____);",
+        "codeHelp": "spawnRandom(\"kiem\", 100, 450, 200, \"kiemanhhung\", 2000);\nspawnRandom(\"riu\", 450, 900, 200, \"riuanhhung\", 2000);",
         "type": "quest",
         "imageUrl": "",
         "videoUrl": "",
@@ -302,8 +355,8 @@
         "name": "Nhiệm vụ 3. Gia tăng sức mạnh",
         "description": "Nhặt kiếm ngẫu nhiên để tăng sức mạnh",
         "point": 20,
-        "baseCode": "spawnRandom(\"kiem\", 100, 900, \"kiemanhhung\", ____);\ninteract(\"kiemsi\", \"kiemanhhung\", \"gain\", \"_____\", __);",
-        "codeHelp": "spawnRandom(\"kiem\", 100, 900, \"kiemanhhung\", 2000);\ninteract(\"kiemsi\", \"kiemanhhung\", \"gain\", \"power\", 10);",
+        "baseCode": "spawnRandom(\"kiem\", 100, 900, 200, \"kiemanhhung\", ____);\ninteract(\"kiemsi\", \"kiemanhhung\", \"gain\", \"_____\", __);",
+        "codeHelp": "spawnRandom(\"kiem\", 100, 900, 200, \"kiemanhhung\", 2000);\ninteract(\"kiemsi\", \"kiemanhhung\", \"gain\", \"power\", 10);",
         "type": "quest",
         "imageUrl": "",
         "videoUrl": "",
@@ -326,8 +379,8 @@
         "name": "Nhiệm vụ 5. Trận chiến đầu tiên",
         "description": "Tấn công tiêu diệt quái vật",
         "point": 60,
-        "baseCode": "onAttack(\"A\", { animation: \"attack\" }, \"____\", \"kiemsinhi\");\nspawnRandom(\"____\", ___, ___, \"kiemanhhung\", ____);\ninteract(\"kiemsinhi\", \"kiemanhhung\", \"gain\", \"_____\", __);",
-        "codeHelp": "onAttack(\"A\", { animation: \"attack\" }, \"kiem\", \"kiemsinhi\");\nspawnRandom(\"kiem\", 100, 900, \"kiemanhhung\", 2000);\ninteract(\"kiemsinhi\", \"kiemanhhung\", \"gain\", \"power\", 10);",
+        "baseCode": "onAttack(\"A\", { animation: \"attack\" }, \"____\", \"kiemsinhi\");\nspawnRandom(\"____\", ___, ___, 200, \"kiemanhhung\", ____);\ninteract(\"kiemsinhi\", \"kiemanhhung\", \"gain\", \"_____\", __);",
+        "codeHelp": "onAttack(\"A\", { animation: \"attack\" }, \"kiem\", \"kiemsinhi\");\nspawnRandom(\"kiem\", 100, 900, 200, \"kiemanhhung\", 2000);\ninteract(\"kiemsinhi\", \"kiemanhhung\", \"gain\", \"power\", 10);",
         "type": "challenge",
         "imageUrl": "",
         "videoUrl": "",
@@ -342,6 +395,14 @@
     "imageUrl": "",
     "isSpecial": false,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Tí Tẹo đứng trước hang ổ của rồng hắc ám, nơi mảnh pha lê cuối cùng bị giam giữ.",
+        "Thầy Pixel cảnh báo: “Rồng bắn ra những tia năng lượng chết người. Hãy dùng code để triệu hồi nó, né đòn, và giữ sức mạnh!”",
+        "Chỉ khi sống sót, bạn mới có thể lấy mảnh pha lê và chuẩn bị cho trận chiến cuối cùng."
+      ],
+      "audioUrl": "/assets/sounds/story-C06.mp3"
+    },
     "quests": [
       {
         "id": "C06_Q01",
@@ -349,7 +410,7 @@
         "description": "Đặt kỳ lân vào vương quốc.",
         "point": 20,
         "baseCode": "spawn(\"_______\", 200, 200, { animation: \"idle\" }, \"boss\");\nscale(\"____\", ____);",
-        "codeHelp": "spawn(\"traubac\", 200, 200, { animation: \"idle\" }, \"boss\");\nscale(\"boss\", 1.35);",
+        "codeHelp": "spawn(\"traubac\", 200, 200, { animation: \"idle\" }, \"boss\");\nscale(\"boss\", 1.5);",
         "type": "quest",
         "imageUrl": "",
         "videoUrl": "",
@@ -360,8 +421,8 @@
         "name": "Nhiệm vụ 2. Con trùm hành động",
         "description": "Làm con trùm bắn tia năng lượng ngẫu nhiên.",
         "point": 30,
-        "baseCode": "spawn(\"________\", 200, 200, { animation: \"____\" }, \"boss\");\nscale(\"boss\", 1.35);\nautoAttack(\"boss\", 500, \"________\", ____);",
-        "codeHelp": "spawn(\"trauvang\", 200, 200, { animation: \"idle\" }, \"boss\");\nscale(\"boss\", 1.35);\nautoAttack(\"boss\", 500, \"fireball\", 1000);",
+        "baseCode": "spawn(\"________\", 200, 200, { animation: \"____\" }, \"boss\");\nscale(\"boss\", 1.5);\nautoAttack(\"boss\", 500, \"________\", 50, ____);",
+        "codeHelp": "spawn(\"trauvang\", 200, 200, { animation: \"idle\" }, \"boss\");\nscale(\"boss\", 1.5);\nautoAttack(\"boss\", 500, \"fireball\", 50, 1000);",
         "type": "quest",
         "imageUrl": "",
         "videoUrl": "",
@@ -400,6 +461,17 @@
     "imageUrl": "",
     "isSpecial": true,
     "_destroy": false,
+    "story": {
+      "text": [
+        "Cả bốn mảnh pha lê đã hợp lại, khiến Code-Land rực rỡ trở lại.",
+        "Nhưng rồng hắc ám đang chuẩn bị cho cuộc tấn công cuối cùng.",
+        "Thầy Pixel tuyên bố: “Tí Tẹo, người là anh hùng Code bậc thầy!",
+        "Hãy dùng tất cả thần chú để tạo một trò chơi độc đáo, bẫy rồng hắc ám, và cứu Code-Land mãi mãi!”",
+        "Cuối cùng rồng hắc ám bị bẫy, Code-Land được cứu, và Tí Tẹo trở thành anh hùng huyền thoại.",
+        "Thầy Pixel hứa hẹn những cuộc phiêu lưu mới trong tương lai."
+      ],
+      "audioUrl": "/assets/sounds/story-C07.mp3"
+    },
     "quests": [
       {
         "id": "C07_Q01",

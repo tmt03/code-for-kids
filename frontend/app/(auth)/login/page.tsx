@@ -67,6 +67,11 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
             />
+            <div className="text-right text-sm text-gray-600">
+              <a href="/reset-password" className="text-[#00A8B5] hover:underline">
+                Bạn quên mật khẩu?
+              </a>
+            </div>
           </div>
 
           <Button

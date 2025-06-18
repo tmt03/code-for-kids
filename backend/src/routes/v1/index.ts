@@ -6,6 +6,7 @@ import { submissionRoute } from "./submissionRoute";
 import { userRoute } from "./userRoute";
 import { progressRoute } from "./progressRoute";
 import { userGameRoute } from "./userGameRoute";
+import { adminRoute } from "./adminRoute";
 
 const Router = express.Router();
 
@@ -23,5 +24,7 @@ Router.use("/users", userRoute);
 Router.use("/progress", progressRoute);
 
 Router.use("/user-game", userGameRoute);
+
+Router.use("/admin", adminRoute);
 
 export default Router;

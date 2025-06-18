@@ -2,10 +2,15 @@ import CourseCard from "@/components/course-card";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import SearchBar from "@/components/searchbar";
+import { TrialBanner } from "@/components/trial/TrialBanner";
 
 export default function LearnPage() {
     return (
         <div className="w-full overflow-x-hidden">
+            <Header />
+            <div className="pt-16">
+                <TrialBanner />
+            </div>
             <div className="mx-auto justify-center items-center flex flex-col ">
                 {/* Header Background */}
                 <div
@@ -53,7 +58,7 @@ export default function LearnPage() {
                 </div>
             </div>
 
-            <Header />
+
 
             <Footer />
         </div>

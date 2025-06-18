@@ -59,25 +59,28 @@ export function preloadAssets(scene: Phaser.Scene) {
   scene.load.image("laco_1", "/flags/win_flag.png");
 
   // 🏰 Castle
-  scene.load.image("laudai_1", "/castle/castle.png");
+  scene.load.image("laudai_1", "/castle/laudai_1.png");
+  scene.load.image("castle_1", "/castle/castle.png");
 
   // 🌲 Trees
-  scene.load.image("cay_1", "/tree/tree_1.png");
-  scene.load.image("cay_2", "/tree/tree_2.png");
-  scene.load.image("cay_3", "/tree/tree_3.png");
-  scene.load.image("cay_4", "/tree/tree_4.png");
+  scene.load.image("cay_1", "/tree/cay_1.png");
+  scene.load.image("cay_2", "/tree/cay_2.png");
+  // scene.load.image("cay_3", "/tree/tree_1.png");
+  // scene.load.image("cay_4", "/tree/tree_2.png");
+  // scene.load.image("cay_5", "/tree/tree_3.png");
+  // scene.load.image("cay_6", "/tree/tree_4.png");
 
-  // 🌿 Shrubs
-  scene.load.image("buico_1", "/tree/shrub_1.png");
-  scene.load.image("buico_2", "/tree/shrub_2.png");
-  scene.load.image("buico_3", "/tree/shrub_3.png");
-  scene.load.image("buico_4", "/tree/shrub_4.png");
+  // // 🌿 Shrubs
+  // scene.load.image("buico_1", "/tree/shrub_1.png");
+  // scene.load.image("buico_2", "/tree/shrub_2.png");
+  // scene.load.image("buico_3", "/tree/shrub_3.png");
+  // scene.load.image("buico_4", "/tree/shrub_4.png");
 
-  // 🪨 Rocks
-  scene.load.image("cucda_1", "/rock/rock_1.png");
-  scene.load.image("cucda_2", "/rock/rock_2.png");
-  scene.load.image("cucda_3", "/rock/rock_3.png");
-  scene.load.image("cucda_4", "/rock/rock_4.png");
+  // // 🪨 Rocks
+  // scene.load.image("cucda_1", "/rock/rock_1.png");
+  // scene.load.image("cucda_2", "/rock/rock_2.png");
+  // scene.load.image("cucda_3", "/rock/rock_3.png");
+  // scene.load.image("cucda_4", "/rock/rock_4.png");
 
   //==========================================================================//
 
@@ -284,4 +287,5 @@ export function preloadAssets(scene: Phaser.Scene) {
   scene.load.image("riu", "/items/axe.png");
   scene.load.image("thuong", "/items/spear.png");
   scene.load.image("tim", "/items/heart.png");
+  scene.load.image("caulua", "/items/fireball.png");
 }

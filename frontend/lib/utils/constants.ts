@@ -73,6 +73,10 @@ export const SPRITES = [
   "trauvang",
   "quylua",
   "quycay",
+  "laco_1",
+  "laudai_1",
+  "cay_1",
+  "cay_2",
 ] as const;
 
 // Danh sách background
@@ -99,21 +103,7 @@ export const BACKGROUNDS = [
 ] as const;
 
 // Danh sách sàn
-export const FLOORS = [
-  "nendat_1",
-  "nendat_2",
-  "nendat_3",
-  "laco_1",
-  "laudai_1",
-  "cay_1",
-  "cay_2",
-  "cay_3",
-  "cay_4",
-  "cucda_1",
-  "cucda_2",
-  "cucda_3",
-  "cucda_4",
-] as const;
+export const FLOORS = ["nendat_1", "nendat_2", "nendat_3"] as const;
 
 // Danh sách màu
 export const COLORS = [
