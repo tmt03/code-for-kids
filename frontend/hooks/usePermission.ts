@@ -5,6 +5,7 @@ export function usePermission(required: Permission) {
   const { user } = useAuth();
   if (!user) return false;
 
-  const userPermissions: readonly Permission[] = permissions[user.role] || [];
+  const userPermissions: readonly Permission[] =
+    permissions[user.role as keyof typeof permissions] || [];
   return userPermissions.includes(required);
 }

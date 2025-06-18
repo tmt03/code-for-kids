@@ -149,12 +149,12 @@ const increaseRatingPoint = async (userId: string, points: number) => {
     );
 };
 
-const saveRegisterOTP = async(email: string, otp: string, expires: number) => {
+const saveRegisterOTP = async (email: string, otp: string, expires: number) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
     .updateOne(
       { email },
-      { $set: { registerOTP: otp, registerOTPExpires: expires } },
+      { $set: { registerOTP: otp, registerOTPExpires: expires } }
     );
 };
 
@@ -164,7 +164,7 @@ const getRegisterOTP = async (email: string) => {
     .findOne(
       { email },
       { projection: { registerOTP: 1, registerOTPExpires: 1 } }
-    ); 
+    );
 };
 
 const clearRegisterOTP = async (email: string) => {
@@ -183,6 +183,7 @@ const verifyUser = async (email: string) => {
       { email },
       { $set: { isVerified: true, updated_at: new Date() } }
     );
+};
 
 // Thêm các function mới cho trial mode
 const activateUser = async (username: string) => {

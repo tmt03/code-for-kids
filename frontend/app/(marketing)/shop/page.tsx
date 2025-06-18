@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import axiosInstance from "@/lib/utils/axiosInstance";
-import { useAuth } from "@/hooks/useAuth";
 import OrderPopup from "@/components/shop/GuestOrderPopup";
-import { Product } from "../../../types/product";
+import { useAuth } from "@/hooks/useAuth";
+import axiosInstance from "@/lib/utils/axiosInstance";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Product } from "../../../types/product";
 
 export default function ShopPage() {
   const { user } = useAuth();
@@ -113,39 +113,14 @@ export default function ShopPage() {
         ))}
       </div>
 
-      {
-        selectedProduct && (
-          <OrderPopup
-            open={isPopupOpen}
-            onClose={() => setIsPopupOpen(false)}
-            product={selectedProduct}
-            onSubmit={handleSubmitGuestOrder}
-          />
-        )
-      }
-    </div >
+      {selectedProduct && (
+        <OrderPopup
+          open={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          product={selectedProduct}
+          onSubmit={handleSubmitGuestOrder}
+        />
+      )}
+    </div>
   );
-  {
-    !user && selectedProduct && (
-      <OrderPopup
-        open={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-        product={selectedProduct}
-      />
-    )
-  }
-  {
-    !user && !selectedProduct && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
-          <h2 className="text-xl font-bold mb-4">Vui lòng đăng nhập để mua hàng</h2>
-          <button
-            onClick={() => window.location.href = "/login"}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Đăng nhập
-          </button>
-        </div>
-      </div>
-    )
-  }
+}
