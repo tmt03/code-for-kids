@@ -18,7 +18,7 @@ A project with a **Node.js** backend and a **Next.js** frontend.
       npm install
       npm run dev
    ```
-   The frontend on http://localhost:5000.
+   The backtend on http://localhost:5000.
 
 ### Frontend
 
