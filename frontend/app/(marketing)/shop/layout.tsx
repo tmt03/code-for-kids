@@ -31,7 +31,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
 
             {/* ✅ Lịch sử đơn hàng chỉ hiển thị nếu user đã đăng nhập */}
             {user?.role === "user" && (
-              <Link href="/shop/history" className="text-blue-700 font-medium hover:underline">
+              <Link href="/shop/orders/history" className="text-blue-700 font-medium hover:underline">
                 📜 Lịch sử đơn hàng
               </Link>
             )}

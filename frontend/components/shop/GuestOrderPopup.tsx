@@ -1,4 +1,4 @@
-//componets/shop/GuestOrderPopup.tsx
+// components/shop/GuestOrderPopup.tsx
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +9,7 @@ import axiosInstance from '@/lib/utils/axiosInstance';
 interface GuestOrderPopupProps {
   open: boolean;
   onClose: () => void;
-  product: Product;
+  product: Product | null;
   onSubmit?: (data: {
     role: string;
     products: Array<{
@@ -30,7 +30,12 @@ interface GuestOrderPopupProps {
   }) => void;
 }
 
-export default function GuestOrderPopup({ open, onClose, product, onSubmit }: GuestOrderPopupProps) {
+export default function GuestOrderPopup({
+  open,
+  onClose,
+  product,
+  onSubmit,
+}: GuestOrderPopupProps) {
   const [quantity, setQuantity] = useState(1);
   const [buyer, setBuyer] = useState({
     name: '',
@@ -40,17 +45,27 @@ export default function GuestOrderPopup({ open, onClose, product, onSubmit }: Gu
     note: '',
   });
 
+  if (!open || !product) return null;
+
   const shippingFee = 20000;
-  const productTotal = product.pprice * quantity;
+  const productTotal =
+    typeof product.pprice === 'number' ? product.pprice * quantity : 0;
   const grandTotal = productTotal + shippingFee;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setBuyer({ ...buyer, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
     if (!buyer.name || !buyer.phone || !buyer.email || !buyer.address) {
-      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
+      toast.error('Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    if (typeof product.pprice !== 'number') {
+      toast.error('Sản phẩm không hợp lệ');
       return;
     }
 
@@ -66,7 +81,7 @@ export default function GuestOrderPopup({ open, onClose, product, onSubmit }: Gu
       ],
       total: grandTotal,
       buyer,
-      createdBy: "guest",
+      createdBy: 'guest',
     };
 
     try {
@@ -79,8 +94,6 @@ export default function GuestOrderPopup({ open, onClose, product, onSubmit }: Gu
       console.error(err);
     }
   };
-
-  if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -153,9 +166,18 @@ export default function GuestOrderPopup({ open, onClose, product, onSubmit }: Gu
         </div>
 
         <div className="bg-gray-100 p-3 rounded mb-4">
-          <p>🧾 <strong>Tiền hàng:</strong> {productTotal.toLocaleString('vi-VN')}₫</p>
-          <p>🚚 <strong>Phí ship:</strong> {shippingFee.toLocaleString('vi-VN')}₫</p>
-          <p className="text-xl font-bold mt-2">💵 Tổng thanh toán: {grandTotal.toLocaleString('vi-VN')}₫</p>
+          <p>
+            🧾 <strong>Tiền hàng:</strong>{' '}
+            {productTotal.toLocaleString('vi-VN')}₫
+          </p>
+          <p>
+            🚚 <strong>Phí ship:</strong>{' '}
+            {shippingFee.toLocaleString('vi-VN')}₫
+          </p>
+          <p>
+            💰 <strong>Tổng thanh toán:</strong>{' '}
+            {grandTotal.toLocaleString('vi-VN')}₫
+          </p>
         </div>
 
         <div className="flex justify-end gap-2">
