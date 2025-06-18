@@ -14,6 +14,7 @@ import { use, useEffect, useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
+import { useTrial } from '@/hooks/useTrial';
 
 
 interface Quest {
@@ -48,6 +49,9 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const { questId } = use(params);
     const { setProgressSummary } = useProgress();
     const { user } = useAuth();
+    const { canSubmitCode, canSaveGame, isTrialMode } = useTrial();
+    // Ẩn nút lưu game nếu là trial
+    const showSaveButton = canSaveGame();
 
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
     const [userCode, setUserCode] = useState("");
@@ -74,20 +78,31 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
         const loadData = async () => {
             try {
+                console.log("=== DEBUG INFO ===");
+                console.log("questId:", questId);
+                console.log("isCreativeMode:", isCreativeMode);
+                console.log("isTrialMode:", isTrialMode);
+                console.log("user trialChapterId:", user?.trialChapterId);
+
+
                 setIsLoading(true);
                 let quest = null;
                 let progress = null;
 
 
-                if (!isCreativeMode) {
-                    // Chế độ học: Tải nhiệm vụ
+                if (isCreativeMode) {
+                    // Chế độ sáng tạo
+                    progress = await fetchLearnProgress();
+                } else if (isTrialMode) {
+                    // Chế độ trial
+                    quest = await fetchQuestDetails(questId);
+                    progress = { totalScore: 0, completedQuests: 0, completedChallenges: 0, trialMode: true };
+                } else {
+                    // Chế độ học thường
                     [quest, progress] = await Promise.all([
                         fetchQuestDetails(questId),
                         fetchLearnProgress(),
                     ]);
-                } else {
-                    // Chế độ sáng tạo: Không tải nhiệm vụ, chỉ tải tiến trình
-                    progress = await fetchLearnProgress();
                 }
 
                 if (isMounted) {
@@ -130,6 +145,17 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
     // Nút chạy code
     const handleRun = async () => {
+
+        // Nếu là trial mode và không được phép submit code
+        if (isTrialMode && !canSubmitCode(questId)) {
+            setHintMessage({
+                error: "Chế độ thử nghiệm",
+                smartHints: "Chỉ có thể học chapter thử nghiệm. Nâng cấp tài khoản để mở khóa tất cả!"
+            });
+            setShowHint(true);
+            return;
+        }
+
         if (isCreativeMode) {
             console.log(userCode)
             setHintMessage({ smartHints: "Chế độ sáng tạo: Code được chạy trực tiếp trên canvas!" });
@@ -368,6 +394,9 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         );
     }
 
+    console.log("===========1")
+    console.log(selectedQuest)
+    console.log(isCreativeMode)
     // Nếu không tìm thấy quest (chỉ ở chế độ học)
     if (!isCreativeMode && !selectedQuest) {
         return (
@@ -436,10 +465,12 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                         <RefreshCwIcon className="w-4 h-4" />
                         Làm lại
                     </Button>
-                    <Button onClick={() => setIsSavePopupOpen(true)} variant="pixelYellow" size="lg">
-                        <SaveIcon className="w-4 h-4" />
-                        Lưu game
-                    </Button>
+                    {showSaveButton && (
+                        <Button onClick={() => setIsSavePopupOpen(true)} variant="pixelYellow" size="lg">
+                            <SaveIcon className="w-4 h-4" />
+                            Lưu game
+                        </Button>
+                    )}
                 </div>
             </div>
             {/* Popup lưu game */}

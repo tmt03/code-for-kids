@@ -4,19 +4,23 @@ import { fetchInitUserProgress } from "@/apis";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTrial } from "@/hooks/useTrial";
 
 export default function CourseCard() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const { isTrialMode } = useTrial();
 
     const handleButtonClick = async () => {
         setIsLoading(true);
         try {
-            const progress = await fetchInitUserProgress(); // Gọi API
-            console.log("Progress initialized:", progress);
-            router.push(`/learn/chapters`);
+            if (isTrialMode) {
+                router.push("/learn/chapters");
+            } else {
+                const progress = await fetchInitUserProgress();
+                router.push(`/learn/chapters`);
+            }
         } catch (error: any) {
-            console.error("Error initializing progress:", error);
             setIsLoading(false);
         }
     };

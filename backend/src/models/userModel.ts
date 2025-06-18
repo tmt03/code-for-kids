@@ -25,6 +25,11 @@ const createNew = async (data: any) => {
     isVerified: false,
     registerOTP: null,
     registerOTPExpires: null,
+
+    //TRIAL MODE FIELDS
+    isActivated: false,
+    trialChapterId: "C00",
+    trialExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   };
 
   const result = await GET_DB()
@@ -58,7 +63,7 @@ const findByEmail = async (email: string) => {
     return user;
   } catch (error) {
     throw Error(error as string);
-  };
+  }
 };
 
 // Cập nhật refreshToken
@@ -71,28 +76,22 @@ const updateRefreshToken = async (username: string, refreshToken: string) => {
 const updateAvatar = async (username: string, avatarUrl: string) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .updateOne(
-      { username },
-      { $set: { avatarUrl, updated_at: new Date() } }
-    );
+    .updateOne({ username }, { $set: { avatarUrl, updated_at: new Date() } });
 };
 
 const updateBanner = async (username: string, bannerUrl: string) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .updateOne(
-      { username },
-      { $set: { bannerUrl, updated_at: new Date() } }
-    );
+    .updateOne({ username }, { $set: { bannerUrl, updated_at: new Date() } });
 };
 
-const updateProfile = async (username: string, data: { displayName?: string; bio?: string }) => {
+const updateProfile = async (
+  username: string,
+  data: { displayName?: string; bio?: string }
+) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .updateOne(
-      { username },
-      { $set: { ...data, updated_at: new Date() } }
-    );
+    .updateOne({ username }, { $set: { ...data, updated_at: new Date() } });
 };
 
 const changePassword = async (username: string, newPassword: string) => {
@@ -109,7 +108,13 @@ const getLeaderboard = async () => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
     .find({ _destroy: false })
-    .project({ username: 1, displayName: 1, avatarUrl: 1, ratingPoints: 1, _id: 0 })
+    .project({
+      username: 1,
+      displayName: 1,
+      avatarUrl: 1,
+      ratingPoints: 1,
+      _id: 0,
+    })
     .sort({ ratingPoints: -1 }) // Sắp xếp giảm dần theo điểm
     .toArray();
 };
@@ -117,27 +122,22 @@ const getLeaderboard = async () => {
 const saveOTP = async (username: string, otp: string, expires: number) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .updateOne({ username },
-        { $set: { resetOTP: otp, resetOTPExpires: expires } }
+    .updateOne(
+      { username },
+      { $set: { resetOTP: otp, resetOTPExpires: expires } }
     );
 };
 
 const getOTP = async (username: string) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .findOne(
-        { username },
-        { projection: { resetOTP: 1, resetOTPExpires: 1 } }
-    );
+    .findOne({ username }, { projection: { resetOTP: 1, resetOTPExpires: 1 } });
 };
 
 const clearOTP = async (username: string) => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .updateOne(
-        { username },
-        { $unset: { resetOTP: "", resetOTPExpires: "" } }
-        );
+    .updateOne({ username }, { $unset: { resetOTP: "", resetOTPExpires: "" } });
 };
 
 const increaseRatingPoint = async (userId: string, points: number) => {
@@ -183,6 +183,49 @@ const verifyUser = async (email: string) => {
       { email },
       { $set: { isVerified: true, updated_at: new Date() } }
     );
+
+// Thêm các function mới cho trial mode
+const activateUser = async (username: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { username },
+      {
+        $set: {
+          isActivated: true,
+          updated_at: new Date(),
+        },
+        $unset: {
+          trialExpiresAt: "",
+        },
+      }
+    );
+};
+
+const updateTrialChapter = async (username: string, chapterId: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { username },
+      { $set: { trialChapterId: chapterId, updated_at: new Date() } }
+    );
+};
+
+const getTrialUsers = async () => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .find({
+      isActivated: false,
+      _destroy: false,
+    })
+    .project({
+      username: 1,
+      displayName: 1,
+      created_at: 1,
+      trialExpiresAt: 1,
+      trialChapterId: 1,
+    })
+    .toArray();
 };
 
 export const userModel = {
@@ -203,4 +246,7 @@ export const userModel = {
   getRegisterOTP,
   clearRegisterOTP,
   verifyUser,
+  activateUser,
+  updateTrialChapter,
+  getTrialUsers,
 };

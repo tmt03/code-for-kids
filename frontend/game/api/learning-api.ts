@@ -804,7 +804,7 @@ export function createStudentAPI(
       const fireball = scene.physics.add
         .sprite(shooter.x, shooter.y, "fireball_anim")
         .play("fireball")
-        .setScale(3)
+        .setScale(1.5)
         .setAngle(direction < 0 ? 180 : 0)
         .setVelocityX(direction * speed)
         .setGravity(0, 0);
@@ -813,9 +813,20 @@ export function createStudentAPI(
       // const travelTime = (range / speed) * 1000;
       scene.time.delayedCall(range, () => fireball.destroy());
 
+      // Lấy danh sách mục tiêu hợp lệ từ sandbox (nhân vật, không phải kỹ năng hay platforms)
+      const validTargets = Object.values(sandbox).filter(
+        (obj) =>
+          obj instanceof Phaser.GameObjects.Sprite &&
+          obj !== shooter &&
+          obj !== fireball &&
+          !sandbox.platforms.getChildren().includes(obj)
+      );
+
+      //Thiết lập kiểm tra va chạm (overlap) giữa fireball và tất cả đối tượng trong scene
       scene.physics.add.overlap(
         fireball,
-        scene.children.list,
+        // scene.children.list,
+        validTargets,
         (skillObj, targetObj) => {
           const target = targetObj as Phaser.GameObjects.Sprite;
           if (target === shooter || target === fireball) return;
@@ -846,14 +857,25 @@ export function createStudentAPI(
       poison.setOrigin(0.5, 1);
       poison.y = shooter.getBottomCenter().y;
 
-      // Gây sát thương liên tục khi có đối tượng chạm vào
+      // Tạo timer gây sát thương định kỳ
       const interval = scene.time.addEvent({
         delay: 500, // Gây sát thương mỗi 0.5s
         loop: true,
         callback: () => {
+          // Lấy danh sách mục tiêu hợp lệ từ sandbox
+          const validTargets = Object.values(sandbox).filter(
+            (obj) =>
+              obj instanceof Phaser.GameObjects.Sprite &&
+              obj !== shooter &&
+              obj !== poison &&
+              !sandbox.platforms.getChildren().includes(obj)
+          );
+
+          // Kiểm tra va chạm với các mục tiêu hợp lệ
           scene.physics.overlap(
             poison,
-            scene.children.list,
+            // scene.children.list,
+            validTargets,
             (poisonObj, targetObj) => {
               const target = targetObj as Phaser.GameObjects.Sprite;
 
@@ -861,7 +883,7 @@ export function createStudentAPI(
               if (!body || !body.enable) return;
               if (target === shooter || target === poison) return;
 
-              // Gọi applyDamage nếu mục tiêu còn sống
+              // Kiểm tra mục tiêu còn sống
               const targetName = Object.keys(sandbox).find(
                 (k) => sandbox[k] === target
               );
@@ -873,6 +895,7 @@ export function createStudentAPI(
         },
       });
 
+      // Phá hủy poison sau duration
       scene.time.delayedCall(3000, () => {
         poison.destroy();
         interval.remove();
@@ -967,12 +990,11 @@ export function createStudentAPI(
         return;
       }
 
+      // Tính tọa độ y cách đáy shooter 20px
+      const startY = shooter.getBottomCenter().y - 40;
+
       // Tạo sprite lazer
-      const lazer = scene.physics.add.sprite(
-        shooter.x,
-        shooter.y,
-        "lazer_anim"
-      );
+      const lazer = scene.physics.add.sprite(shooter.x, startY, "lazer_anim");
 
       lazer.play("lazer");
       lazer.body.allowGravity = false;
@@ -983,12 +1005,23 @@ export function createStudentAPI(
       // Đặt lại origin để gốc luôn ở gần shooter
       if (direction > 0) {
         lazer.setOrigin(0, 0.5); // Gốc trái
-        lazer.x = shooter.x + 30; // Gần mặt phải
+        lazer.x = shooter.x + 20; // Gần mặt phải
       } else {
         lazer.setOrigin(1, 0.5); // Gốc phải
-        lazer.x = shooter.x - 30; // Gần mặt trái
+        lazer.x = shooter.x - 20; // Gần mặt trái
         lazer.setFlipX(true); // Lật nếu cần
       }
+
+      lazer.body.setSize(lazer.width, lazer.height - 30);
+
+      // Lấy danh sách mục tiêu hợp lệ từ sandbox
+      const validTargets = Object.values(sandbox).filter(
+        (obj) =>
+          obj instanceof Phaser.GameObjects.Sprite &&
+          obj !== shooter &&
+          obj !== lazer &&
+          !sandbox.platforms.getChildren().includes(obj)
+      );
 
       // Biến mất sau 3s
       scene.time.delayedCall(800, () => {
@@ -998,7 +1031,8 @@ export function createStudentAPI(
       // Gây sát thương khi chạm
       scene.physics.add.overlap(
         lazer,
-        scene.children.list,
+        // scene.children.list,
+        validTargets,
         (lazerObj, targetObj) => {
           const target = targetObj as Phaser.GameObjects.Sprite;
           if (
@@ -1030,8 +1064,11 @@ export function createStudentAPI(
     const projectileRange = 1000;
     const damage = baseDamage;
 
+    // Tính tọa độ y cách đáy shooter 30px
+    const startY = shooter.getBottomCenter().y - 30;
+
     const projectile = scene.physics.add
-      .sprite(shooter.x + (direction > 0 ? 10 : -10), shooter.y, projectileType)
+      .sprite(shooter.x + (direction > 0 ? 10 : -10), startY, projectileType)
       .setScale(0.1)
       .setVelocityX(direction * projectileSpeed)
       .setGravity(0, 0)
@@ -1043,9 +1080,20 @@ export function createStudentAPI(
       projectile.destroy()
     );
 
+    // Lấy danh sách mục tiêu hợp lệ từ sandbox
+    const validTargets = Object.values(sandbox).filter(
+      (obj) =>
+        obj instanceof Phaser.GameObjects.Sprite &&
+        obj !== shooter &&
+        obj !== projectile &&
+        !sandbox.platforms.getChildren().includes(obj)
+    );
+
+    // Kiểm tra va chạm với các mục tiêu hợp lệ
     scene.physics.add.overlap(
       projectile,
-      scene.children.list,
+      // scene.children.list,
+      validTargets,
       (proj, targetObj) => {
         const target = targetObj as Phaser.GameObjects.Sprite;
         if (target === shooter || target === proj) return;

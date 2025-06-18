@@ -5,10 +5,7 @@ import { userModel } from "../models/userModel";
 const seedUsers = async () => {
   await CONNECT_DB();
 
-  const users = [
-    { username: "student001", password: "123", role: "user" },
-    { username: "student002", password: "123", role: "user" },
-  ];
+  const users = [{ username: "student002", password: "123", role: "user" }];
 
   for (const user of users) {
     const exists = await userModel.findByUsername(user.username);

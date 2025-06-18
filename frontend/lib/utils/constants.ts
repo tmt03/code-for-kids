@@ -73,6 +73,10 @@ export const SPRITES = [
   "trauvang",
   "quylua",
   "quycay",
+  "laco_1",
+  "laudai_1",
+  "cay_1",
+  "cay_2",
 ] as const;
 
 // Danh sách background
@@ -99,21 +103,7 @@ export const BACKGROUNDS = [
 ] as const;
 
 // Danh sách sàn
-export const FLOORS = [
-  "nendat_1",
-  "nendat_2",
-  "nendat_3",
-  "laco_1",
-  "laudai_1",
-  "cay_1",
-  "cay_2",
-  "cay_3",
-  "cay_4",
-  "cucda_1",
-  "cucda_2",
-  "cucda_3",
-  "cucda_4",
-] as const;
+export const FLOORS = ["nendat_1", "nendat_2", "nendat_3"] as const;
 
 // Danh sách màu
 export const COLORS = [
@@ -192,7 +182,7 @@ export const ALLOWED_KEYS = [
 export const COMMANDS = [
   {
     name: "setBackground",
-    syntax: 'setBackground("Cảnh nền");',
+    syntax: 'setBackground("Cảnh_nền");',
   },
   {
     name: "setFloor",
@@ -200,59 +190,62 @@ export const COMMANDS = [
   },
   {
     name: "setColor",
-    syntax: 'setColor("Tên", "màu");',
+    syntax: 'setColor("mã_bí_mật", "màu");',
   },
   {
     name: "spawn",
-    syntax: 'spawn("Nhân_vật", x, y, { animation: "hoạt_ảnh" }, "tên");',
+    syntax: 'spawn("Nhân_vật", x, y, { animation: "hoạt_ảnh" }, "mã_bí_mật");',
   },
   {
     name: "spawnRandom",
-    syntax: 'spawnRandom("Nhân_vật", x_min, x_max, y, "tên", thời_gian);',
+    syntax: 'spawnRandom("Nhân_vật", x_min, x_max, y, "mã_bí_mật", thời_gian);',
   },
   {
     name: "setName",
-    syntax: 'setName("Tên", "biệt_danh");',
+    syntax: 'setName("mã_bí_mật", "biệt_danh");',
   },
   {
     name: "scale",
-    syntax: 'scale("Tên", tỉ_lệ);',
+    syntax: 'scale("mã_bí_mật", tỉ_lệ);',
   },
   {
     name: "move",
-    syntax: 'move("Tên", x, y);',
+    syntax: 'move("mã_bí_mật", x, y);',
   },
   {
     name: "moveRandom",
-    syntax: 'moveRandom("Tên", x_min, x_max, thời_gian);',
+    syntax: 'moveRandom("mã_bí_mật", x_min, x_max, tốc_độ);',
   },
   {
     name: "onKey",
-    syntax: 'onKey("phím", { animation: "hoạt_ảnh" }, "tên", x, y);',
+    syntax: 'onKey("phím", { animation: "hoạt_ảnh" }, "mã_bí_mật", x, y);',
   },
   {
     name: "onAttack",
-    syntax: 'onAttack("phím", { animation: "hoạt_ảnh" }, "vũ_khí", "tên");',
+    syntax:
+      'onAttack("phím", { animation: "hoạt_ảnh" }, "vũ_khí", "mã_bí_mật");',
   },
   {
     name: "interact",
-    syntax: 'interact("tên_1", "tên_2", "hành_động", "thuộc_tính", giá_trị);',
+    syntax:
+      'interact("mã_bí_mật_1", "mã_bí_mật_2", "hành_động", "thuộc_tính", giá_trị);',
   },
   {
     name: "autoAttack",
-    syntax: 'autoAttack("tên", tầm_đánh, "kĩ_năng", sát_thương, hồi_chiêu);',
+    syntax:
+      'autoAttack("mã_bí_mật", tầm_đánh, "kĩ_năng", sát_thương, hồi_chiêu);',
   },
   {
     name: "when",
-    syntax: 'when("thuộc_tính:tên >= số", "end", "kết_quả");',
+    syntax: 'when("thuộc_tính:mã_bí_mật >= số", "end", "kết_quả");',
   },
   {
     name: "setHealth",
-    syntax: 'setHealth("Tên", máu);',
+    syntax: 'setHealth("mã_bí_mật", máu);',
   },
   {
     name: "setPower",
-    syntax: 'setPower("tên", sức_mạnh);',
+    syntax: 'setPower("mã_bí_mật", sức_mạnh);',
   },
   {
     name: "setTimer",
