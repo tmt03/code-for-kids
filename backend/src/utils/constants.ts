@@ -1,5 +1,11 @@
 export const WHITELIST_DOMAINS = ["http://localhost:3000"];
 
+// export const WHITELIST_DOMAINS = [
+//   "http://localhost:3000",
+//   "https://your-frontend-domain.com",
+//   "https://www.your-frontend-domain.com"
+// ];
+
 export const API_PARAM_COUNTS: { [key: string]: number } = {
   setBackground: 1,
   setFloor: 3,

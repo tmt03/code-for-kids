@@ -337,7 +337,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 throw new Error("Không thể lấy thông tin game sau khi lưu");
             }
 
-            const shareUrl = `http://localhost:3000/play/shared-game/${data.slug}`;
+            const shareUrl = `${window.location.origin}/play/shared-game/${data.slug}`;
             setShareLink(shareUrl);
             setHintMessage({ smartHints: "Game đã được lưu thành công! Chia sẻ link với bạn bè nhé!" });
             setShowHint(true);
@@ -394,9 +394,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         );
     }
 
-    console.log("===========1")
-    console.log(selectedQuest)
-    console.log(isCreativeMode)
     // Nếu không tìm thấy quest (chỉ ở chế độ học)
     if (!isCreativeMode && !selectedQuest) {
         return (
