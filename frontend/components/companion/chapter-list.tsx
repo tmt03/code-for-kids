@@ -3,7 +3,8 @@
 import { useProgress } from "@/hooks/useProgress";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ChapterQuestPopup from "./quest-popup"; // <- Import component mới
+import ChapterStory from "../chapter-story";
+import ChapterQuestPopup from "./quest-popup";
 
 type Quest = {
     id: string;
@@ -24,6 +25,10 @@ type Chapter = {
     imageUrl: string;
     isSpecial: boolean;
     quests: Quest[];
+    story?: {
+        text: string[];
+        audioUrl?: string;
+    };
 };
 
 type Props = {
@@ -33,6 +38,7 @@ type Props = {
 export default function ChapterList({ chapters }: Props) {
     const { progressSummary } = useProgress();
     const [selectedChapterForPopup, setSelectedChapterForPopup] = useState<Chapter | null>(null);
+    const [selectedChapterForStory, setSelectedChapterForStory] = useState<Chapter | null>(null);
     const router = useRouter();
 
     const chapterStatus = progressSummary.badgeChapters
@@ -41,7 +47,19 @@ export default function ChapterList({ chapters }: Props) {
         if ((e.target as HTMLElement).closest("button")) {
             return;
         }
-        setSelectedChapterForPopup(chapter);
+        // Kiểm tra nếu chưa xem câu chuyện
+        const hasSeenStory = localStorage.getItem(`seenStory_${chapter.id}`);
+        if (!hasSeenStory && chapter.story) {
+            setSelectedChapterForStory(chapter);
+        } else {
+            setSelectedChapterForPopup(chapter);
+        }
+    };
+
+    const closeStory = () => {
+        setSelectedChapterForStory(null);
+        // Sau khi xem xong câu chuyện, mở popup
+        setSelectedChapterForPopup(selectedChapterForStory);
     };
 
     // Hàm đóng popup giờ đơn giản chỉ là set state về null
@@ -98,9 +116,9 @@ export default function ChapterList({ chapters }: Props) {
                     </div>
                 ))}
             </div>
-
-            {/* Sử dụng component Popup mới */}
-            {/* Component này chỉ render khi selectedChapterForPopup có giá trị */}
+            {/* Hiển thị ChapterStory trước */}
+            <ChapterStory chapter={selectedChapterForStory} onClose={closeStory} />
+            {/* Hiển thị ChapterQuestPopup sau khi câu chuyện kết thúc */}
             <ChapterQuestPopup chapter={selectedChapterForPopup} onClose={closePopup} />
         </div>
     );

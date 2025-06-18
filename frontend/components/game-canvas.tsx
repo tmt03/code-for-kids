@@ -55,7 +55,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
         physics: {
           default: "arcade",
           arcade: {
-            debug: true,
+            debug: false,
           },
         },
         scene: new Game_Scene(quest),

@@ -49,24 +49,6 @@ const InteractionBox: React.FC<InteractionBoxProps> = ({
                 }
             />
             <ChatBubble error={displayMessage.error} smartHints={displayMessage.smartHints} />
-            {/* <div className="flex flex-col ml-2">
-                {onClose && (
-                    <button
-                        className="text-gray-500 hover:text-gray-700 mb-1"
-                        onClick={onClose}
-                    >
-                        ×
-                    </button>
-                )}
-                {onHelp && (
-                    <button
-                        className="text-blue-500 hover:text-blue-700 text-sm"
-                        onClick={onHelp}
-                    >
-                        Xem thêm gợi ý
-                    </button>
-                )}
-            </div> */}
         </div>
     );
 };

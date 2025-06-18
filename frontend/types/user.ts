@@ -1,11 +1,23 @@
+// frontend/types/user.ts - cập nhật User interface
 export interface User {
   userId: string;
   username: string;
+  role: string;
   displayName: string;
   avatarUrl: string;
   bannerUrl: string;
   bio: string;
-  role: "admin" | "user";
+  email: string;
   ratingPoints: number;
-  // Thêm các trường khác nếu cần
+  // TRIAL MODE FIELDS
+  isActivated: boolean;
+  trialChapterId: string;
+  trialExpiresAt: string | null;
+  trialInfo: TrialInfo | null;
+}
+
+export interface TrialInfo {
+  isExpired: boolean;
+  daysLeft: number;
+  allowedChapter: string;
 }

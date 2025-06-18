@@ -1,7 +1,7 @@
 "use client";
 
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { User } from "@/types/user";
+import { TrialInfo, User } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useState } from "react";
 
@@ -14,9 +14,9 @@ export interface AuthContextType {
     logout: () => Promise<void>;
     clearError: () => void;
     refreshUser: () => Promise<void>;
+    isTrialMode: boolean;
+    trialInfo: TrialInfo | null;
 }
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -76,37 +76,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const logout = async () => {
         try {
-            setIsLoading(true);
             await axiosInstance.post("/v1/auth/logout");
-        } catch (err) {
-            console.error("Logout error:", err);
+        } catch (error) {
+            console.error("Logout error:", error);
         } finally {
             localStorage.removeItem("accessToken");
-            setAccessToken(null);
             setUser(null);
-            setIsLoading(false);
+            setAccessToken(null);
             router.push("/login");
         }
     };
 
     const clearError = () => setError(null);
 
-    const refreshUser = fetchUser;
-
-    const value: AuthContextType = {
-        user,
-        accessToken,
-        isLoading,
-        error,
-        login,
-        logout,
-        clearError,
-        refreshUser, // Cung cấp hàm refreshUser để làm mới thông tin người dùng
+    const refreshUser = async () => {
+        await fetchUser();
     };
 
+    // TRIAL MODE COMPUTED VALUES
+    const isTrialMode = !user?.isActivated;
+    const trialInfo = user?.trialInfo || null;
+
     return (
-        <AuthContext.Provider value={value}>
+        <AuthContext.Provider
+            value={{
+                user,
+                accessToken,
+                isLoading,
+                error,
+                login,
+                logout,
+                clearError,
+                refreshUser,
+                isTrialMode,
+                trialInfo,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
 }
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export { AuthContext };
+

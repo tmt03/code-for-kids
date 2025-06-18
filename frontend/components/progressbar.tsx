@@ -75,7 +75,7 @@ export default function ProgressBar({ chapters, percentage }: ProgressBarProps) 
                 style={{ left: knightPosition }}
             >
                 <img
-                    src="/assets/knight-avatar.png"
+                    src="/assets/mascots/pose_kiem.png"
                     alt="Knight"
                     className="w-16 h-20 object-contain"
                     style={{ imageRendering: "pixelated" }}

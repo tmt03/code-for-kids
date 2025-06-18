@@ -16,6 +16,7 @@ import {
     faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { TrialBanner } from "./trial/TrialBanner";
 config.autoAddCss = false;
 
 export default function Header() {
@@ -159,6 +160,7 @@ export default function Header() {
                         </button>
                     </div>
                 </nav>
+                {/* <TrialBanner /> */}
             </header>
 
             {/* Mobile dropdown */}
@@ -248,6 +250,7 @@ export default function Header() {
                     </button>
                 </div>
             )}
+
         </div>
     );
 }

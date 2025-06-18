@@ -13,6 +13,9 @@ const generateAccessToken = (user: any) => {
       avatarUrl: user.avatarUrl,
       bannerUrl: user.bannerUrl,
       bio: user.bio,
+      // TRIAL MODE INFO
+      isActivated: user.isActivated || false,
+      trialChapterId: user.trialChapterId || "C00",
     },
     env.JWT_SECRET_ACCESS_TOKEN,
     { expiresIn: "1h" }
@@ -44,18 +47,13 @@ const login = async (username: string, password: string) => {
   // Lưu refreshToken vào DB
   await userModel.updateRefreshToken(username, refreshToken);
 
+  // Sử dụng getUserInfo để lấy thông tin đầy đủ
+  const userInfo = await getUserInfo(username);
+
   return {
     accessToken,
     refreshToken,
-    user: {
-      userId: user._id.toString(),
-      username: user.username,
-      role: user.role,
-      displayName: user.displayName,
-      avatarUrl: user.avatarUrl,
-      bannerUrl: user.bannerUrl,
-      bio: user.bio,
-    },
+    user: userInfo,
   };
 };
 
@@ -86,6 +84,17 @@ const logout = async (username: string) => {
 const getUserInfo = async (username: string) => {
   const user = await userModel.findByUsername(username);
   if (!user) return null;
+
+  // Tính toán trial info
+  const isExpired = user.trialExpiresAt
+    ? new Date() > user.trialExpiresAt
+    : false;
+  const daysLeft = user.trialExpiresAt
+    ? Math.ceil(
+        (user.trialExpiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+      )
+    : 0;
+
   // Trả về thông tin an toàn, không trả password
   return {
     userId: user._id,
@@ -97,6 +106,17 @@ const getUserInfo = async (username: string) => {
     bio: user.bio,
     email: user.email,
     ratingPoints: user.ratingPoints,
+    // TRIAL MODE INFO
+    isActivated: user.isActivated || false,
+    trialChapterId: user.trialChapterId || "C00",
+    trialExpiresAt: user.trialExpiresAt,
+    trialInfo: user.isActivated
+      ? null
+      : {
+          isExpired,
+          daysLeft: Math.max(0, daysLeft),
+          allowedChapter: user.trialChapterId || "C00",
+        },
   };
 };
 
