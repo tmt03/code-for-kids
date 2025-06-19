@@ -7,7 +7,7 @@
     "production": "cross-env BUILD_MODE=production node dist/server.js",
     "dev": "cross-env BUILD_MODE=dev nodemon",
     "build": "npm run clean && tsc",
-    "clean": "rimraf dist && mkdirp dist",
+    "clean": "rm -rf dist && mkdir -p dist",
     "watch": "tsc -w",
     "seed": "ts-node src/seed/seed.ts",
     "seed:users": "ts-node src/seed/seedUsers.ts"
