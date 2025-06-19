@@ -1,7 +1,12 @@
-export const API_ROOT =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+let apiRoot = "";
+if (process.env.BUILD_MODE === "dev") {
+  apiRoot = "http://localhost:5000";
+}
 
-// export const API_ROOT = "http://localhost:5000";
+if (process.env.BUILD_MODE === "production") {
+  apiRoot = "https://code-for-kids.onrender.com";
+}
+export const API_ROOT = apiRoot;
 
 // Danh sách các lệnh hợp lệ trong game
 export const VALID_GAME_COMMANDS = [

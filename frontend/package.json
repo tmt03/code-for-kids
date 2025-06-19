@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "cross-env BUILD_MODE=dev next dev --turbopack",
+    "build": "cross-env BUILD_MODE=production next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "codemirror": "^6.0.1",
+    "cross-env": "^7.0.3",
     "depcheck": "^1.4.7",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.487.0",
