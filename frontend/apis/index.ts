@@ -29,8 +29,6 @@ export const fetchSubmitCode = async (userCode: string, questId: string) => {
 };
 
 export const fetchCheckLogin = async (username: string, password: string) => {
-  console.log("11111");
-  console.log(`${API_ROOT}/v1/auth/login`);
   const res = await axios.post(`${API_ROOT}/v1/auth/login`, {
     username,
     password,
