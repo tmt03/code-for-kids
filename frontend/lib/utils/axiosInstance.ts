@@ -6,6 +6,9 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+console.log("hẹ 1");
+console.log(API_ROOT);
+
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {

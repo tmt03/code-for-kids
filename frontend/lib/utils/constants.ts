@@ -10,7 +10,7 @@ console.log(apiRoot);
 export const API_ROOT = apiRoot;
 
 // export const API_ROOT =
-//   process.env.NEXT_PUBLIC_API_ROOT || "http://localhost:5000";
+// process.env.NEXT_PUBLIC_API_ROOT || "http://localhost:5000";
 
 // Danh sách các lệnh hợp lệ trong game
 export const VALID_GAME_COMMANDS = [
