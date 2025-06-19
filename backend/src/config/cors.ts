@@ -10,8 +10,8 @@ export const corsOptions: CorsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) {
-    // Cho phép gọi API bằng POSTMAN ở môi trường dev
-    if (!origin && env.BUILD_MODE === "dev") {
+    // Cho phép gọi API ở môi trường dev
+    if (env.BUILD_MODE === "dev") {
       return callback(null, true);
     }
 
