@@ -43,9 +43,31 @@ export default function ProductCard({
         setIsPopupOpen(true);
     };
 
-    const handlePopupSubmit = (data: OrderFormData) => {
-        console.log("Dữ liệu đơn hàng:", data);
-        alert("Đơn hàng đã được gửi thành công!");
+    const handlePopupSubmit = () => {
+        if (!id || !name || !price) return;
+        const payload = {
+            role: 'guest',
+            products: [
+                {
+                    pid: id.toString(),
+                    pname: name,
+                    pprice: price,
+                    quantity: 1,
+                },
+            ],
+            total: price,
+            buyer: {
+                name: '',
+                phone: '',
+                email: '',
+                address: '',
+                note: '',
+            },
+            createdBy: 'guest',
+        };
+        // You may want to fill buyer fields from a form if needed
+        console.log('Dữ liệu đơn hàng:', payload);
+        alert('Đơn hàng đã được gửi thành công!');
         setIsPopupOpen(false);
     };
 
@@ -107,13 +129,19 @@ export default function ProductCard({
             </div>
 
             {/* Pop-up đặt hàng */}
-            {isPopupOpen && (
-                <OrderPopup
-                    product={{ id: id || 0, name, price }}
-                    onClose={() => setIsPopupOpen(false)}
-                    onSubmit={handlePopupSubmit}
-                />
-            )}
+            <OrderPopup
+                open={isPopupOpen}
+                product={{
+                    pid: id?.toString() || '',
+                    pname: name,
+                    pimg: image || '',
+                    pdescription: description || '',
+                    pprice: price,
+                    pquantity: quantity
+                }}
+                onClose={() => setIsPopupOpen(false)}
+                onSubmit={handlePopupSubmit}
+            />
         </div>
     );
 }
