@@ -1,4 +1,6 @@
-export const API_ROOT = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+// export const API_ROOT = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+export const API_ROOT = "http://localhost:5000";
 
 // Danh sách các lệnh hợp lệ trong game
 export const VALID_GAME_COMMANDS = [
