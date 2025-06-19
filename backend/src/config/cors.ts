@@ -10,21 +10,27 @@ export const corsOptions: CorsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) {
-    // Cho phép gọi API ở môi trường dev
+    // Cho phép tất cả trong dev (bao gồm POSTMAN hoặc không có origin)
     if (env.BUILD_MODE === "dev") {
       return callback(null, true);
     }
 
-    // Kiểm tra xem origin có nằm trong danh sách whitelist không
+    // Cho phép không có origin trong production (nếu cần, ví dụ: server-to-server)
+    if (!origin && env.BUILD_MODE === "production") {
+      console.log("No origin detected in production, allowing for now"); // Log để debug
+      return callback(null, true); // Hoặc thêm logic kiểm tra khác nếu cần
+    }
+
+    // Kiểm tra origin trong whitelist trong production
     if (origin && WHITELIST_DOMAINS.includes(origin)) {
       return callback(null, true);
     }
 
-    // Nếu domain không được chấp nhận thì trả về lỗi
+    // Trả về lỗi nếu origin không được chấp nhận
     return callback(
       new ApiError(
         StatusCodes.FORBIDDEN,
-        `${origin} not allowed by our CORS Policy.`
+        `${origin || "undefined"} not allowed by our CORS Policy.`
       )
     );
   },

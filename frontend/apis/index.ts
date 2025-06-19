@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { API_ROOT } from "@/lib/utils/constants";
-import { SaveGameRequest, SaveGameResponse } from "@/types/game";
+import { SaveGameRequest } from "@/types/game";
 import axios from "axios";
 
 export const fetchQuestDetails = async (questId: string) => {
@@ -29,6 +29,8 @@ export const fetchSubmitCode = async (userCode: string, questId: string) => {
 };
 
 export const fetchCheckLogin = async (username: string, password: string) => {
+  console.log("11111");
+  console.log(`${API_ROOT}/v1/auth/login`);
   const res = await axios.post(`${API_ROOT}/v1/auth/login`, {
     username,
     password,
@@ -83,9 +85,14 @@ export const fetchLeaderboard = async () => {
 export const forgotPassword = async (email: string) => {
   const res = await axiosInstance.post("/v1/auth/forgot-password", { email });
   return res.data;
-}
+};
 
-export const resetPassword = async (email: string, otp: string, newPassword: string, confirmPassword: string) => {
+export const resetPassword = async (
+  email: string,
+  otp: string,
+  newPassword: string,
+  confirmPassword: string
+) => {
   const res = await axiosInstance.post("/v1/auth/reset-password", {
     email,
     otp,
@@ -93,7 +100,7 @@ export const resetPassword = async (email: string, otp: string, newPassword: str
     confirmPassword,
   });
   return res.data;
-}
+};
 
 export const fetchInitUserProgress = async () => {
   try {
@@ -124,8 +131,16 @@ export const saveUserGame = async (gameData: SaveGameRequest) => {
 };
 
 // Ví dụ: Đăng ký tài khoản
-export const registerUser = async (username: string, email: string, password: string) => {
-  const res = await axiosInstance.post("/v1/auth/register", { username, email, password });
+export const registerUser = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  const res = await axiosInstance.post("/v1/auth/register", {
+    username,
+    email,
+    password,
+  });
   return res.data;
 };
 
@@ -134,5 +149,3 @@ export const verifyEmail = async (email: string, otp: string) => {
   const res = await axiosInstance.post("/v1/auth/verify-email", { email, otp });
   return res.data;
 };
-
-

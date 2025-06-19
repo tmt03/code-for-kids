@@ -6,6 +6,7 @@ if (process.env.BUILD_MODE === "dev") {
 if (process.env.BUILD_MODE === "production") {
   apiRoot = "https://code-for-kids.onrender.com";
 }
+console.log(apiRoot);
 export const API_ROOT = apiRoot;
 
 // Danh sách các lệnh hợp lệ trong game
