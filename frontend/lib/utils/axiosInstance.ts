@@ -3,7 +3,7 @@ import { API_ROOT } from "./constants";
 
 const axiosInstance = axios.create({
   baseURL: API_ROOT,
-  withCredentials: true, // 👈 để gửi kèm cookie
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
