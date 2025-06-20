@@ -32,25 +32,20 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
       const { Game_Scene } = await import("../game/gameScene");
 
       const container = canvasRef.current!;
-      const LOGICAL_WIDTH = 1440;
-      const LOGICAL_HEIGHT = 720;
+      const isHighRes = window.innerWidth >= 2560; // 2K or 4K
+      const LOGICAL_WIDTH = isHighRes ? 1920 : 1440;
+      const LOGICAL_HEIGHT = isHighRes ? 960 : 720;
 
       const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
-        width: LOGICAL_WIDTH,
-        height: LOGICAL_HEIGHT,
-        parent: container as HTMLElement,
+        width: '100%',
+        height: '100%',
+        parent: container,
         scale: {
           mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH,
-          min: {
-            width: 720,
-            height: 360,
-          },
-          max: {
-            width: 2880,
-            height: 1440,
-          },
+          width: LOGICAL_WIDTH,
+          height: LOGICAL_HEIGHT,
         },
         physics: {
           default: "arcade",
@@ -61,21 +56,11 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
         scene: new Game_Scene(quest),
       };
 
-      const game = new Phaser.Game(config);
-      gameRef.current = game;
+      gameRef.current = new Phaser.Game(config);
       isInitializedRef.current = true;
 
-      const resizeObserver = new ResizeObserver(() => {
-        if (gameRef.current) {
-          const newWidth = container.clientWidth;
-          const newHeight = container.clientHeight;
-          game.scale.resize(newWidth, newHeight);
-        }
-      });
-      resizeObserver.observe(container);
-
+      // Không cần ResizeObserver nữa, Phaser sẽ tự xử lý
       return () => {
-        resizeObserver.disconnect();
         if (gameRef.current) {
           gameRef.current.destroy(true);
           gameRef.current = null;
@@ -88,7 +73,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
     return () => {
       initPhaserPromise.then((cleanupFn) => cleanupFn?.());
     };
-  }, [isClient, quest.id, quest.mode]); // Chỉ khởi tạo lại khi id hoặc mode thay đổi
+  }, [isClient, quest.id, quest.mode]);
 
   // Lắng nghe sự kiện reset-canvas
   useEffect(() => {
@@ -134,10 +119,11 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
   return (
     <div
       ref={canvasRef}
-      className="w-full h-full border-2 border-gray-500 bg-white"
+      className="w-full h-full rounded-xl"
       style={{
         borderRadius: "10px",
         overflow: "hidden",
+        aspectRatio: "2/1",
       }}
     />
   );

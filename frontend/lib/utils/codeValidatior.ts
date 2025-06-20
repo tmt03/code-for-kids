@@ -26,6 +26,92 @@ export class FrontendCodeValidator {
     "XMLHttpRequest",
     "eval",
     "Function",
+    "window",
+    "document",
+    "localStorage",
+    "sessionStorage",
+    "process",
+    "global",
+    "import",
+    "require",
+    "globalThis",
+    "parent",
+    "opener",
+    "top",
+    "self",
+    "postMessage",
+    "WebSocket",
+    "Worker",
+    "SharedWorker",
+    "BroadcastChannel",
+    "atob",
+    "btoa",
+    "Blob",
+    "FileReader",
+    "DataView",
+    "ArrayBuffer",
+    "Proxy",
+    "Reflect",
+    "Symbol",
+    "Object.defineProperty",
+    "Object.defineProperties",
+    "Object.create",
+    "Object.setPrototypeOf",
+    "Object.getPrototypeOf",
+    "Object.freeze",
+    "Object.seal",
+    "Object.preventExtensions",
+    "Object.assign",
+    "Object.entries",
+    "Object.values",
+    "Object.keys",
+    "Object.getOwnPropertyNames",
+    "Object.getOwnPropertySymbols",
+    "Object.getOwnPropertyDescriptor",
+    "Object.getOwnPropertyDescriptors",
+    "Object.is",
+    "Object.isExtensible",
+    "Object.isFrozen",
+    "Object.isSealed",
+    "Object.prototype",
+    "Object.constructor",
+    "Function.constructor",
+    "setImmediate",
+    "clearImmediate",
+    "performance",
+    "navigator",
+    "location",
+    "history",
+    "alert",
+    "confirm",
+    "prompt",
+    "open",
+    "close",
+    "print",
+    "stop",
+    "focus",
+    "blur",
+    "scroll",
+    "scrollTo",
+    "scrollBy",
+    "moveTo",
+    "moveBy",
+    "resizeTo",
+    "resizeBy",
+    "screen",
+    "frames",
+    "frameElement",
+    "event",
+    "events",
+    "EventSource",
+    "MutationObserver",
+    "IntersectionObserver",
+    "ResizeObserver",
+    "requestAnimationFrame",
+    "cancelAnimationFrame",
+    "requestIdleCallback",
+    "cancelIdleCallback",
+    "Notification",
   ];
 
   private static readonly HINT_MAP: {
@@ -43,7 +129,8 @@ export class FrontendCodeValidator {
 
   static async validate(
     userCode: string,
-    quest: QuestConfig
+    quest: QuestConfig,
+    mode: "chapter" | "creative" = "chapter"
   ): Promise<CheckResult> {
     const result: CheckResult = { passed: false };
 
@@ -66,31 +153,36 @@ export class FrontendCodeValidator {
       return result;
     }
 
-    // 3. Check xem các lệnh yêu cầu có trong userCode không
-    const userCommands = Array.from(userCode.matchAll(this.API_CALL_REGEX))
-      .map((match) => match[1])
-      .filter((api) => api !== "console");
+    // 3. Check xem các lệnh yêu cầu có trong userCode không (chỉ kiểm tra ở chế độ chapter)
+    if (mode === "chapter") {
+      const userCommands = Array.from(userCode.matchAll(this.API_CALL_REGEX))
+        .map((match) => match[1])
+        .filter((api) => api !== "console");
 
-    // Trích xuất các lệnh từ quest.baseCode
-    const requiredCommands = quest.baseCode
-      ? Array.from(quest.baseCode.matchAll(this.API_CALL_REGEX)).map(
-          (match) => match[1]
-        )
-      : [];
+      // Trích xuất các lệnh từ quest.baseCode
+      const requiredCommands = quest.baseCode
+        ? Array.from(quest.baseCode.matchAll(this.API_CALL_REGEX)).map(
+            (match) => match[1]
+          )
+        : [];
 
-    const missingAPIs = requiredCommands.filter(
-      (api) => !userCommands.includes(api)
-    );
-    if (missingAPIs.length > 0) {
-      const missingCmd = missingAPIs[0];
-      result.error = `Thiếu lệnh ${missingCmd}()`;
-      result.smartHints = (
-        this.HINT_MAP.missingCommand as (cmd: string) => string
-      )(missingCmd);
-      return result;
+      const missingAPIs = requiredCommands.filter(
+        (api) => !userCommands.includes(api)
+      );
+      if (missingAPIs.length > 0) {
+        const missingCmd = missingAPIs[0];
+        result.error = `Thiếu lệnh ${missingCmd}()`;
+        result.smartHints = (
+          this.HINT_MAP.missingCommand as (cmd: string) => string
+        )(missingCmd);
+        return result;
+      }
     }
 
     // 4. Mọi lệnh trong userCode phải là những lệnh của API game
+    const userCommands = Array.from(userCode.matchAll(this.API_CALL_REGEX))
+      .map((match) => match[1])
+      .filter((api) => api !== "console");
     const invalidAPIs = userCommands.filter(
       (api) => !VALID_GAME_COMMANDS.includes(api as string)
     );

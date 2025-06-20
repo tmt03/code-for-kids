@@ -1,6 +1,7 @@
-// export const WHITELIST_DOMAINS = ["http://localhost:3000"];
-
-export const WHITELIST_DOMAINS = ["https://code-for-kids.vercel.app"];
+export const WHITELIST_DOMAINS = [
+  "https://code-for-kids.vercel.app",
+  "http://localhost:3000",
+];
 
 export const API_PARAM_COUNTS: { [key: string]: number } = {
   setBackground: 1,

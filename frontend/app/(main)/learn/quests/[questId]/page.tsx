@@ -71,6 +71,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const [shareLink, setShareLink] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [isCreativeMode, setIsCreativeMode] = useState(questId === "creative");
+    const [isMobile, setIsMobile] = useState(false); // ngăn dùng trang chạy trên ứng dung mobile
 
     // Load quest and progress data
     useEffect(() => {
@@ -78,13 +79,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
         const loadData = async () => {
             try {
-                console.log("=== DEBUG INFO ===");
-                console.log("questId:", questId);
-                console.log("isCreativeMode:", isCreativeMode);
-                console.log("isTrialMode:", isTrialMode);
-                console.log("user trialChapterId:", user?.trialChapterId);
-
-
                 setIsLoading(true);
                 let quest = null;
                 let progress = null;
@@ -143,9 +137,42 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
     }, [showHint]);
 
+    useEffect(() => {
+        // Kiểm tra kích thước màn hình khi component mount
+        const checkIfMobile = () => {
+            setIsMobile(window.innerWidth < 1024 || window.innerHeight < 576);
+        };
+
+        checkIfMobile();
+        window.addEventListener('resize', checkIfMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkIfMobile);
+        };
+    }, []);
+
+    // Nếu là thiết bị di động, hiển thị thông báo
+    if (isMobile) {
+        return (
+            <div className="w-full h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center">
+                <h1 className="text-2xl font-bold text-gray-800 mb-4">Vui lòng sử dụng máy tính hoặc laptop</h1>
+                <p className="text-gray-600">
+                    Ứng dụng học lập trình game này được thiết kế cho máy tính.
+                    Hãy truy cập bằng máy tính hoặc laptop để có trải nghiệm tốt nhất.
+                </p>
+                <Button
+                    variant="pixel"
+                    className="mt-6"
+                    onClick={() => window.location.reload()}
+                >
+                    Tôi đang dùng máy tính, thử lại
+                </Button>
+            </div>
+        );
+    }
+
     // Nút chạy code
     const handleRun = async () => {
-
         // Nếu là trial mode và không được phép submit code
         if (isTrialMode && !canSubmitCode(questId)) {
             setHintMessage({
@@ -157,7 +184,14 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
 
         if (isCreativeMode) {
-            console.log(userCode)
+            // Validate creative mode
+            const feResult = await FrontendCodeValidator.validate(userCode, { baseCode: "" }, "creative");
+            if (!feResult.passed) {
+                speak(`${feResult.error}. ${feResult.smartHints}`);
+                setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
+                setShowHint(true);
+                return;
+            }
             setHintMessage({ smartHints: "Chế độ sáng tạo: Code được chạy trực tiếp trên canvas!" });
             setShowHint(true);
             window.dispatchEvent(
@@ -416,21 +450,25 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
 
     return (
-        <div className="w-full h-full flex flex-col md:flex-row p-1 gap-2 md:gap-4">
-            <div className="w-full md:w-3/5 h-full flex flex-col">
-                <div className="h-1/5">
+        <div className="w-full h-full flex flex-col lg:flex-row p-1 gap-2 lg:gap-4">
+            {/* Bên trái: Thông báo và game canvas */}
+            <div className="w-full lg:w-3/5 h-full flex flex-col">
+                <div className="flex-1 w-full max-h-[114px] min-h-[64px] pb-2">
                     <InteractionBox
                         message={hintMessage || (isCreativeMode ? "Tự do sáng tạo game của bạn!" : "Anh hùng nhỏ cùng học nhé!")}
                         showHint={showHint}
                     />
                 </div>
-                <div className="h-[80%] flex-1 min-h-0 pt-2">
-                    <div className="w-full h-full aspect-[2/1] min-h-[360px] min-w-[720px] max-h-[1440px] max-w-[2880px]">
+
+                {/* Game canvas với container linh hoạt */}
+                <div className="flex-1 min-h-0 p-2 flex items-center justify-center rounded-xl bg-gray-900">
+                    <div className="w-auto max-w-full min-w-[590px] h-full max-h-full min-h-[295px] overflow-hidden">
                         <GameCanvas quest={{ id: questId, mode: isCreativeMode ? "creative" : "learning" }} />
                     </div>
                 </div>
             </div>
-            <div className="w-full md:w-2/5 h-full relative flex flex-col">
+            {/* Bên phải: Code editor */}
+            <div className="w-full lg:w-2/5 h-full relative flex flex-col mt-4 lg:mt-0">
                 {selectedQuest && (
                     <CodeEditor
                         initialValue={isCreativeMode ? CREATIVE_MODE_CODE : selectedQuest?.baseCode}

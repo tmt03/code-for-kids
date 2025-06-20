@@ -150,6 +150,10 @@ export class Game_Scene extends Phaser.Scene {
    */
   private setupResizeListener(): void {
     this.scale.on("resize", (gameSize: Phaser.Structs.Size) => {
+      // Cập nhật ranh giới của camera để khớp với kích thước canvas mới
+      this.cameras.main.setBounds(0, 0, gameSize.width, gameSize.height);
+
+      // Giữ lại logic scale object hiện có của bạn
       this.scaleFactor = Math.min(
         gameSize.width / Game_Scene.LOGICAL_WIDTH,
         gameSize.height / Game_Scene.LOGICAL_HEIGHT
