@@ -12,23 +12,23 @@ export const baseCodeFunctions: Record<
     scene.bg = scene.add
       .image(0, 0, "bautroi_1")
       .setOrigin(0)
-      .setScale(0.55)
+      .setScale(0.85)
       .setTint(0x404040);
   },
   C00_H01: (scene, sandbox) => {
     scene.bg = scene.add
       .image(0, 0, "bautroi_1")
       .setOrigin(0)
-      .setScale(0.55)
+      .setScale(0.85)
       .setTint(0x404040);
   },
 
   C00_H02: (scene, sandbox) => {
-    scene.bg = scene.add.image(0, 0, "bautroi_1").setOrigin(0).setScale(0.55);
+    sandbox.setBackground("bautroi_1");
   },
 
   C01_Q01: (scene, sandbox) => {
-    scene.bg = scene.add.image(0, 0, "bautroi_1").setOrigin(0).setScale(0.6);
+    sandbox.setBackground("bautroi_1");
 
     // Dùng hàm setFloor để tạo floor và tự thêm vào platforms
     sandbox.setFloor("nendat_2", 0, 680);
@@ -37,11 +37,7 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    const laudai = scene.add
-      .image(500, 308, "castle_1")
-      .setOrigin(0.5)
-      .setScale(0.3)
-      .setTint(0x404040);
+    const laudai = sandbox.spawn("laudai_1", 700, 500, {}, "laudai");
 
     sandbox.laudai = laudai;
   },
@@ -67,12 +63,9 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    const castle = scene.add
-      .image(500, 308, "castle_1")
-      .setOrigin(0.5)
-      .setScale(0.3);
+    const laudai = sandbox.spawn("laudai_1", 700, 500, {}, "laudai");
 
-    sandbox.laudai = castle;
+    sandbox.laudai = laudai;
   },
 
   C01_Q04: (scene, sandbox) => {
@@ -107,12 +100,9 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    const castle = scene.add
-      .image(500, 308, "castle_1")
-      .setOrigin(0.5)
-      .setScale(0.3);
+    const laudai = sandbox.spawn("laudai_1", 700, 500, {}, "laudai");
 
-    sandbox.laudai = castle;
+    sandbox.laudai = laudai;
   },
 
   C02_Q03: (scene, sandbox) => {
@@ -147,12 +137,9 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    const flag = scene.add
-      .image(750, 385, "laco_1")
-      .setOrigin(0.5)
-      .setScale(0.3);
+    const co = scene.add.image(1250, 646, "laco_1").setScale(0.3);
 
-    sandbox.co = flag;
+    sandbox.co = co;
   },
 
   C03_Q02: (scene, sandbox) => {
@@ -165,12 +152,9 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 1020, 680);
     sandbox.setFloor("nendat_2", 1360, 680);
 
-    const flag = scene.add
-      .image(150, 385, "laco_1")
-      .setOrigin(0.5)
-      .setScale(0.3);
+    const co = scene.add.image(150, 646, "laco_1").setScale(0.3);
 
-    sandbox.co = flag;
+    sandbox.co = co;
   },
 
   C03_Q03: (scene, sandbox) => {
@@ -185,12 +169,9 @@ export const baseCodeFunctions: Record<
 
     sandbox.setFloor("nendat_2", 0, 480);
     sandbox.setFloor("nendat_2", 340, 480);
-    const flag = scene.add
-      .image(450, 260, "laco_1")
-      .setOrigin(0.5)
-      .setScale(0.3);
+    const co = scene.add.image(650, 446, "laco_1").setScale(0.3);
 
-    sandbox.co = flag;
+    sandbox.co = co;
   },
 
   C03_Q04: (scene, sandbox) => {
@@ -207,12 +188,9 @@ export const baseCodeFunctions: Record<
     sandbox.setFloor("nendat_2", 200, 80);
     sandbox.setFloor("nendat_2", 540, 480);
 
-    const flag = scene.add
-      .image(250, 130, "laco_1")
-      .setOrigin(0.5)
-      .setScale(0.3);
+    const co = scene.add.image(450, 246, "laco_1").setScale(0.3);
 
-    sandbox.co = flag;
+    sandbox.co = co;
   },
 
   C04_Q01: (scene, sandbox) => {
@@ -477,7 +455,7 @@ export const baseCodeFunctions: Record<
 
     sandbox.hero = sandbox.spawn(
       "kiemsi",
-      200,
+      100,
       300,
       { animation: "idle" },
       "hero"
@@ -494,14 +472,14 @@ export const baseCodeFunctions: Record<
     sandbox.boss = sandbox.spawn(
       "boxuong",
       400,
-      20,
+      200,
       { animation: "attack" },
       "boss"
     );
     sandbox.scale("boss", 2);
     sandbox.setHealth("boss", 300);
     sandbox.autoAttack("boss", 400, "fireball", 10, 1000);
-    sandbox.moveRandom("boss", 100, 750, 100);
+    sandbox.moveRandom("boss", 200, 1050, 100);
 
     sandbox.interact("hero", "boss", "lose", "hp", 100);
   },

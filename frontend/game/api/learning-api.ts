@@ -74,7 +74,7 @@ export function createStudentAPI(
     scene.add
       .image(0, 0, bgKey)
       .setOrigin(0)
-      .setScale(scaleFactor * 0.95)
+      .setScale(scaleFactor * 0.85)
       .setDepth(0);
   };
 
@@ -1069,7 +1069,7 @@ export function createStudentAPI(
 
     const projectile = scene.physics.add
       .sprite(shooter.x + (direction > 0 ? 10 : -10), startY, projectileType)
-      .setScale(0.1)
+      .setScale(0.25)
       .setVelocityX(direction * projectileSpeed)
       .setGravity(0, 0)
       .setAngle(direction > 0 ? 45 : 225);
