@@ -6,6 +6,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// Hàm escape ký tự đặc biệt cho username, chỉ cho phép chữ, số, dấu chấm, dấu gạch dưới
+function escapeInput(str: string) {
+  return str.replace(/[^a-zA-Z0-9._]/g, "");
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const { login, isLoading, error, clearError } = useAuth();
@@ -16,8 +21,11 @@ export default function LoginPage() {
     e.preventDefault();
     clearError();
 
+    // Chỉ escape username, không escape password
+    const safeUsername = escapeInput(username);
+
     try {
-      await login(username, password);
+      await login(safeUsername, password);
     } catch (err) {
       // Error đã được xử lý trong AuthProvider
       console.error("Login failed:", err);
@@ -26,7 +34,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#E8F1F2] to-[#D3E0E1]">
-      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 hover:scale-105">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Đăng Nhập</h1>
           <p className="text-sm text-gray-600 mt-2">Chào mừng bạn đến với thế giới học lập trình!</p>
@@ -48,7 +56,7 @@ export default function LoginPage() {
               type="text"
               placeholder="Nhập tên đăng nhập"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(escapeInput(e.target.value))}
               disabled={isLoading}
               className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
             />

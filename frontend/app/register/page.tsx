@@ -4,6 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser, verifyEmail } from "@/apis";
 
+// Escape username: chỉ cho phép chữ, số, dấu chấm, dấu gạch dưới
+function escapeUsername(str: string) {
+  return str.replace(/[^a-zA-Z0-9._]/g, "");
+}
+
+// Escape email: chỉ cho phép ký tự hợp lệ của email
+function escapeEmail(str: string) {
+  // Loại bỏ ký tự không hợp lệ cho email (chỉ giữ lại chữ, số, @, ., _, -, +)
+  return str.replace(/[^a-zA-Z0-9@._\-+]/g, "");
+}
+
+// Escape OTP: chỉ cho phép chữ số
+function escapeOtp(str: string) {
+  return str.replace(/[^0-9]/g, "");
+}
+
 export default function RegisterPage() {
     const [step, setStep] = useState<1 | 2>(1);
     const [username, setUsername] = useState("");
@@ -22,7 +38,11 @@ export default function RegisterPage() {
         setError("");
         setMessage("");
         try {
-            await registerUser(username, email, password);
+            await registerUser(
+                escapeUsername(username),
+                escapeEmail(email),
+                password // Không escape password
+            );
             setMessage("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
             setStep(2);
         } catch (err: any) {
@@ -39,7 +59,7 @@ export default function RegisterPage() {
         setError("");
         setMessage("");
         try {
-            await verifyEmail(email, otp);
+            await verifyEmail(escapeEmail(email), otp);
             setMessage("Xác minh thành công! Đang chuyển hướng...");
             setTimeout(() => router.push("/login"), 1500);
         } catch (err: any) {
@@ -61,9 +81,10 @@ export default function RegisterPage() {
                                 type="text"
                                 className="w-full border rounded px-3 py-2"
                                 value={username}
-                                onChange={e => setUsername(e.target.value)}
+                                onChange={e => setUsername(escapeUsername(e.target.value))}
                                 required
                                 disabled={loading}
+                                placeholder="Chỉ chữ, số, dấu chấm, dấu gạch dưới"
                             />
                         </div>
                         <div>
@@ -72,9 +93,10 @@ export default function RegisterPage() {
                                 type="email"
                                 className="w-full border rounded px-3 py-2"
                                 value={email}
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={e => setEmail(escapeEmail(e.target.value))}
                                 required
                                 disabled={loading}
+                                placeholder="example@email.com"
                             />
                         </div>
                         <div>
@@ -106,9 +128,13 @@ export default function RegisterPage() {
                                 type="text"
                                 className="w-full border rounded px-3 py-2"
                                 value={otp}
-                                onChange={e => setOtp(e.target.value)}
+                                onChange={e => setOtp(escapeOtp(e.target.value))}
                                 required
                                 disabled={loading}
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={6}
+                                placeholder="Nhập mã OTP gồm 6 số"
                             />
                         </div>
                         <button
