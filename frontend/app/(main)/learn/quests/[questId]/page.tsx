@@ -78,13 +78,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
         const loadData = async () => {
             try {
-                console.log("=== DEBUG INFO ===");
-                console.log("questId:", questId);
-                console.log("isCreativeMode:", isCreativeMode);
-                console.log("isTrialMode:", isTrialMode);
-                console.log("user trialChapterId:", user?.trialChapterId);
-
-
                 setIsLoading(true);
                 let quest = null;
                 let progress = null;
@@ -145,7 +138,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
     // Nút chạy code
     const handleRun = async () => {
-
         // Nếu là trial mode và không được phép submit code
         if (isTrialMode && !canSubmitCode(questId)) {
             setHintMessage({
@@ -157,7 +149,14 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
 
         if (isCreativeMode) {
-            console.log(userCode)
+            // Validate creative mode
+            const feResult = await FrontendCodeValidator.validate(userCode, { baseCode: "" }, "creative");
+            if (!feResult.passed) {
+                speak(`${feResult.error}. ${feResult.smartHints}`);
+                setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
+                setShowHint(true);
+                return;
+            }
             setHintMessage({ smartHints: "Chế độ sáng tạo: Code được chạy trực tiếp trên canvas!" });
             setShowHint(true);
             window.dispatchEvent(
