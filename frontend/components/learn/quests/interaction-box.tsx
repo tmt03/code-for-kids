@@ -30,15 +30,22 @@ const InteractionBox: React.FC<InteractionBoxProps> = ({
     }, [message]);
 
     const getClassName = () => {
-        if (displayMessage.error) return "bg-red-100 border-red-500";
-        if (displayMessage.smartHints) return "bg-yellow-100 border-yellow-500";
-        return "bg-gray-50 border-gray-500";
+        // Trạng thái Lỗi
+        if (displayMessage.error) {
+            return "bg-red-300 border-red-400 text-red-800";
+        }
+        // Trạng thái Thành công / Gợi ý
+        if (displayMessage.smartHints && displayMessage.smartHints !== "Scriptbies luôn đồng hàng cùng bạn nhỏ!") {
+            return "bg-emerald-300 border-emerald-400 text-emerald-800";
+        }
+        // Trạng thái Mặc định / Chào mừng
+        return "bg-sky-200 border-sky-400 text-sky-800";
     };
 
 
     return (
         <div
-            className={`h-full p-4 text-gray-800 flex flex-row items-center border-2 rounded-lg overflow-hidden ${getClassName()} transition-opacity duration-300 ${showHint ? "opacity-100" : "opacity-200"
+            className={`h-full p-4 flex flex-row items-center border-2 rounded-lg overflow-hidden ${getClassName()} transition-all duration-500 ${showHint ? "opacity-100 scale-100" : "opacity-60 scale-95"
                 }`}
         >
             <CompanionAvatar

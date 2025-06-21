@@ -3,7 +3,7 @@
 import { useProgress } from "@/hooks/useProgress";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ChapterStory from "../chapter-story";
+import ChapterStory from "./chapter-story";
 import ChapterQuestPopup from "./quest-popup";
 
 type Quest = {

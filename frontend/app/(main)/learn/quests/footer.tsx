@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchAllChapters } from "@/apis";
-import ProgressBar from "@/components/progressbar";
+import ProgressBar from "@/components/learn/quests/progressbar";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";

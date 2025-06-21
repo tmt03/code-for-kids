@@ -1,7 +1,7 @@
 import RequireAuth from "@/components/auth/RequireAuth";
 import RequirePermission from "@/components/auth/RequirePermission";
-import Footer from '@/components/footer';
-import Header from '@/components/header';
+import Footer from '@/components/layouts/footer';
+import Header from '@/components/layouts/header';
 import { ProgressProvider } from "@/contexts/ProgresssContext";
 
 type Props = {

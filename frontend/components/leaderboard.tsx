@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { fetchLeaderboard } from '@/apis';
+import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const USERS_PER_PAGE = 50;
 
@@ -69,12 +69,12 @@ const Leaderboard = () => {
         {displayedUsers.map((user, idx) => (
           <div key={user.username || idx} className="flex items-center py-4 space-x-4">
             <div className={`w-6 text-xl text-right ${idx === 0 ? "text-yellow-400"
-                                                    : idx === 1 ? "text-gray-300"
-                                                    : idx === 2 ? "text-orange-500" : "text-white"}`}>
+              : idx === 1 ? "text-gray-300"
+                : idx === 2 ? "text-orange-500" : "text-white"}`}>
               {(currentPage - 1) * USERS_PER_PAGE + idx + 1}
             </div>
             <Image
-              src={user.avatarUrl || '/assets/knight-avatar.png'}
+              src={user.avatarUrl || '/assets/mascots/original.png'}
               alt={user.displayName || user.username}
               width={36}
               height={36}

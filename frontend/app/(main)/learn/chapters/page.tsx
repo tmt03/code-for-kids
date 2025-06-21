@@ -1,11 +1,11 @@
 "use client";
 
 import { fetchAllChapters, fetchLearnProgress } from "@/apis";
-import ChapterList from "@/components/companion/chapter-list";
-import CourseBadges from "@/components/companion/course-badges";
-import CourseProgress from "@/components/companion/course-progress";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
+import Footer from "@/components/layouts/footer";
+import Header from "@/components/layouts/header";
+import ChapterList from "@/components/learn/chapters/chapter-list";
+import CourseBadges from "@/components/learn/chapters/course-badges";
+import CourseProgress from "@/components/learn/chapters/course-progress";
 import { TrialBanner } from "@/components/trial/TrialBanner";
 import { useProgress } from "@/hooks/useProgress";
 import { useTrial } from "@/hooks/useTrial";

@@ -1,7 +1,7 @@
-import CourseCard from "@/components/course-card";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
-import SearchBar from "@/components/searchbar";
+import CourseCard from "@/components/learn/courses/course-card";
+import Footer from "@/components/layouts/footer";
+import Header from "@/components/layouts/header";
+import SearchBar from "@/components/learn/courses/searchbar";
 import { TrialBanner } from "@/components/trial/TrialBanner";
 
 export default function LearnPage() {

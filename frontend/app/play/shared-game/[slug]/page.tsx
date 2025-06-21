@@ -1,6 +1,6 @@
 "use client";
 
-import GameCanvas from "@/components/game-canvas";
+import GameCanvas from "@/components/learn/quests/game-canvas";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useParams, useRouter } from "next/navigation";

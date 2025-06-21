@@ -122,7 +122,7 @@ export default function Header() {
                                     className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#00A8B5] hover:border-blue-300 transition-all duration-200"
                                 >
                                     <img
-                                        src={user.avatarUrl}
+                                        src={user?.avatarUrl || "/assets/mascots/original.png"}
                                         alt="Profile"
                                         className="w-full h-full object-cover"
                                     />
@@ -140,7 +140,7 @@ export default function Header() {
                                             href="/settings"
                                             className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
                                         >
-                                            <FontAwesomeIcon icon={faGear} /> Cài đặt
+                                            <FontAwesomeIcon icon={faGear} /> Đổi mật khẩu
                                         </Link>
                                         <button
                                             onClick={handleLogout}
