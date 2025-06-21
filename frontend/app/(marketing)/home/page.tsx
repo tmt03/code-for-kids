@@ -7,9 +7,12 @@ import { useProgress } from "@/hooks/useProgress";
 import { faArrowRight, faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function HomePage() {
+    const router = useRouter();
     const { user, isLoading: isAuthLoading } = useAuth();
     const { progressSummary, setProgressSummary } = useProgress();
     const [isLoading, setIsLoading] = useState(true);
@@ -93,6 +96,16 @@ export default function HomePage() {
         );
     }
 
+    const handleFreeTrialClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!user) {
+            e.preventDefault();
+            toast.error("Hãy đăng nhập tài khoản để có thể học thử khóa học");
+            router.push("/login");
+        } else {
+            router.push("/learn/courses");
+        }
+    };
+
     // Kiểm tra user
     if (!user) {
         return (
@@ -134,7 +147,7 @@ export default function HomePage() {
                     <div className="max-w-7xl mx-auto flex items-center">
                         <img src="/assets/mascots/pose_gioithieu.png" alt="Computer Icon" className="w-20 h-20" />
                         <div className="bg-[#0A3D62] border border-white rounded px-4 py-2 text-sm">
-                            Chào mừng bạn quay trở lại, <span className="font-bold">{user?.displayName}</span> Cùng học thôi nào!
+                            Chào mừng bạn quay trở lại, <span className="font-bold">{user?.displayName}</span> cùng học thôi nào!
                         </div>
                     </div>
                 </section>
@@ -142,18 +155,16 @@ export default function HomePage() {
                 {/* Main Dashboard Section */}
                 <section className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Jump Back In (Course) */}
-                    <section className="bg-[#1b1b35] border border-white rounded-md p-4 text-white relative order-1 md:order-1 md:col-span-2 md:row-span-1">
+                    <section className="bg-[#0A3D62] border border-white rounded-md p-4 text-white relative order-1 md:order-1 md:col-span-2 md:row-span-1">
                         <p className="text-sm mb-2 uppercase font-bold">Khóa học</p>
-                        <h2 className="text-2xl font-bold">Sách 1: Hành trình phiêu lưu ở vương quốc Code-Land</h2>
+                        <h2 className="text-2xl font-bold">Hành trình phiêu lưu ở vương quốc Code-Land</h2>
                         <div className="flex gap-3 mt-5">
                             <Button
-                                variant="pixel"
                                 className="bg-[#00A8B5] text-white px-4 py-2 rounded hover:bg-[#0096A5] font-semibold"
                             >
                                 <Link href="/learn/courses">Tiếp tục học</Link>
                             </Button>
                             <Button
-                                variant="pixel"
                                 className="bg-[#00A8B5] text-white px-4 py-2 rounded hover:bg-[#0096A5] font-semibold"
                             >
                                 <Link href="/learn/chapters">Chi tiết khóa học</Link>
@@ -165,9 +176,9 @@ export default function HomePage() {
                     <div className="bg-[#0A3D62] border border-white rounded-lg p-4 text-white shadow-lg order-2 md:order-2 md:col-start-3 md:row-start-1 md:row-span-1">
                         <div className="flex items-center mb-4">
                             <img
-                                src={user?.avatarUrl || "/images/avatar.png"}
+                                src={user?.avatarUrl || "/assets/mascots/original.png"}
                                 alt="User Avatar"
-                                className="w-12 h-12 rounded-full border-2 border-[#00A8B5] mr-4"
+                                className="w-14 h-14 rounded-full border-2 border-[#00A8B5] mr-4"
                             />
                             <div>
                                 <h2 className="text-lg font-bold">{user?.displayName}</h2>
@@ -234,27 +245,26 @@ export default function HomePage() {
                     {/* New Tutorials */}
                     <section className="order-3 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-2xl font-bold text-gray-800">Hướng dẫn các khóa học mới</h2>
+                            <h2 className="text-2xl font-bold text-gray-800">CÁC TIN TỨC MỚI NHẤT</h2>
                             <a href="#" className="text-[#00A8B5] hover:text-[#0096A5] text-xl font-bold">
                                 Xem tất cả <FontAwesomeIcon icon={faArrowRight} />
                             </a>
                         </div>
                         <div className="text-white grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {[
-                                { title: "Thêm hiệu ứng cho ảnh với CSS keyframes", tag: "HTML", level: "Nhập môn" },
-                                { title: "Clone và pull dự án trên GitHub với GitBash", tag: "Git", level: "Cơ bản" },
-                                { title: "Lập trình game 2D với Phaser.js", tag: "JavaScript", level: "Nâng cao" },
+                                { title: "Hướng dẫn nâng cấp tài khoản cho người mới", tag: "Video hướng dẫn" },
+                                { title: "Ra mắt bộ tài liệu hướng dẫn: Phiêu lưu ở vuông quốc Code-land", tag: "Thông tin" },
+                                { title: "Săn lùng BUG cùng hiệp sĩ nhí", tag: "Sự kiện" },
                             ].map((tutorial, i) => (
                                 <Link
                                     key={i}
-                                    href="/"
-                                    className="border border-white rounded-md p-4 bg-[#1b1b35] hover:bg-[#2a2a4a] transition duration-200"
+                                    href=""
+                                    className="border border-white rounded-md p-4 bg-[#0A3D62] hover:bg-[#0A5D62] transition duration-200"
                                 >
                                     <div className="h-32 bg-gray-700 mb-2 rounded"></div>
-                                    <p className="text-xs mb-1 uppercase">Tutorial</p>
+                                    <p className="text-xs mb-1 uppercase">Tin tức</p>
                                     <h3 className="font-bold text-sm mb-2">{tutorial.title}</h3>
                                     <div className="flex gap-2 text-xs">
-                                        <span className="bg-gray-600 px-2 py-1 rounded">{tutorial.level}</span>
                                         <span className="bg-[#00A8B5] px-2 py-1 rounded">{tutorial.tag}</span>
                                     </div>
                                 </Link>
@@ -265,11 +275,14 @@ export default function HomePage() {
 
                 {/* Club Promo (Luôn ở gần cuối, trước Footer) */}
                 <section className="max-w-5xl mx-auto py-8 px-4 text-white">
-                    <div className="bg-[#0A3D62] border border-white rounded-md p-4 text-center">
-                        <p className="text-[#00A8B5] font-bold mb-2">HỘI VIÊN CAO CẤP (PREMIUM MEMBERSHIP)</p>
+                    <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 border border-white rounded-md p-4 text-center">
+                        <p className="font-bold mb-2">NÂNG CẤP TÀI KHOẢN</p>
                         <h3 className="text-lg font-bold mb-2">Trải nghiệm học tập không giới hạn</h3>
-                        <p className="text-sm mb-4">Hãy tham gia ngay để mở khóa tất cả các khóa học, nhận sự trợ giúp từ các chuyên gia lập trình hàng đầu, và hơn nữa.</p>
-                        <button className="border border-[#00A8B5] py-2 font-bold px-4 rounded hover:bg-[#00A8B5] hover:text-white transition">
+                        <p className="text-sm mb-4">Hãy tham gia ngay để mở khóa tất cả các khóa học, nhận bộ tài liệu hướng dẫn siêu xịn và đội ngữ hướng dẫn chuyên nghiệp</p>
+                        <button
+                            onClick={handleFreeTrialClick}
+                            className="bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] px-4 py-2 rounded-lg font-bold shadow-lg"
+                        >
                             Tìm hiểu thêm
                         </button>
                     </div>

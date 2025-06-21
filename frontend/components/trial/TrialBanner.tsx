@@ -50,7 +50,7 @@ export function TrialBanner() {
                             <div>
                                 <h3 className="font-bold text-lg">Chế độ thử nghiệm</h3>
                                 <p className="text-sm opacity-90">
-                                    Chỉ có thể học chapter {trialInfo?.allowedChapter} • Còn {daysLeft} ngày
+                                    Chỉ có thể học chương hướng dẫn • Còn {daysLeft} ngày
                                 </p>
                             </div>
                         </div>
@@ -65,16 +65,16 @@ export function TrialBanner() {
                         <div className="flex gap-2">
                             <Link
                                 href="/shop"
-                                className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                                className="px-4 py-2 bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] rounded-lg font-bold shadow-lg"
                             >
-                                Mua sách để mở khóa học
+                                Nâng cấp khóa học
                             </Link>
-                            <button
+                            {/* <button
                                 onClick={() => window.open('/trial-info', '_blank')}
                                 className="px-4 py-2 border border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
                             >
                                 Tìm hiểu thêm
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

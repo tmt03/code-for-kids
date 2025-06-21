@@ -5,7 +5,7 @@ import EditProfilePopup from "@/components/edit-profile-popup";
 import { useAuth } from "@/hooks/useAuth";
 import { useProgress } from "@/hooks/useProgress";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { faCircle, faClock, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -144,11 +144,10 @@ export default function ProfilePage() {
                     <div className="flex justify-between items-start">
                         <div className="flex items-center space-x-4">
                             <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden [box-shadow:0_0_10px_rgba(3,155,229),0_0_15px_rgba(79,195,247)]">
-                                <img src={user?.avatarUrl || "/assets/default-avatar.png"} alt="Avatar" />
+                                <img src={user?.avatarUrl || "/assets/mascots/original.png"} alt="Avatar" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-shadow">{user?.displayName}</h1>
-                                <div className="text-md text-gray-300 text-shadow-sm">@{user?.username}</div>
+                                <h1 className="text-xl font-bold text-shadow">{user.displayName ? user.displayName : "Anh hùng ẩn danh"}</h1>
                                 <div className="text-sm text-gray-400 text-shadow-sm">
                                     <span>0 đang theo dõi</span>
                                     <span>
@@ -176,11 +175,7 @@ export default function ProfilePage() {
                             <div className="bg-[#0A3D62] rounded p-4 border border-[#006D77] shadow-sm">
                                 <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#006D77]">Tiểu sử</h2>
                                 <p className="text-sm text-gray-300 mb-3">
-                                    {user?.bio?.trim() || "Bạn chưa có gì trong tiểu sử. Hãy chỉnh sửa trang cá nhân để giới thiệu những điều thú vị về bản thân nhé!"}
-                                </p>
-                                <p className="text-sm text-gray-400">
-                                    <FontAwesomeIcon icon={faClock} className="pr-2 text-[#00A8B5]" />
-                                    <span>Tham gia vào ngày 19 tháng 4, 2025</span>
+                                    {user?.bio?.trim() || "hãy viết về bạn!"}
                                 </p>
                             </div>
 
@@ -188,11 +183,8 @@ export default function ProfilePage() {
                             <div className="bg-[#0A3D62] rounded p-4 border border-[#006D77] shadow-sm">
                                 <div className="flex justify-between items-center mb-2">
                                     <h2 className="text-sm font-semibold text-white">Huy Hiệu</h2>
-                                    <span className="text-sm text-white">{earnedBadges}/{totalBadges}</span>
+                                    <span className="text-sm text-white">{earnedBadges}</span>
                                 </div>
-                                <p className="text-sm text-gray-400 mb-3">
-                                    Hoàn thành các Chapter để nhận được tất cả các huy hiệu
-                                </p>
                                 {earnedBadges > 0 ? (
                                     <div className="grid grid-cols-3 gap-3">
                                         {progressSummary.badgeChapters
@@ -221,11 +213,10 @@ export default function ProfilePage() {
                             <div className="bg-[#0A3D62] rounded p-4 border border-[#006D77] shadow-sm">
                                 <h2 className="text-sm font-semibold mb-3 pb-2 border-b border-[#006D77]">🏆 Bảng xếp hạng</h2>
                                 <div className="flex items-center mt-4">
-                                    <div className="w-6 text-white font-bold text-center">47</div>
+                                    <div className="w-6 text-white font-bold text-center"></div>
                                     <div className="w-8 h-8 bg-gray-500 rounded-full mx-3"></div>
                                     <div className="flex flex-col text-sm text-white">
-                                        <span className="font-semibold">{user?.displayName}</span>
-                                        <span className="text-gray-400">@{user?.username}</span>
+                                        <span className="font-semibold">{user.displayName ? user.displayName : "Anh hùng ẩn danh"}</span>
                                     </div>
                                     <div className="ml-auto font-semibold text-[#00A8B5] text-sm">
                                         {user.ratingPoints} XP

@@ -2,15 +2,31 @@
 
 import Footer from "@/components/layouts/footer";
 import Header from "@/components/layouts/header";
+import { useAuth } from "@/hooks/useAuth";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function LandingPage() {
+    const { user } = useAuth();
+    const router = useRouter();
+
     useEffect(() => {
         AOS.init({ duration: 800, once: true });
     }, []);
+
+    const handleFreeTrialClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!user) {
+            e.preventDefault();
+            toast.error("Hãy đăng nhập tài khoản để có thể học thử khóa học");
+            router.push("/login");
+        } else {
+            router.push("/learn/courses");
+        }
+    };
 
     return (
         <div className="w-full overflow-x-hidden bg-gradient-to-b from-[#E0F4F7] to-[#C1E7EB] text-[#0A3D62]">
@@ -30,14 +46,15 @@ export default function LandingPage() {
                         <span className="text-[#FFD700] font-semibold">Scriptbies</span>!
                     </p>
                     <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-start">
-                        <Link href="/register">
-                            <button className="bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] px-8 py-4 rounded-xl font-bold shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 text-lg animate-bounceIn">
-                                🎮 Học thử miễn phí
-                            </button>
-                        </Link>
+                        <button
+                            onClick={handleFreeTrialClick}
+                            className="bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] px-8 py-4 rounded-xl font-bold shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 text-lg animate-bounceIn"
+                        >
+                            🎮 Học thử miễn phí
+                        </button>
                         <Link href="/shop">
                             <button className="bg-white hover:bg-gray-100 text-[#007C8D] px-8 py-4 rounded-xl font-bold shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 text-lg animate-bounceIn delay-200">
-                                📘 Mua sách
+                                📘 Mua khóa học
                             </button>
                         </Link>
                     </div>
@@ -138,7 +155,7 @@ export default function LandingPage() {
                                 Phụ huynh có cần biết lập trình không?
                             </summary>
                             <p className="mt-4 text-[#0A3D62]">
-                                Không cần! Giao diện dễ hiểu, phù hợp trẻ em. Hệ thống hướng dẫn tự động giúp bé
+                                Không cần! Giao diện dễ hiểu, phù hợp trẻ em. Hệ thống hướng dẫn tự động giúp bạn nhỏ
                                 học dễ dàng.
                             </p>
                         </details>
@@ -147,16 +164,15 @@ export default function LandingPage() {
                                 Từ bao nhiêu tuổi có thể học?
                             </summary>
                             <p className="mt-4 text-[#0A3D62]">
-                                Trẻ từ 6 tuổi trở lên có thể bắt đầu học với Scriptbies.
+                                Scriptbies không giới hạn độ tuổi học tập, chỉ cần bạn có sự tò mò niềm đam mê học hỏi và khám phá những kiến thức mới.
                             </p>
                         </details>
                         <details className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
                             <summary className="cursor-pointer font-semibold text-[#00A8B5]">
-                                Có cần mua sách để học không?
+                                Có cần tài liệu gì để học không để học không?
                             </summary>
                             <p className="mt-4 text-[#0A3D62]">
-                                Scriptbies có chế độ học thử miễn phí, nếu muốn học chính thức bạn cần có sách đi
-                                kèm mã kích hoạt.
+                                Scriptbies có chế độ học thử miễn phí, nếu muốn học chính thức bạn cần đăng kí khóa học và sẽ tặng kèm một bộ tài liệu đi kèm hướng dẫn bạn học tập.
                             </p>
                         </details>
                     </div>
@@ -167,11 +183,12 @@ export default function LandingPage() {
             <section className="bg-[#007C8D] py-16 text-white text-center">
                 <h2 className="text-4xl font-bold mb-4">Hãy để con bạn khám phá tiềm năng từ hôm nay!</h2>
                 <p className="mb-6 text-lg">Tặng ngay khóa học thử + tài nguyên miễn phí cho người mới.</p>
-                <Link href="/register">
-                    <button className="bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] px-8 py-4 rounded-lg font-bold shadow-lg">
-                        🎁 Bắt đầu miễn phí
-                    </button>
-                </Link>
+                <button
+                    onClick={handleFreeTrialClick}
+                    className="bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] px-8 py-4 rounded-lg font-bold shadow-lg"
+                >
+                    🎁 Bắt đầu miễn phí
+                </button>
             </section>
 
             <Footer />

@@ -5,10 +5,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import {
   faFacebook,
   faGithub,
-  faInstagram,
   faLinkedinIn,
   faTiktok,
-  faYoutube,
+  faYoutube
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 config.autoAddCss = false;
@@ -56,29 +55,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-bold mb-4 text-white">THỰC HÀNH</h4>
-          <ul className="space-y-2">
-            <li>
-              <a
-                href="#"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
-              >
-                Thử thách
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
-              >
-                Dự án
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold mb-4 text-white">KHÓA HỌC</h4>
+          <h4 className="font-bold mb-4 text-white">KHÓA HỌC LÀM GAME</h4>
           <ul className="space-y-2">
             <li>
               <a
@@ -86,38 +63,6 @@ export default function Footer() {
                 className="text-gray-200 hover:text-white transition-colors duration-200"
               >
                 Phiêu lưu ở Vương quốc Codeland
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
-              >
-                Sách 2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
-              >
-                Sách 3
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
-              >
-                Sách 4
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-200 hover:text-white transition-colors duration-200"
-              >
-                Lập trình game với Phaser.js
               </a>
             </li>
           </ul>
@@ -128,34 +73,36 @@ export default function Footer() {
           <ul className="space-y-2">
             <li>
               <a
-                href="#"
                 className="text-gray-200 hover:text-white transition-colors duration-200"
               >
-                HTML
+                Tư duy logic
               </a>
             </li>
             <li>
               <a
-                href="#"
                 className="text-gray-200 hover:text-white transition-colors duration-200"
               >
-                CSS
+                Tư duy sáng tạo
               </a>
             </li>
             <li>
               <a
-                href="#"
                 className="text-gray-200 hover:text-white transition-colors duration-200"
               >
-                JavaScript
+                Xây dựng game cơ bản
               </a>
             </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-bold mb-4 text-white">TÀI LIỆU</h4>
+          <ul className="space-y-2">
             <li>
               <a
-                href="#"
                 className="text-gray-200 hover:text-white transition-colors duration-200"
               >
-                Git, GitHub & Command Line
+                Bộ câu lệnh: Phưu lưu ở Vương quốc Code-land
               </a>
             </li>
           </ul>
@@ -166,16 +113,10 @@ export default function Footer() {
         <p>© 2025 Scriptbies. All rights reserved.</p>
         <div className="flex space-x-6 mt-4 md:mt-0 text-2xl">
           <a
-            href="#"
+            href="https://www.facebook.com/profile.php?id=61576763879584"
             className="text-gray-300 hover:text-white transition-colors duration-200"
           >
             <FontAwesomeIcon icon={faFacebook} />
-          </a>
-          <a
-            href="#"
-            className="text-gray-300 hover:text-white transition-colors duration-200"
-          >
-            <FontAwesomeIcon icon={faInstagram} />
           </a>
           <a
             href="#"
@@ -190,13 +131,11 @@ export default function Footer() {
             <FontAwesomeIcon icon={faTiktok} />
           </a>
           <a
-            href="#"
             className="text-gray-300 hover:text-white transition-colors duration-200"
           >
             <FontAwesomeIcon icon={faGithub} />
           </a>
           <a
-            href="#"
             className="text-gray-300 hover:text-white transition-colors duration-200"
           >
             <FontAwesomeIcon icon={faLinkedinIn} />

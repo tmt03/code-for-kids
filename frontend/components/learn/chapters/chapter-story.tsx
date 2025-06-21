@@ -1,7 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./ui/button";
 
 type Chapter = {
     id: string;

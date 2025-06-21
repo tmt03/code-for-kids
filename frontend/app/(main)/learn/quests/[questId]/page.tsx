@@ -1,9 +1,9 @@
 "use client"
 
-import { fetchLearnProgress, fetchQuestDetails, fetchSubmitCode, saveUserGame } from '@/apis';
-import InteractionBox from '@/components/learn/quests/interaction-box';
+import { fetchAllChapters, fetchLearnProgress, fetchQuestDetails, fetchSubmitCode, saveUserGame } from '@/apis';
 import CodeEditor from '@/components/learn/quests/code-editor';
 import GameCanvas from '@/components/learn/quests/game-canvas';
+import InteractionBox from '@/components/learn/quests/interaction-box';
 import { Button } from '@/components/ui/button';
 import { useProgress } from "@/hooks/useProgress";
 import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { useTrial } from '@/hooks/useTrial';
+import { truncateBeforeDot } from '@/lib/utils/stringUtils';
 
 
 interface Quest {
@@ -58,7 +59,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const [beResult, setBeResult] = useState<BackendResult | null>(null);
     const [hintMessage, setHintMessage] = useState<
         string | { error?: string; smartHints?: string }
-    >("");
+    >("Scriptbies luôn đồng hàng cùng bạn nhỏ!");
     const [showHint, setShowHint] = useState(false);
     const [codeHelp, setCodeHelp] = useState("");
     const [helpIndex, setHelpIndex] = useState(0);
@@ -82,6 +83,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 setIsLoading(true);
                 let quest = null;
                 let progress = null;
+                let allChapters = null;
 
 
                 if (isCreativeMode) {
@@ -93,9 +95,10 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     progress = { totalScore: 0, completedQuests: 0, completedChallenges: 0, trialMode: true };
                 } else {
                     // Chế độ học thường
-                    [quest, progress] = await Promise.all([
+                    [quest, progress, allChapters] = await Promise.all([
                         fetchQuestDetails(questId),
                         fetchLearnProgress(),
+                        fetchAllChapters()
                     ]);
                 }
 
@@ -104,6 +107,21 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                         setSelectedQuest({ id: "creative", mode: "creative" });
                         setUserCode(CREATIVE_MODE_CODE);
                     } else {
+                        if (quest && allChapters) {
+                            // 1. Tìm chương chứa nhiệm vụ hiện tại
+                            const chapterOfThisQuest = allChapters.find((chapter: any) =>
+                                chapter.quests.some((q: any) => q.id === questId)
+                            );
+
+                            // 2. Nếu tìm thấy, gán thông tin tiêu đề vào đối tượng quest
+                            if (chapterOfThisQuest) {
+                                // Tạo một thuộc tính 'chapter' mới cho quest
+                                quest.chapter = {
+                                    title: chapterOfThisQuest.name // Lấy 'name' từ chapter và gán vào 'title'
+                                };
+                            }
+                        }
+
                         setSelectedQuest(quest || null);
                         setUserCode(quest?.baseCode || "");
                     }
@@ -130,7 +148,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         if (showHint) {
             const timer = setTimeout(() => {
                 setShowHint(false);
-                setHintMessage({});
+                setHintMessage("Scriptbies luôn đồng hàng cùng bạn nhỏ!");
                 setCodeHelp("");
             }, 8000);
             return () => clearTimeout(timer);
@@ -224,10 +242,6 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             setBeResult(result);
             setHintMessage({ smartHints: "Code chạy tốt! Bạn làm rất tuyệt!" });
 
-            // Nếu thành công:
-            // playSound("success");
-            speak("Code chạy tốt! Bạn làm rất tuyệt!");
-
             // 3. Nếu backend pass thì chạy code trong game
             if (result.passed) {
                 window.dispatchEvent(
@@ -236,6 +250,10 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                     })
                 );
             }
+
+            // Nếu thành công:
+            // playSound("success");
+            speak("Code chạy tốt! Bạn làm rất tuyệt!");
         } catch (error: any) {
             setHintMessage({ error: "Lỗi hệ thống", smartHints: "Hãy thử lại nhé!" });
         }
@@ -257,7 +275,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             return;
         }
 
-        if (selectedQuest.type === 'challenge') {
+        if (selectedQuest) {
             const codeLines = selectedQuest.codeHelp.split('\n');
             const startIndex = helpIndex * 2;
             const accumulatedLines = codeLines.slice(0, startIndex + 2).join('\n');
@@ -461,8 +479,8 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 </div>
 
                 {/* Game canvas với container linh hoạt */}
-                <div className="flex-1 min-h-0 p-2 flex items-center justify-center rounded-xl bg-gray-900">
-                    <div className="w-auto max-w-full min-w-[590px] h-full max-h-full min-h-[295px] overflow-hidden">
+                <div className="flex-1 min-h-0 p-2 flex items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 shadow-xl">
+                    <div className="w-auto max-w-full min-w-[590px] h-full max-h-full min-h-[295px] overflow-hidden rounded-lg shadow-inner">
                         <GameCanvas quest={{ id: questId, mode: isCreativeMode ? "creative" : "learning" }} />
                     </div>
                 </div>
@@ -470,12 +488,26 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             {/* Bên phải: Code editor */}
             <div className="w-full lg:w-2/5 h-full relative flex flex-col mt-4 lg:mt-0">
                 {selectedQuest && (
-                    <CodeEditor
-                        initialValue={isCreativeMode ? CREATIVE_MODE_CODE : selectedQuest?.baseCode}
-                        onChange={setUserCode}
-                        codeClear={userCode}
-                        codeHelp={codeHelp}
-                    />
+                    <>
+                        {!isCreativeMode && (
+                            <div className="flex items-center p-2 bg-slate-800 text-white rounded-t-lg shadow-inner">
+                                <span className="text-sm font-bold text-cyan-400 bg-cyan-900/50 px-2 py-1 rounded-md">
+                                    {truncateBeforeDot(selectedQuest.chapter?.title) || "Chương"}
+                                </span>
+                                <span className="mx-2 text-slate-500">/</span>
+                                <h3 className="text-md text-slate-200 truncate">
+                                    {selectedQuest.name || "Nhiệm vụ"}
+                                </h3>
+                            </div>
+                        )}
+                        <CodeEditor
+                            initialValue={isCreativeMode ? CREATIVE_MODE_CODE : selectedQuest?.baseCode}
+                            onChange={setUserCode}
+                            codeClear={userCode}
+                            codeHelp={codeHelp}
+                            className={!isCreativeMode ? "rounded-t-none" : ""}
+                        />
+                    </>
                 )}
                 <div className="absolute bottom-4 right-2 z-10 flex gap-2 md:gap-4">
                     <Button

@@ -66,7 +66,7 @@ const getPointByQuestId = async (questId: string): Promise<number> => {
 };
 
 const updateQuestVideoUrl = async (questId: string, videoUrl: string) => {
-  try{
+  try {
     const result = await GET_DB()
       .collection(CHAPTER_COLLECTION_NAME)
       .updateOne(

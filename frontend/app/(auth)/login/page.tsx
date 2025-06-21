@@ -77,7 +77,6 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={isLoading}
-            variant="pixel"
             className="w-full bg-[#00A8B5] text-white py-2 rounded-lg hover:bg-[#0096A5] disabled:bg-gray-300 transition-colors duration-200"
           >
             {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}

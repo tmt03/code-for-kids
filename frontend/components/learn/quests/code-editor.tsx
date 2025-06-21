@@ -13,9 +13,10 @@ interface CodeEditorProps {
     onChange: (value: string) => void;
     codeClear: string;
     codeHelp?: string;
+    className?: string;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeClear, codeHelp }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeClear, codeHelp, className }) => {
     const [value, setValue] = useState(initialValue || "");
     const editorRef = useRef<EditorView | null>(null);
 
@@ -51,7 +52,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeCle
     };
 
     return (
-        <div className="w-full h-full min-h-[300px] relative" onKeyDown={handleKeyDown}>
+        <div className={`w-full h-full min-h-[300px] relative ${className}`} onKeyDown={handleKeyDown}>
             <CodeMirror
                 value={value}
                 height="100%"
@@ -65,7 +66,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ initialValue, onChange, codeCle
                 onChange={handleChangeCode}
                 placeholder=""
                 basicSetup={{ lineNumbers: true, highlightActiveLine: true }}
-                className="border-2 border-gray-500 rounded-lg overflow-hidden font-mono text-sm text-gray-900"
+                className="border-2 border-gray-900 rounded-b-lg overflow-hidden font-mono text-sm text-gray-900"
                 style={{ height: "100%", display: "flex", flexDirection: "column", flexGrow: 1 }}
                 onCreateEditor={(view) => {
                     editorRef.current = view;
