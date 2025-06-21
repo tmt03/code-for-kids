@@ -1,6 +1,6 @@
 import RequireAuth from "@/components/auth/RequireAuth";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import Footer from "@/components/layouts/footer";
+import Header from "@/components/layouts/header";
 
 type Props = {
     children: React.ReactNode;

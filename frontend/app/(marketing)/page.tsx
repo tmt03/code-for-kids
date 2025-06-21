@@ -1,7 +1,7 @@
 "use client";
 
-import Footer from "@/components/footer";
-import Header from "@/components/header";
+import Footer from "@/components/layouts/footer";
+import Header from "@/components/layouts/header";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";

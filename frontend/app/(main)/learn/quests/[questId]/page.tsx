@@ -1,9 +1,9 @@
 "use client"
 
 import { fetchLearnProgress, fetchQuestDetails, fetchSubmitCode, saveUserGame } from '@/apis';
-import CodeEditor from '@/components/code-editor';
-import GameCanvas from '@/components/game-canvas';
-import InteractionBox from '@/components/interaction-box';
+import InteractionBox from '@/components/learn/quests/interaction-box';
+import CodeEditor from '@/components/learn/quests/code-editor';
+import GameCanvas from '@/components/learn/quests/game-canvas';
 import { Button } from '@/components/ui/button';
 import { useProgress } from "@/hooks/useProgress";
 import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';

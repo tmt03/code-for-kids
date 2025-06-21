@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/header';
+import Header from '@/components/layouts/header';
 import { TrialBanner } from '@/components/trial/TrialBanner';
 import { ProgressProvider } from '@/contexts/ProgresssContext';
 import FooterChapter from '../footer';

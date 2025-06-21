@@ -29,7 +29,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
 
     const initPhaser = async () => {
       const Phaser = (await import("phaser")).default;
-      const { Game_Scene } = await import("../game/gameScene");
+      const { Game_Scene } = await import("../../../game/gameScene");
 
       const container = canvasRef.current!;
       const isHighRes = window.innerWidth >= 2560; // 2K or 4K

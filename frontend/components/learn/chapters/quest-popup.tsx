@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 type Quest = {
   id: string;
