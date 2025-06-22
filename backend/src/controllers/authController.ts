@@ -50,24 +50,29 @@ const refreshToken = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
   const token = req.cookies.refreshToken;
+  console.log("Logout attempt - Token exists:", !!token);
+
   if (!token) return res.sendStatus(204);
 
   try {
-    // Decode token mà không cần xác thực (verify).
-    // Dù token hết hạn, ta vẫn muốn tìm và xóa nó khỏi DB.
-    const decoded = jwt.decode(token) as { username: string } | null;
+    // Sử dụng jwt.verify với ignoreExpiration để lấy thông tin user
+    // ngay cả khi token đã hết hạn
+    const decoded = jwt.verify(token, env.JWT_SECRET_REFRESH_TOKEN, {
+      ignoreExpiration: true,
+    }) as { username: string } | null;
+
+    console.log("Decoded username:", decoded?.username);
 
     // Nếu token có thể được giải mã và chứa username, tiến hành logout
     if (decoded && decoded.username) {
+      console.log("Attempting to logout user:", decoded.username);
       await authService.logout(decoded.username);
+      console.log("Logout completed for user:", decoded.username);
+    } else {
+      console.log("No valid username found in token");
     }
   } catch (error) {
-    // Ghi lại lỗi nếu có sự cố khi xóa token khỏi DB,
-    // nhưng không ngăn cản việc xóa cookie.
-    console.error(
-      "Failed to clear refresh token from DB during logout:",
-      error
-    );
+    console.error("Error during logout:", error);
   }
 
   // Luôn xóa cookie và trả về thông báo thành công cho client.
