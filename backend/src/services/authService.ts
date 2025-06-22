@@ -36,7 +36,10 @@ const generateRefreshToken = (user: any) => {
 
 const login = async (username: string, password: string) => {
   const user = await userModel.findByUsername(username);
-  if (!user) throw new Error("Tài khoản không tồn tại");
+  if (!user)
+    throw new Error(
+      "Đăng nhập thất bại: Không tìm thấy tên đăng nhập hoặc không tồn tại"
+    );
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Sai mật khẩu!");
@@ -67,31 +70,19 @@ const refreshAccessToken = async (refreshToken: string) => {
 
     const user = await userModel.findByUsername(username);
     if (!user || user.refreshToken !== refreshToken) {
-      throw new Error("Refresh token không hợp lệ");
+      throw new Error("Phiên đăng nhập không hợp lệ.");
     }
 
     const newAccessToken = generateAccessToken(user);
     return { accessToken: newAccessToken };
   } catch (error) {
-    throw new Error("Refresh token hết hạn hoặc không hợp lệ");
+    // Lỗi có thể là do jwt.verify (hết hạn, sai định dạng)
+    throw new Error("Phiên đăng nhập đã hết hạn hoặc không đúng định dạng.");
   }
 };
 
 const logout = async (username: string) => {
-  console.log(`[AuthService] Received request to logout user: ${username}`);
-  try {
-    const result = await userModel.updateRefreshToken(username, "");
-    console.log(
-      `[AuthService] User model finished updating token for: ${username}`
-    );
-    return result;
-  } catch (error) {
-    console.error(
-      `[AuthService] Error during logout for user ${username}:`,
-      error
-    );
-    throw error;
-  }
+  return await userModel.updateRefreshToken(username, "");
 };
 
 const getUserInfo = async (username: string) => {

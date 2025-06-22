@@ -27,7 +27,9 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       user: result.user,
     });
   } catch (error: any) {
-    res.status(StatusCodes.UNAUTHORIZED).json({ error: error.message });
+    res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Tên đăng nhập hoặc mật khẩu không chính xác." });
   }
 };
 
@@ -36,22 +38,22 @@ const refreshToken = async (req: Request, res: Response) => {
 
   if (!token) {
     return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "Thiếu refreshToken" });
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại." });
   }
 
   try {
     const result = await authService.refreshAccessToken(token);
     return res.status(StatusCodes.OK).json(result);
   } catch (error: any) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({ error: error.message });
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      error: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+    });
   }
 };
 
 const logout = async (req: Request, res: Response) => {
   const token = req.cookies.refreshToken;
-  console.log("Logout attempt - Token exists:", !!token);
-
   if (!token) return res.sendStatus(204);
 
   try {
@@ -61,18 +63,13 @@ const logout = async (req: Request, res: Response) => {
       ignoreExpiration: true,
     }) as { username: string } | null;
 
-    console.log("Decoded username:", decoded?.username);
-
     // Nếu token có thể được giải mã và chứa username, tiến hành logout
     if (decoded && decoded.username) {
-      console.log("Attempting to logout user:", decoded.username);
       await authService.logout(decoded.username);
-      console.log("Logout completed for user:", decoded.username);
-    } else {
-      console.log("No valid username found in token");
     }
   } catch (error) {
-    console.error("Error during logout:", error);
+    // Trong production, có thể ghi log lỗi vào một hệ thống giám sát
+    console.error("An error occurred during logout:", error);
   }
 
   // Luôn xóa cookie và trả về thông báo thành công cho client.
@@ -84,22 +81,29 @@ const me = async (req: Request, res: Response) => {
   const userFromToken = (req as any).user; // lấy từ verifyToken
 
   if (!userFromToken) {
-    return res.status(401).json({ error: "Chưa xác thực" });
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Yêu cầu cần xác thực. Vui lòng đăng nhập." });
   }
 
   // Lấy user mới nhất từ DB
   const user = await authService.getUserInfo(userFromToken.username);
   if (!user) {
-    return res.status(404).json({ error: "Không tìm thấy user" });
+    return res.status(StatusCodes.NOT_FOUND).json({
+      error: "Không thể tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.",
+    });
   }
 
-  res.status(200).json({ user });
+  res.status(StatusCodes.OK).json({ user });
 };
 
 const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
   const user = await userModel.findByEmail(email);
-  if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+  if (!user)
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: "Địa chỉ email này chưa được đăng ký." });
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const expires = Date.now() + 10 * 60 * 1000;
@@ -110,16 +114,21 @@ const forgotPassword = async (req: Request, res: Response) => {
     "[Scriptbies] Mã OTP đặt lại mật khẩu",
     `Mã OTP của bạn là: ${otp}. KHÔNG CHIA SẺ MÃ NÀY CHO BẤT KỲ AI. Bạn có 10 phút để sử dụng mã này. Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Bạn cũng nên thay đổi mật khẩu của mình thường xuyên để bảo mật tài khoản.`
   );
-  res.json({ message: "Đã gửi OTP về email" });
+  res.json({ message: "Một mã OTP đã được gửi đến email của bạn." });
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
   const { email, otp, newPassword, confirmPassword } = req.body;
   if (newPassword !== confirmPassword)
-    return res.status(400).json({ error: "Mật khẩu không khớp" });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: "Mật khẩu và mật khẩu xác nhận không khớp." });
 
   const user = await userModel.findByEmail(email);
-  if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+  if (!user)
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: "Địa chỉ email này chưa được đăng ký." });
 
   const otpRecord = await userModel.getOTP(user.username);
   if (
@@ -127,21 +136,27 @@ export const resetPassword = async (req: Request, res: Response) => {
     otpRecord.resetOTP !== otp ||
     otpRecord.resetOTPExpires < Date.now()
   ) {
-    return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: "Mã OTP không hợp lệ hoặc đã hết hạn." });
   }
 
   await userModel.changePassword(user.username, newPassword);
   await userModel.clearOTP(user.username);
 
-  res.json({ message: "Đổi mật khẩu thành công" });
+  res.json({ message: "Đổi mật khẩu thành công. Bạn có thể đăng nhập ngay." });
 };
 
 export const register = async (req: Request, res: Response) => {
   const { username, password, email } = req.body;
   if (await userModel.findByUsername(username))
-    return res.status(400).json({ error: "Username đã tồn tại" });
+    return res
+      .status(StatusCodes.CONFLICT)
+      .json({ error: "Tên đăng nhập này đã được sử dụng." });
   if (await userModel.findByEmail(email))
-    return res.status(400).json({ error: "Email đã tồn tại" });
+    return res
+      .status(StatusCodes.CONFLICT)
+      .json({ error: "Địa chỉ email này đã được sử dụng." });
 
   const hashedPassword = await bcrypt.hash(password, 10);
   await userModel.createNew({
@@ -175,7 +190,7 @@ export const register = async (req: Request, res: Response) => {
 
   res.json({
     message:
-      "Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản.",
+      "Đăng ký thành công! Vui lòng kiểm tra email để nhận mã OTP xác minh tài khoản.",
   });
 };
 
@@ -183,9 +198,14 @@ export const verifyEmail = async (req: Request, res: Response) => {
   const { email, otp } = req.body;
 
   const user = await userModel.findByEmail(email);
-  if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+  if (!user)
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: "Địa chỉ email này chưa được đăng ký." });
   if (user.isVerified)
-    return res.status(400).json({ error: "Tài khoản đã xác minh" });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: "Tài khoản này đã được xác minh trước đó." });
 
   const otpRecord = await userModel.getRegisterOTP(email);
   if (
@@ -193,7 +213,9 @@ export const verifyEmail = async (req: Request, res: Response) => {
     otpRecord.registerOTP !== otp ||
     otpRecord.registerOTPExpires < Date.now()
   ) {
-    return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: "Mã OTP không hợp lệ hoặc đã hết hạn." });
   }
 
   await userModel.verifyUser(email);

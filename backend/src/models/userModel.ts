@@ -68,25 +68,10 @@ const findByEmail = async (email: string) => {
 
 // Cập nhật refreshToken
 const updateRefreshToken = async (username: string, refreshToken: string) => {
-  console.log(
-    `[UserModel] Attempting to update refreshToken for user: ${username}. Setting token to: '${
-      refreshToken === "" ? "empty string" : "new token"
-    }'`
-  );
   try {
-    const result = await GET_DB()
+    return await GET_DB()
       .collection(USER_COLLECTION_NAME)
       .updateOne({ username }, { $set: { refreshToken } });
-
-    console.log(`[UserModel] MongoDB update result for ${username}:`, {
-      acknowledged: result.acknowledged,
-      modifiedCount: result.modifiedCount,
-      upsertedId: result.upsertedId,
-      upsertedCount: result.upsertedCount,
-      matchedCount: result.matchedCount,
-    });
-
-    return result;
   } catch (error) {
     console.error(
       `[UserModel] Failed to update refreshToken for ${username}:`,
