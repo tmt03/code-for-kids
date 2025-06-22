@@ -78,7 +78,20 @@ const refreshAccessToken = async (refreshToken: string) => {
 };
 
 const logout = async (username: string) => {
-  return await userModel.updateRefreshToken(username, "");
+  console.log(`[AuthService] Received request to logout user: ${username}`);
+  try {
+    const result = await userModel.updateRefreshToken(username, "");
+    console.log(
+      `[AuthService] User model finished updating token for: ${username}`
+    );
+    return result;
+  } catch (error) {
+    console.error(
+      `[AuthService] Error during logout for user ${username}:`,
+      error
+    );
+    throw error;
+  }
 };
 
 const getUserInfo = async (username: string) => {
