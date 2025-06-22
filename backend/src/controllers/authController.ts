@@ -1,33 +1,11 @@
+import bcrypt from "bcryptjs";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { authService } from "../services/authService";
 import jwt from "jsonwebtoken";
 import { env } from "../config/environment";
 import { userModel } from "../models/userModel";
+import { authService } from "../services/authService";
 import { sendMail } from "../utils/emailService";
-import bcrypt from "bcryptjs";
-
-// const getUserInfo = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const username = req.params.username;
-//     const result = await authService.getUserInfo(username);
-
-//     if (!result) {
-//       return res.status(StatusCodes.NOT_FOUND).json({ error: "User not found" });
-//     }
-
-//     // Xóa trường password hoặc password_hash
-//     const { password_hash, ...safeUser } = result;
-
-//     res.status(StatusCodes.OK).json(safeUser);
-//   } catch (error: any) {
-//     next(error);
-//   }
-// };
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -75,10 +53,24 @@ const logout = async (req: Request, res: Response) => {
   if (!token) return res.sendStatus(204);
 
   try {
-    const decoded = jwt.verify(token, env.JWT_SECRET_REFRESH_TOKEN) as any;
-    await authService.logout(decoded.username);
-  } catch (e) {}
+    // Decode token mà không cần xác thực (verify).
+    // Dù token hết hạn, ta vẫn muốn tìm và xóa nó khỏi DB.
+    const decoded = jwt.decode(token) as { username: string } | null;
 
+    // Nếu token có thể được giải mã và chứa username, tiến hành logout
+    if (decoded && decoded.username) {
+      await authService.logout(decoded.username);
+    }
+  } catch (error) {
+    // Ghi lại lỗi nếu có sự cố khi xóa token khỏi DB,
+    // nhưng không ngăn cản việc xóa cookie.
+    console.error(
+      "Failed to clear refresh token from DB during logout:",
+      error
+    );
+  }
+
+  // Luôn xóa cookie và trả về thông báo thành công cho client.
   res.clearCookie("refreshToken");
   res.status(200).json({ message: "Đã đăng xuất" });
 };
@@ -108,32 +100,35 @@ const forgotPassword = async (req: Request, res: Response) => {
   const expires = Date.now() + 10 * 60 * 1000;
 
   await userModel.saveOTP(user.username, otp, expires);
-  await sendMail(email, "[Scriptbies] Mã OTP đặt lại mật khẩu", `Mã OTP của bạn là: ${otp}. KHÔNG CHIA SẺ MÃ NÀY CHO BẤT KỲ AI. Bạn có 10 phút để sử dụng mã này. Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Bạn cũng nên thay đổi mật khẩu của mình thường xuyên để bảo mật tài khoản.`);
+  await sendMail(
+    email,
+    "[Scriptbies] Mã OTP đặt lại mật khẩu",
+    `Mã OTP của bạn là: ${otp}. KHÔNG CHIA SẺ MÃ NÀY CHO BẤT KỲ AI. Bạn có 10 phút để sử dụng mã này. Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Bạn cũng nên thay đổi mật khẩu của mình thường xuyên để bảo mật tài khoản.`
+  );
   res.json({ message: "Đã gửi OTP về email" });
-
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
-    const { email, otp, newPassword, confirmPassword } = req.body;
-    if (newPassword !== confirmPassword)
-        return res.status(400).json({ error: "Mật khẩu không khớp" });
+  const { email, otp, newPassword, confirmPassword } = req.body;
+  if (newPassword !== confirmPassword)
+    return res.status(400).json({ error: "Mật khẩu không khớp" });
 
-    const user = await userModel.findByEmail(email);
-    if (!user) return res.status(404).json({ error: "Email không tồn tại" });
+  const user = await userModel.findByEmail(email);
+  if (!user) return res.status(404).json({ error: "Email không tồn tại" });
 
-    const otpRecord = await userModel.getOTP(user.username);
-    if (
-        !otpRecord ||
-        otpRecord.resetOTP !== otp ||
-        otpRecord.resetOTPExpires < Date.now()
-    ) {
-        return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
-    }
+  const otpRecord = await userModel.getOTP(user.username);
+  if (
+    !otpRecord ||
+    otpRecord.resetOTP !== otp ||
+    otpRecord.resetOTPExpires < Date.now()
+  ) {
+    return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
+  }
 
-    await userModel.changePassword(user.username, newPassword);
-    await userModel.clearOTP(user.username);
+  await userModel.changePassword(user.username, newPassword);
+  await userModel.clearOTP(user.username);
 
-    res.json({ message: "Đổi mật khẩu thành công" });
+  res.json({ message: "Đổi mật khẩu thành công" });
 };
 
 export const register = async (req: Request, res: Response) => {
@@ -167,9 +162,16 @@ export const register = async (req: Request, res: Response) => {
   const expires = Date.now() + 10 * 60 * 1000; // 10 phút
   await userModel.saveRegisterOTP(email, otp, expires);
 
-  await sendMail(email, "[Scriptbies] Mã xác minh đăng ký tài khoản", `Mã OTP đăng ký tài khoản của bạn là: ${otp}`);
+  await sendMail(
+    email,
+    "[Scriptbies] Mã xác minh đăng ký tài khoản",
+    `Mã OTP đăng ký tài khoản của bạn là: ${otp}`
+  );
 
-  res.json({ message: "Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản." });
+  res.json({
+    message:
+      "Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản.",
+  });
 };
 
 export const verifyEmail = async (req: Request, res: Response) => {
@@ -177,13 +179,14 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
   const user = await userModel.findByEmail(email);
   if (!user) return res.status(404).json({ error: "Email không tồn tại" });
-  if (user.isVerified) return res.status(400).json({ error: "Tài khoản đã xác minh" });
+  if (user.isVerified)
+    return res.status(400).json({ error: "Tài khoản đã xác minh" });
 
   const otpRecord = await userModel.getRegisterOTP(email);
   if (
-      !otpRecord ||
-      otpRecord.registerOTP !== otp ||
-      otpRecord.registerOTPExpires < Date.now()
+    !otpRecord ||
+    otpRecord.registerOTP !== otp ||
+    otpRecord.registerOTPExpires < Date.now()
   ) {
     return res.status(400).json({ error: "OTP không hợp lệ hoặc đã hết hạn" });
   }
