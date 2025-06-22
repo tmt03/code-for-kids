@@ -1,6 +1,7 @@
 export const WHITELIST_DOMAINS = [
   "https://code-for-kids.vercel.app",
   "http://localhost:3000",
+  "https://www.scriptbies.com",
 ];
 
 export const API_PARAM_COUNTS: { [key: string]: number } = {
