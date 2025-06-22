@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/environment";
 
@@ -18,7 +18,9 @@ export const verifyToken = (
   }
 
   if (!token) {
-    return res.status(401).json({ error: "Token không hợp lệ hoặc thiếu" });
+    return res
+      .status(401)
+      .json({ error: "Bạn cần đăng nhập để thực hiện hành động này." });
   }
 
   try {
@@ -26,6 +28,9 @@ export const verifyToken = (
     (req as any).user = decoded;
     next();
   } catch (error) {
-    return res.status(403).json({ error: "Token hết hạn hoặc không hợp lệ" });
+    return res.status(403).json({
+      error:
+        "Phiên làm việc của bạn không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.",
+    });
   }
 };
