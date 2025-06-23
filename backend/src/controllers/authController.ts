@@ -106,7 +106,7 @@ const forgotPassword = async (req: Request, res: Response) => {
       .json({ error: "Địa chỉ email này chưa được đăng ký." });
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const expires = Date.now() + 10 * 60 * 1000;
+  const expires = Date.now() + 3 * 60 * 1000; // 3 phút
 
   await userModel.saveOTP(user.username, otp, expires);
   await sendMail(
@@ -179,7 +179,7 @@ export const register = async (req: Request, res: Response) => {
   });
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const expires = Date.now() + 10 * 60 * 1000; // 10 phút
+  const expires = Date.now() + 3 * 60 * 1000; // 3 phút
   await userModel.saveRegisterOTP(email, otp, expires);
 
   await sendMail(
@@ -190,7 +190,7 @@ export const register = async (req: Request, res: Response) => {
 
   res.json({
     message:
-      "Đăng ký thành công! Vui lòng kiểm tra email để nhận mã OTP xác minh tài khoản.",
+      "OTP đã được gửi qua email cho bạn. Vui lòng nhập mã OTP để xác minh tài khoản. Nếu bạn không nhận được OTP, vui lòng kiểm tra lại email hoặc nhập lại email chính xác.",
   });
 };
 
@@ -213,9 +213,14 @@ export const verifyEmail = async (req: Request, res: Response) => {
     otpRecord.registerOTP !== otp ||
     otpRecord.registerOTPExpires < Date.now()
   ) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "Mã OTP không hợp lệ hoặc đã hết hạn." });
+    // Nếu OTP hết hạn, xóa luôn user chưa xác thực
+    if (user && !user.isVerified) {
+      await userModel.deleteByEmail(email);
+    }
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      error:
+        "Mã OTP không hợp lệ hoặc đã hết hạn. Nếu bạn nhập sai email, vui lòng đăng ký lại với email chính xác.",
+    });
   }
 
   await userModel.verifyUser(email);

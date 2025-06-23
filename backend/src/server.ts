@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import Cors from "cors";
 import exitHook from "exit-hook";
 import express, { Express } from "express";
+import cron from "node-cron";
 import { corsOptions } from "./config/cors";
 import { env } from "./config/environment";
 import { CLOSE_DB, CONNECT_DB } from "./config/mongoDB";
@@ -9,6 +10,7 @@ import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
 import orderRoutes from "./routes/orderRoute";
 import productRoutes from "./routes/productRoutes";
 import APIs_V1 from "./routes/v1";
+import { cleanupUnverifiedUsers } from "./utils/cleanupUnverifiedUsers";
 
 // Start server
 const START_SERVER = async () => {
@@ -29,6 +31,9 @@ const START_SERVER = async () => {
 
   //Middleware xử lý lỗi
   app.use(errorHandlingMiddleware);
+
+  // Khởi động cronjob xóa user chưa xác thực hết hạn OTP mỗi phút
+  cron.schedule("* * * * *", cleanupUnverifiedUsers);
 
   if (env.BUILD_MODE === "production") {
     app.listen(process.env.PORT, () => {
