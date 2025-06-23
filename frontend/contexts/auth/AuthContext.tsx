@@ -10,9 +10,11 @@ export interface AuthContextType {
     accessToken: string | null;
     isLoading: boolean;
     error: string | null;
+    errorLogin: string | null;
     login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     clearError: () => void;
+    clearErrorLogin: () => void;
     refreshUser: () => Promise<void>;
     isTrialMode: boolean;
     trialInfo: TrialInfo | null;
@@ -23,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [errorLogin, setErrorLogin] = useState<string | null>(null);
     const router = useRouter();
 
     const fetchUser = useCallback(async () => {
@@ -55,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const login = async (username: string, password: string) => {
         try {
             setIsLoading(true);
-            setError(null);
+            setErrorLogin(null);
 
             const { data } = await axiosInstance.post("/v1/auth/login", {
                 username,
@@ -67,8 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(data.user);
             router.push("/home");
         } catch (err: any) {
-            setError(err.response?.data?.error || "Đăng nhập thất bại");
-            throw err;
+            setErrorLogin(err.response?.data?.error || "Đăng nhập thất bại");
         } finally {
             setIsLoading(false);
         }
@@ -88,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const clearError = () => setError(null);
+    const clearErrorLogin = () => setErrorLogin(null);
 
     const refreshUser = async () => {
         await fetchUser();
@@ -104,9 +107,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 accessToken,
                 isLoading,
                 error,
+                errorLogin,
                 login,
                 logout,
                 clearError,
+                clearErrorLogin,
                 refreshUser,
                 isTrialMode,
                 trialInfo,

@@ -9,7 +9,7 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading, error, clearError } = useAuth();
+  const { login, isLoading, errorLogin, clearErrorLogin } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
@@ -25,6 +25,7 @@ export default function LoginPage() {
       setUsernameError("");
     }
     setUsername(escapeUsername(val));
+    clearErrorLogin();
   };
 
   const handlePasswordChange = (val: string) => {
@@ -34,11 +35,12 @@ export default function LoginPage() {
     } else {
       setPasswordError("");
     }
+    clearErrorLogin();
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    clearError();
+    clearErrorLogin();
 
     if (!isValidUsername(username)) {
       setUsernameError("Tên đăng nhập không hợp lệ.");
@@ -65,9 +67,9 @@ export default function LoginPage() {
           <p className="text-sm text-gray-600 mt-2">Chào mừng bạn đến với thế giới học lập trình!</p>
         </div>
 
-        {error && (
+        {errorLogin && (
           <div className="mb-6 p-3 bg-red-100 text-red-700 rounded-lg text-center">
-            {error}
+            {errorLogin}
           </div>
         )}
 

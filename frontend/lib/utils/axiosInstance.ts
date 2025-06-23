@@ -19,7 +19,12 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthApi = originalRequest.url?.includes("/v1/auth/login");
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthApi
+    ) {
       originalRequest._retry = true;
       try {
         const response = await axios.post(
@@ -37,7 +42,12 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest); // retry
       } catch (err) {
         console.log("Refresh thất bại, chuyển về login");
-        window.location.href = "/login";
+        if (
+          window.location.pathname !== "/login" &&
+          window.location.pathname !== "/register"
+        ) {
+          window.location.href = "/login";
+        }
         return Promise.reject(err);
       }
     }

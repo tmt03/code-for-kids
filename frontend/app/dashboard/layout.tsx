@@ -1,6 +1,7 @@
 import RequireAuth from "@/components/auth/RequireAuth";
-import Footer from '@/components/footer';
-import Header from '@/components/header';
+import RequirePermission from "@/components/auth/RequirePermission";
+import Footer from '@/components/layouts/footer';
+import Header from "@/components/layouts/header";
 
 type Props = {
     children: React.ReactNode;
@@ -9,11 +10,13 @@ type Props = {
 const DashboardLayout = ({ children }: Props) => {
     return (
         <RequireAuth>
+            <RequirePermission permission="viewDashboard">
                 <div className="">
                     <Header />
                     {children}
                     <Footer />
                 </div>
+            </RequirePermission>
         </RequireAuth>
     );
 };

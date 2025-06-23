@@ -20,9 +20,7 @@ export const fetchSubmitCode = async (userCode: string, questId: string) => {
       code: userCode,
       questId: questId,
     });
-
-    console.log("Response:", res.data);
-    return res.data; // Trả về dữ liệu từ server (beResult)
+    return res.data;
   } catch (error: any) {
     throw new Error(`Lỗi khi gửi code: ${error.message}`);
   }
