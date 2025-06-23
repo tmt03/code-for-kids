@@ -20,9 +20,7 @@ export const fetchSubmitCode = async (userCode: string, questId: string) => {
       code: userCode,
       questId: questId,
     });
-
-    console.log("Response:", res.data);
-    return res.data; // Trả về dữ liệu từ server (beResult)
+    return res.data;
   } catch (error: any) {
     throw new Error(`Lỗi khi gửi code: ${error.message}`);
   }
@@ -145,5 +143,15 @@ export const registerUser = async (
 // Ví dụ: Xác minh email
 export const verifyEmail = async (email: string, otp: string) => {
   const res = await axiosInstance.post("/v1/auth/verify-email", { email, otp });
+  return res.data;
+};
+
+export const updateQuestVideoUrl = async (
+  questId: string,
+  videoUrl: string
+) => {
+  const res = await axiosInstance.put(`/v1/quests/${questId}/video-url`, {
+    videoUrl,
+  });
   return res.data;
 };
