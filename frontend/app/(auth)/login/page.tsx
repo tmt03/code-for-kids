@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { escapeUsername, isValidPassword, isValidUsername } from "@/lib/utils/validateInput";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { escapeUsername, isValidUsername } from "@/lib/utils/validateInput";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,17 +13,27 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleUsernameChange = (val: string) => {
     // Kiểm tra có ký tự đặc biệt không
     if (/[^a-zA-Z0-9._]/.test(val)) {
       setUsernameError("Tên đăng nhập không được chứa ký tự đặc biệt.");
     } else if (val && !isValidUsername(val)) {
-      setUsernameError("Tên đăng nhập không được bắt đầu/kết thúc bằng dấu chấm hoặc gạch dưới.");
+      setUsernameError("Tên đăng nhập không được bắt đầu hoặc kết thúc bằng dấu chấm hoặc gạch dưới.");
     } else {
       setUsernameError("");
     }
     setUsername(escapeUsername(val));
+  };
+
+  const handlePasswordChange = (val: string) => {
+    setPassword(val);
+    if (!isValidPassword(val)) {
+      setPasswordError("Mật khẩu phải tối thiểu 6 ký tự, có chữ và số, không chứa khoảng trắng.");
+    } else {
+      setPasswordError("");
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -32,6 +42,10 @@ export default function LoginPage() {
 
     if (!isValidUsername(username)) {
       setUsernameError("Tên đăng nhập không hợp lệ.");
+      return;
+    }
+    if (!isValidPassword(password)) {
+      setPasswordError("Mật khẩu phải tối thiểu 6 ký tự, có chữ và số, không chứa khoảng trắng.");
       return;
     }
 
@@ -85,10 +99,13 @@ export default function LoginPage() {
               type="password"
               placeholder="Nhập mật khẩu"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handlePasswordChange(e.target.value)}
               disabled={isLoading}
               className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
             />
+            {passwordError && (
+              <div className="text-xs text-red-600 mt-1">{passwordError}</div>
+            )}
             <div className="text-right text-sm text-gray-600">
               <a href="/reset-password" className="text-[#00A8B5] hover:underline">
                 Bạn quên mật khẩu?

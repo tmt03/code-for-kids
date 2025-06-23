@@ -3,6 +3,15 @@
 import { registerUser, verifyEmail } from "@/apis";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+    escapeEmail,
+    escapeOtp,
+    escapeUsername,
+    isValidEmail,
+    isValidOtp,
+    isValidPassword,
+    isValidUsername,
+} from "@/lib/utils/validateInput";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -15,14 +24,82 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [otpError, setOtpError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const router = useRouter();
+
+    // Validate username
+    const handleUsernameChange = (val: string) => {
+        const escaped = escapeUsername(val);
+        setUsername(escaped);
+        if (/[^a-zA-Z0-9._]/.test(val)) {
+            setUsernameError("Chỉ cho phép chữ, số, dấu chấm, dấu gạch dưới.");
+        } else if (escaped && !isValidUsername(escaped)) {
+            setUsernameError("Không được bắt đầu/kết thúc bằng dấu chấm hoặc gạch dưới.");
+        } else {
+            setUsernameError("");
+        }
+    };
+
+    // Validate email
+    const handleEmailChange = (val: string) => {
+        const escaped = escapeEmail(val);
+        setEmail(escaped);
+        if (/[^a-zA-Z0-9@._\-+]/.test(val)) {
+            setEmailError("Email chỉ cho phép chữ, số, @, ., _, -, +.");
+        } else if (escaped && !isValidEmail(escaped)) {
+            setEmailError("Email không hợp lệ.");
+        } else {
+            setEmailError("");
+        }
+    };
+
+    // Validate OTP
+    const handleOtpChange = (val: string) => {
+        const escaped = escapeOtp(val);
+        setOtp(escaped);
+        if (/[^0-9]/.test(val)) {
+            setOtpError("OTP chỉ được nhập số.");
+        } else if (escaped && !isValidOtp(escaped)) {
+            setOtpError("OTP phải gồm 6 số.");
+        } else {
+            setOtpError("");
+        }
+    };
+
+    // Validate password
+    const handlePasswordChange = (val: string) => {
+        setPassword(val);
+        if (!isValidPassword(val)) {
+            setPasswordError("Mật khẩu phải tối thiểu 6 ký tự, có chữ và số, không chứa khoảng trắng.");
+        } else {
+            setPasswordError("");
+        }
+    };
 
     // Bước 1: Đăng ký
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
         setError("");
         setMessage("");
+
+        // Validate trước khi submit
+        if (!isValidUsername(username)) {
+            setUsernameError("Tên đăng nhập không hợp lệ.");
+            return;
+        }
+        if (!isValidEmail(email)) {
+            setEmailError("Email không hợp lệ.");
+            return;
+        }
+        if (!isValidPassword(password)) {
+            setPasswordError("Mật khẩu phải tối thiểu 6 ký tự, có chữ và số, không chứa khoảng trắng.");
+            return;
+        }
+
+        setLoading(true);
         try {
             await registerUser(username, email, password);
             setMessage("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
@@ -37,9 +114,15 @@ export default function RegisterPage() {
     // Bước 2: Xác minh OTP
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
         setError("");
         setMessage("");
+
+        if (!isValidOtp(otp)) {
+            setOtpError("OTP phải gồm 6 số.");
+            return;
+        }
+
+        setLoading(true);
         try {
             await verifyEmail(email, otp);
             setMessage("Xác minh thành công! Đang chuyển hướng...");
@@ -66,11 +149,14 @@ export default function RegisterPage() {
                                 type="text"
                                 placeholder="Nhập tên đăng nhập"
                                 value={username}
-                                onChange={e => setUsername(e.target.value)}
+                                onChange={e => handleUsernameChange(e.target.value)}
                                 disabled={loading}
                                 className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
                                 required
                             />
+                            {usernameError && (
+                                <div className="text-xs text-red-600 mt-1">{usernameError}</div>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -81,11 +167,14 @@ export default function RegisterPage() {
                                 type="email"
                                 placeholder="Nhập email"
                                 value={email}
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={e => handleEmailChange(e.target.value)}
                                 disabled={loading}
                                 className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
                                 required
                             />
+                            {emailError && (
+                                <div className="text-xs text-red-600 mt-1">{emailError}</div>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
@@ -96,11 +185,14 @@ export default function RegisterPage() {
                                 type="password"
                                 placeholder="Nhập mật khẩu"
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={e => handlePasswordChange(e.target.value)}
                                 disabled={loading}
                                 className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
                                 required
                             />
+                            {passwordError && (
+                                <div className="text-xs text-red-600 mt-1">{passwordError}</div>
+                            )}
                         </div>
                         <Button
                             type="submit"
@@ -129,13 +221,19 @@ export default function RegisterPage() {
                             <Input
                                 id="otp"
                                 type="text"
-                                placeholder="Nhập mã OTP"
+                                placeholder="Nhập mã OTP gồm 6 số"
                                 value={otp}
-                                onChange={e => setOtp(e.target.value)}
+                                onChange={e => handleOtpChange(e.target.value)}
                                 disabled={loading}
                                 className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={6}
                                 required
                             />
+                            {otpError && (
+                                <div className="text-xs text-red-600 mt-1">{otpError}</div>
+                            )}
                         </div>
                         <Button
                             type="submit"

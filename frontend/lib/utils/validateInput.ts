@@ -28,3 +28,12 @@ export function isValidEmail(str: string) {
 export function isValidOtp(str: string) {
   return /^[0-9]{6}$/.test(str);
 }
+
+// Validate password: tối thiểu 6 ký tự, không chứa khoảng trắng, có ít nhất 1 chữ cái và 1 số
+export function isValidPassword(str: string) {
+  return (
+    /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{6,}$/.test(
+      str
+    ) && !/\s/.test(str)
+  );
+}
