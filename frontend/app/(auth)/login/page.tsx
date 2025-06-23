@@ -5,27 +5,38 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-// Hàm escape ký tự đặc biệt cho username, chỉ cho phép chữ, số, dấu chấm, dấu gạch dưới
-function escapeInput(str: string) {
-  return str.replace(/[^a-zA-Z0-9._]/g, "");
-}
+import { escapeUsername, isValidUsername } from "@/lib/utils/validateInput";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, isLoading, error, clearError } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+
+  const handleUsernameChange = (val: string) => {
+    // Kiểm tra có ký tự đặc biệt không
+    if (/[^a-zA-Z0-9._]/.test(val)) {
+      setUsernameError("Tên đăng nhập không được chứa ký tự đặc biệt.");
+    } else if (val && !isValidUsername(val)) {
+      setUsernameError("Tên đăng nhập không được bắt đầu/kết thúc bằng dấu chấm hoặc gạch dưới.");
+    } else {
+      setUsernameError("");
+    }
+    setUsername(escapeUsername(val));
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
 
-    // Chỉ escape username, không escape password
-    const safeUsername = escapeInput(username);
+    if (!isValidUsername(username)) {
+      setUsernameError("Tên đăng nhập không hợp lệ.");
+      return;
+    }
 
     try {
-      await login(safeUsername, password);
+      await login(username, password);
     } catch (err) {
       // Error đã được xử lý trong AuthProvider
       console.error("Login failed:", err);
@@ -56,10 +67,13 @@ export default function LoginPage() {
               type="text"
               placeholder="Nhập tên đăng nhập"
               value={username}
-              onChange={(e) => setUsername(escapeInput(e.target.value))}
+              onChange={(e) => handleUsernameChange(e.target.value)}
               disabled={isLoading}
               className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
             />
+            {usernameError && (
+              <div className="text-xs text-red-600 mt-1">{usernameError}</div>
+            )}
           </div>
 
           <div>
