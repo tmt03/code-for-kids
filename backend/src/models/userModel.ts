@@ -237,6 +237,11 @@ const getTrialUsers = async () => {
     .toArray();
 };
 
+// Xóa user theo email
+const deleteByEmail = async (email: string) => {
+  return await GET_DB().collection(USER_COLLECTION_NAME).deleteOne({ email });
+};
+
 export const userModel = {
   findByUsername,
   findByEmail,
@@ -258,4 +263,5 @@ export const userModel = {
   activateUser,
   updateTrialChapter,
   getTrialUsers,
+  deleteByEmail,
 };

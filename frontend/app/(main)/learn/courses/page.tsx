@@ -1,6 +1,6 @@
-import CourseCard from "@/components/learn/courses/course-card";
 import Footer from "@/components/layouts/footer";
 import Header from "@/components/layouts/header";
+import CourseCard from "@/components/learn/courses/course-card";
 import SearchBar from "@/components/learn/courses/searchbar";
 import { TrialBanner } from "@/components/trial/TrialBanner";
 
@@ -14,7 +14,7 @@ export default function LearnPage() {
             <div className="mx-auto justify-center items-center flex flex-col ">
                 {/* Header Background */}
                 <div
-                    className="w-full pt-12 h-86 flex flex-row justify-center items-center bg-cover bg-center text-white relative"
+                    className="w-full pt-12 h-106 flex flex-row justify-center items-center bg-cover bg-center text-white relative"
                     style={{ backgroundImage: "url('/assets/learn-page-bg.png')" }}
                 >
 

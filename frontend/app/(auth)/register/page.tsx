@@ -101,8 +101,8 @@ export default function RegisterPage() {
 
         setLoading(true);
         try {
-            await registerUser(username, email, password);
-            setMessage("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
+            const res = await registerUser(username, email, password);
+            setMessage(res.message);
             setStep(2);
         } catch (err: any) {
             setError(err.message || "Có lỗi xảy ra!");
