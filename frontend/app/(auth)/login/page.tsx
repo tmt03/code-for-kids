@@ -5,16 +5,35 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { escapeUsername, isValidUsername } from "@/lib/utils/validateInput";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, isLoading, error, clearError } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+
+  const handleUsernameChange = (val: string) => {
+    // Kiểm tra có ký tự đặc biệt không
+    if (/[^a-zA-Z0-9._]/.test(val)) {
+      setUsernameError("Tên đăng nhập không được chứa ký tự đặc biệt.");
+    } else if (val && !isValidUsername(val)) {
+      setUsernameError("Tên đăng nhập không được bắt đầu/kết thúc bằng dấu chấm hoặc gạch dưới.");
+    } else {
+      setUsernameError("");
+    }
+    setUsername(escapeUsername(val));
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+
+    if (!isValidUsername(username)) {
+      setUsernameError("Tên đăng nhập không hợp lệ.");
+      return;
+    }
 
     try {
       await login(username, password);
@@ -26,7 +45,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#E8F1F2] to-[#D3E0E1]">
-      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 hover:scale-105">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Đăng Nhập</h1>
           <p className="text-sm text-gray-600 mt-2">Chào mừng bạn đến với thế giới học lập trình!</p>
@@ -48,10 +67,13 @@ export default function LoginPage() {
               type="text"
               placeholder="Nhập tên đăng nhập"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => handleUsernameChange(e.target.value)}
               disabled={isLoading}
               className="w-full border-gray-300 focus:ring-2 focus:ring-[#00A8B5] focus:border-[#00A8B5]"
             />
+            {usernameError && (
+              <div className="text-xs text-red-600 mt-1">{usernameError}</div>
+            )}
           </div>
 
           <div>

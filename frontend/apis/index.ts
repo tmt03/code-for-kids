@@ -147,3 +147,13 @@ export const verifyEmail = async (email: string, otp: string) => {
   const res = await axiosInstance.post("/v1/auth/verify-email", { email, otp });
   return res.data;
 };
+
+export const updateQuestVideoUrl = async (
+  questId: string,
+  videoUrl: string
+) => {
+  const res = await axiosInstance.put(`/v1/quests/${questId}/video-url`, {
+    videoUrl,
+  });
+  return res.data;
+};

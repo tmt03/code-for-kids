@@ -3,6 +3,7 @@
 import { fetchAllChapters } from "@/apis";
 import ProgressBar from "@/components/learn/quests/progressbar";
 import { Button } from "@/components/ui/button";
+import { PlayIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -104,6 +105,17 @@ export default function FooterChapter() {
                     disabled={currentIndex === quests.length - 1 || currentIndex === null}
                 >
                     Tiếp Theo
+                </Button>
+                <Button
+                    onClick={() => {
+                        if (currentIndex !== null && quests[currentIndex]?.videoUrl) {
+                            window.open(quests[currentIndex].videoUrl, "_blank");
+                        }
+                    }}
+                    disabled={currentIndex === null || !quests[currentIndex]?.videoUrl}
+                >
+                    <PlayIcon className="w-4 h-4" />
+                    Xem video hướng dẫn
                 </Button>
             </div>
         </div>
