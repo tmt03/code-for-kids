@@ -77,8 +77,13 @@ export default function ChapterPage() {
             </div>
             {/* Header Background */}
             <div
-                className="w-full h-86 flex flex-row justify-center items-center bg-cover bg-center text-white relative"
-                style={{ backgroundImage: "url('/assets/learn-page-bg.png')" }}
+                className="w-full h-106 bg-cover bg-center"
+                style={{
+                    backgroundImage: "url('/assets/book_1/full_bia_to.png')",
+                    backgroundPosition: "center 10%", // hoặc "50% 20%" để crop lên trên một chút
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat"
+                }}
             ></div>
             <main className="w-full px-4 py-6 bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1]">
                 <div className="max-w-6xl mx-auto flex flex-col lg:flex-row flex-1 w-full">
