@@ -1,3 +1,5 @@
+'use client';
+
 import { validateOrderProd } from "@/lib/utils/validateOrderProd";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -127,41 +129,35 @@ export default function OrderPopup({ open, onClose, product, onSubmit, user }: O
                 {/* Close button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-3xl z-10 focus:outline-none"
+                    className="absolute top-3 right-3 text-[#0A3D62] hover:text-red-500 text-3xl z-10 focus:outline-none"
                     aria-label="Đóng"
                 >
                     <IoClose />
                 </button>
                 {/* Header sản phẩm */}
-                <div className="flex flex-col sm:flex-row items-center gap-4 bg-gradient-to-r from-yellow-100 to-pink-100 p-6 border-b-2 border-yellow-200">
+                <div className="flex flex-col sm:flex-row items-center gap-4 bg-gradient-to-r from-[#E0F4F7] to-[#C1E7EB] p-6 border-b-2 border-[#FFD700]">
                     <img
                         src={product.pimg}
                         alt={product.pname}
                         className="w-24 h-24 object-contain rounded-2xl shadow-md bg-white"
                     />
                     <div className="flex-1 text-center sm:text-left">
-                        <h2 className="text-2xl font-extrabold text-pink-600 mb-1 drop-shadow">{product.pname}</h2>
-                        <div className="text-lg text-gray-700 font-semibold mb-1">
-                            Giá: <span className="text-yellow-500 font-bold">{product.pprice.toLocaleString('vi-VN')}₫</span>
+                        <h2 className="text-2xl font-extrabold text-[#007C8D] mb-1 drop-shadow">{product.pname}</h2>
+                        <div className="text-lg text-[#0A3D62] font-semibold mb-1">
+                            Giá: <span className="text-[#FFD700] font-bold">{product.pprice.toLocaleString('vi-VN')}₫</span>
                         </div>
-                        <div className="text-sm text-gray-500">Số lượng còn: {product.pquantity}</div>
+                        <div className="text-sm text-[#0A3D62]">Số lượng còn: {product.pquantity}</div>
                     </div>
                 </div>
                 {success ? (
                     <div className="flex flex-col items-center justify-center p-8 min-h-[350px]">
                         <div className="text-4xl mb-4">🎉</div>
-                        <h2 className="text-2xl font-bold text-green-600 mb-2 text-center">Bạn đã gửi thông tin mua hàng thành công!</h2>
-                        <p className="text-center text-gray-700 mb-6">Nhân viên hỗ trợ sẽ liên hệ với bạn sớm để kích hoạt khóa học cho bạn. Hãy chú ý điện thoại nhé!</p>
+                        <h2 className="text-2xl font-bold text-[#00A8B5] mb-2 text-center">Bạn đã gửi thông tin mua hàng thành công!</h2>
+                        <p className="text-center text-[#0A3D62] mb-6">Nhân viên hỗ trợ sẽ liên hệ với bạn sớm để kích hoạt khóa học cho bạn. Hãy chú ý điện thoại nhé!</p>
                         <div className="flex gap-4 w-full mt-2">
-                            {/* <Button
-                                className="flex-1 bg-gradient-to-r from-yellow-400 to-pink-400 hover:from-pink-400 hover:to-yellow-400 text-white font-bold py-3 rounded-xl text-lg shadow-lg transition-all active:scale-95"
-                                onClick={() => router.push("/shop/payment")}
-                            >
-                                Thanh toán
-                            </Button> */}
                             <Button
                                 variant={"default"}
-                                className="flex-1 bg-sky-600 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-md text-lg transition-all"
+                                className="flex-1 bg-[#00A8B5] hover:bg-[#007C8D] text-white font-bold py-3 rounded-md text-lg transition-all"
                                 onClick={() => {
                                     onClose();
                                     router.push("/shop");
@@ -187,83 +183,83 @@ export default function OrderPopup({ open, onClose, product, onSubmit, user }: O
                         )}
 
                         <div className="flex flex-col gap-2">
-                            <label className="font-semibold">Số lượng <span className="text-red-500">*</span></label>
+                            <label className="font-semibold text-[#0A3D62]">Số lượng <span className="text-red-500">*</span></label>
                             <input
                                 type="number"
                                 min={1}
                                 max={product.pquantity}
                                 value={quantity}
                                 onChange={e => setQuantity(Number(e.target.value))}
-                                className="w-full border-2 border-yellow-200 focus:border-pink-400 px-4 py-2 rounded-lg text-lg outline-none transition"
+                                className="w-full border-2 border-[#FFD700] focus:border-[#00A8B5] px-4 py-2 rounded-lg text-lg outline-none transition"
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className="font-semibold">Tên người mua <span className="text-red-500">*</span></label>
+                            <label className="font-semibold text-[#0A3D62]">Tên người mua <span className="text-red-500">*</span></label>
                             <input
                                 type="text"
                                 name="name"
                                 value={buyer.name}
                                 onChange={handleChange}
-                                className="w-full border-2 border-yellow-200 focus:border-pink-400 px-4 py-2 rounded-lg text-lg outline-none transition"
+                                className="w-full border-2 border-[#FFD700] focus:border-[#00A8B5] px-4 py-2 rounded-lg text-lg outline-none transition"
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className="font-semibold">Số điện thoại <span className="text-red-500">*</span></label>
+                            <label className="font-semibold text-[#0A3D62]">Số điện thoại <span className="text-red-500">*</span></label>
                             <input
                                 type="text"
                                 name="phone"
                                 value={buyer.phone}
                                 onChange={handleChange}
-                                className="w-full border-2 border-yellow-200 focus:border-pink-400 px-4 py-2 rounded-lg text-lg outline-none transition"
+                                className="w-full border-2 border-[#FFD700] focus:border-[#00A8B5] px-4 py-2 rounded-lg text-lg outline-none transition"
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className="font-semibold">Email <span className="text-red-500">*</span></label>
+                            <label className="font-semibold text-[#0A3D62]">Email <span className="text-red-500">*</span></label>
                             <input
                                 type="email"
                                 name="email"
                                 value={buyer.email}
                                 onChange={handleChange}
-                                className="w-full border-2 border-yellow-200 focus:border-pink-400 px-4 py-2 rounded-lg text-lg outline-none transition"
+                                className="w-full border-2 border-[#FFD700] focus:border-[#00A8B5] px-4 py-2 rounded-lg text-lg outline-none transition"
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className="font-semibold">Địa chỉ - để gửi sản phẩm đi kèm (nếu có) <span className="text-red-500">*</span></label>
+                            <label className="font-semibold text-[#0A3D62]">Địa chỉ - để gửi sản phẩm đi kèm (nếu có) <span className="text-red-500">*</span></label>
                             <input
                                 type="text"
                                 name="address"
                                 value={buyer.address}
                                 onChange={handleChange}
-                                className="w-full border-2 border-yellow-200 focus:border-pink-400 px-4 py-2 rounded-lg text-lg outline-none transition"
+                                className="w-full border-2 border-[#FFD700] focus:border-[#00A8B5] px-4 py-2 rounded-lg text-lg outline-none transition"
                             />
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <label className="font-semibold">Ghi chú</label>
+                        <div className="flex fore-col gap-2">
+                            <label className="font-semibold text-[#0A3D62]">Ghi chú</label>
                             <textarea
                                 name="note"
                                 value={buyer.note}
                                 onChange={handleChange}
-                                className="w-full border-2 border-yellow-200 focus:border-pink-400 px-4 py-2 rounded-lg text-lg outline-none transition"
+                                className="w-full border-2 border-[#FFD700] focus:border-[#00A8B5] px-4 py-2 rounded-lg text-lg outline-none transition"
                             />
                         </div>
                         {/* Tổng tiền */}
-                        <div className="bg-yellow-50 p-4 rounded-xl flex flex-col gap-1 text-base font-semibold text-gray-700 shadow-inner">
-                            <div>🧾 Tiền hàng: <span className="text-pink-500">{productTotal.toLocaleString('vi-VN')}₫</span></div>
-                            <div>💰 Tổng thanh toán: <span className="text-green-600 text-lg">{grandTotal.toLocaleString('vi-VN')}₫</span></div>
+                        <div className="bg-[#E0F4F7] p-4 rounded-xl flex flex-col gap-1 text-base font-semibold text-[#0A3D62] shadow-inner">
+                            <div>🧾 Tiền hàng: <span className="text-[#00A8B5]">{productTotal.toLocaleString('vi-VN')}₫</span></div>
+                            <div>💰 Tổng thanh toán: <span className="text-[#00A8B5] text-lg">{grandTotal.toLocaleString('vi-VN')}₫</span></div>
                         </div>
                         {/* Nút hành động */}
                         <div className="flex gap-3 mt-2">
                             <Button
                                 type="button"
                                 onClick={onClose}
-                                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-md text-lg transition-all"
+                                className="flex-1 bg-[#C1E7EB] hover:bg-[#00A8B5] text-[#0A3D62] font-bold py-3 rounded-md text-lg transition-all"
                                 disabled={isSubmitting}
                             >
                                 Hủy
                             </Button>
                             <Button
                                 type="submit"
-                                className="flex-1 bg-gradient-to-r from-yellow-400 to-pink-400 hover:from-pink-400 hover:to-yellow-400 text-white font-bold py-3 rounded-md text-lg transition-all"
+                                className="flex-1 bg-[#FFD700] hover:bg-[#E6C200] text-[#0A3D62] font-bold py-3 rounded-md text-lg transition-all"
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting ? "Đang gửi..." : "Xác nhận"}
@@ -281,4 +277,4 @@ export default function OrderPopup({ open, onClose, product, onSubmit, user }: O
             `}</style>
         </div >
     );
-} 
+}

@@ -36,19 +36,16 @@ export default function ShopPage() {
       ...data,
       role: user?.role,
       createdBy: user?.username,
-      status: "pending", // status mặc định
+      status: "pending",
     };
 
-    // Gọi API và trả về Promise
     const response = await axiosInstance.post("/v1/orders/create", payload);
     return response.data;
   };
 
   return (
-    <div
-      className="min-h-screen p-0 sm:p-6 bg-gradient-to-br from-[#E0F4F7] to-[#FFD700]"
-    >
-      <h1 className="text-4xl font-extrabold text-center mb-10 mt-8 text-[#0A3D62] drop-shadow-2xl">
+    <div className="min-h-screen p-0 sm:p-6 bg-gradient-to-b from-[#E0F4F7] to-[#C1E7EB] text-[#0A3D62]">
+      <h1 className="text-4xl font-extrabold text-center mb-10 mt-8 text-[#007C8D] drop-shadow-2xl">
         🕹️ Cửa hàng huyền thoại
       </h1>
 
@@ -89,6 +86,23 @@ export default function ShopPage() {
           user={user || undefined}
         />
       )}
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 1s ease-out;
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 1s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
