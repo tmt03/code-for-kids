@@ -1,34 +1,96 @@
 import { Request, Response } from "express";
-import { GET_DB } from "../config/mongoDB";
+import { ProductService } from "../services/productService";
 
+/**
+ * Controller xử lý các request liên quan đến sản phẩm
+ */
+
+/**
+ * Lấy tất cả sản phẩm
+ * @route GET /v1/products
+ * @access Public
+ */
 export const getAllProducts = async (_req: Request, res: Response) => {
   try {
-    const products = await GET_DB().collection("products").find({}).toArray();
-    res.status(200).json(products);
-  } catch (err) {
-    console.error("❌ Lỗi getAllProducts:", err);
-    res.status(500).json({ message: "Lỗi lấy sản phẩm" });
+    // Gọi service để lấy danh sách sản phẩm
+    const products = await ProductService.getAllProducts();
+
+    res.status(200).json({
+      success: true,
+      message: "Lấy danh sách sản phẩm thành công",
+      data: products,
+      count: products.length,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Lỗi lấy danh sách sản phẩm",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 
-export const addProduct = async (req: Request, res: Response) => {
+/**
+ * Lấy sản phẩm theo ID
+ * @route GET /v1/products/:pid
+ * @access Public
+ */
+export const getProductById = async (req: Request, res: Response) => {
   try {
-    const { name, imageUrls, description, price, quantity } = req.body;
+    const { pid } = req.params;
 
-    const newProduct = {
-      name,
-      imageUrls,
-      description,
-      price: Number(price),
-      quantity: Number(quantity),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+    if (!pid) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID không được để trống",
+      });
+    }
 
-    await GET_DB().collection("products").insertOne(newProduct);
-    res.status(201).json({ message: "Thêm sản phẩm thành công", product: newProduct });
-  } catch (err) {
-    console.error("❌ Lỗi addProduct:", err);
-    res.status(500).json({ message: "Lỗi thêm sản phẩm" });
+    // Gọi service để lấy sản phẩm theo ID
+    const product = await ProductService.getProductById(pid);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy sản phẩm",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Lấy thông tin sản phẩm thành công",
+      data: product,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Lỗi lấy thông tin sản phẩm",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+/**
+ * Lấy sản phẩm còn hàng
+ * @route GET /v1/products/available
+ * @access Public
+ */
+export const getAvailableProducts = async (_req: Request, res: Response) => {
+  try {
+    // Gọi service để lấy sản phẩm còn hàng
+    const products = await ProductService.getAvailableProducts();
+
+    res.status(200).json({
+      success: true,
+      message: "Lấy danh sách sản phẩm còn hàng thành công",
+      data: products,
+      count: products.length,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Lỗi lấy danh sách sản phẩm còn hàng",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };

@@ -1,11 +1,11 @@
 // orderModel.ts
-import { GET_DB } from "../config/mongoDB";
 import { ObjectId } from "mongodb";
+import { GET_DB } from "../config/mongoDB";
 
 export interface OrderData {
   _id?: ObjectId; // MongoDB documents sẽ có _id
   orderCode: string;
-  role: 'guest' | 'user';
+  role: "guest" | "user";
   products: {
     pid: string;
     pname: string;
@@ -21,7 +21,7 @@ export interface OrderData {
     note?: string;
   };
   createdAt: Date;
-  status: 'pending' | 'approved' | 'rejected' | 'done';
+  status: "pending" | "approved" | "rejected" | "done";
   createdBy: string;
 }
 
@@ -49,14 +49,27 @@ export const getOrderByCode = async (orderCode: string) => {
   return await collection.findOne({ orderCode });
 };
 
+//Get all orders by username
+export const getOrdersByUsername = async (username: string) => {
+  const db = GET_DB();
+  const collection = db.collection<OrderData>(COLLECTION_NAME);
+  return await collection.find({ createdBy: username }).toArray();
+};
+
 //Update order status
-export const updateOrderStatus = async (orderCode: string, status: OrderData["status"]) => {
+export const updateOrderStatus = async (
+  orderCode: string,
+  status: OrderData["status"]
+) => {
   const db = GET_DB();
   const collection = db.collection<OrderData>(COLLECTION_NAME);
   return await collection.updateOne({ orderCode }, { $set: { status } });
 };
 
-export const updateOrderStatusInDB = async (orderCode: string, status: OrderData["status"]) => {
+export const updateOrderStatusInDB = async (
+  orderCode: string,
+  status: OrderData["status"]
+) => {
   const db = GET_DB();
   const collection = db.collection<OrderData>("orders");
   return await collection.updateOne({ orderCode }, { $set: { status } });

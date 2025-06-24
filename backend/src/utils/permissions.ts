@@ -17,7 +17,6 @@ export const rolePermissions = {
     "viewLearnProgress",
     "userGame",
     "placeOrder",
-    "lookupOrder",
     "browseProducts",
   ],
   guest: ["browseProducts", "placeOrder", "lookupOrder"],

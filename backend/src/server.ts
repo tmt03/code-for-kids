@@ -8,8 +8,8 @@ import { env } from "./config/environment";
 import { CLOSE_DB, CONNECT_DB } from "./config/mongoDB";
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
 import orderRoutes from "./routes/orderRoute";
-import productRoutes from "./routes/productRoutes";
 import APIs_V1 from "./routes/v1";
+import { OrderCleanupService } from "./services/orderCleanupService";
 import { cleanupUnverifiedUsers } from "./utils/cleanupUnverifiedUsers";
 
 // Start server
@@ -25,15 +25,15 @@ const START_SERVER = async () => {
 
   app.use("/v1", APIs_V1);
 
-  app.use("/api/products", productRoutes);
-
-  app.use("/api/orders", orderRoutes);
-
   //Middleware xử lý lỗi
   app.use(errorHandlingMiddleware);
 
   // Khởi động cronjob xóa user chưa xác thực hết hạn OTP mỗi phút
   cron.schedule("* * * * *", cleanupUnverifiedUsers);
+
+  // Khởi động Order Cleanup Service
+  const orderCleanupService = OrderCleanupService.getInstance();
+  orderCleanupService.startCleanupJobs();
 
   if (env.BUILD_MODE === "production") {
     app.listen(process.env.PORT, () => {
@@ -50,9 +50,12 @@ const START_SERVER = async () => {
       }
     );
   }
+
   //Thực hiện các tác vụ cleaup trước khi dừng server
   //Tài liệu: https://www.npmjs.com/package/exit-hook?activeTab=readme
   exitHook(() => {
+    // Dừng cleanup service
+    orderCleanupService.stopCleanupJobs();
     CLOSE_DB();
   });
 };
