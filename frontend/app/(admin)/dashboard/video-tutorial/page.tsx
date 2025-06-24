@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
 import { fetchAllChapters, updateQuestVideoUrl } from "@/apis";
+import { useEffect, useState } from "react";
 
 type Quest = {
     id: string;
@@ -15,7 +15,7 @@ type Chapter = {
     quests: Quest[];
 };
 
-export default function DashboardPage() {
+export default function VideoTutorialPage() {
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingQuestId, setEditingQuestId] = useState<string | null>(null);

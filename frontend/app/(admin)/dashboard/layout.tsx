@@ -1,5 +1,5 @@
+import SidebarAdmin from "@/components/admin/sidebar-admin";
 import RequireAuth from "@/components/auth/RequireAuth";
-import RequirePermission from "@/components/auth/RequirePermission";
 import Footer from '@/components/layouts/footer';
 import Header from "@/components/layouts/header";
 
@@ -10,13 +10,16 @@ type Props = {
 const DashboardLayout = ({ children }: Props) => {
     return (
         <RequireAuth>
-            <RequirePermission permission="viewDashboard">
-                <div className="">
-                    <Header />
-                    {children}
-                    <Footer />
+            <div className="">
+                <Header />
+                <div className="flex flex-1">
+                    <SidebarAdmin />
+                    <div className="">
+                        {children}
+                    </div>
                 </div>
-            </RequirePermission>
+                <Footer />
+            </div>
         </RequireAuth>
     );
 };
