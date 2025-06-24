@@ -6,6 +6,7 @@ import { env } from "../config/environment";
 import { userModel } from "../models/userModel";
 import { authService } from "../services/authService";
 import { sendMail } from "../utils/emailService";
+import { generateOtpEmail } from "../utils/emailTemplate";
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -109,11 +110,13 @@ const forgotPassword = async (req: Request, res: Response) => {
   const expires = Date.now() + 3 * 60 * 1000; // 3 phút
 
   await userModel.saveOTP(user.username, otp, expires);
-  await sendMail(
-    email,
-    "[Scriptbies] Mã OTP đặt lại mật khẩu",
-    `Mã OTP của bạn là: ${otp}. KHÔNG CHIA SẺ MÃ NÀY CHO BẤT KỲ AI. Bạn có 10 phút để sử dụng mã này. Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Bạn cũng nên thay đổi mật khẩu của mình thường xuyên để bảo mật tài khoản.`
+
+  const emailBody = generateOtpEmail(
+    otp,
+    "Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng sử dụng mã OTP dưới đây để tiếp tục."
   );
+
+  await sendMail(email, "[Scriptbies] Mã OTP đặt lại mật khẩu", emailBody);
   res.json({ message: "Một mã OTP đã được gửi đến email của bạn." });
 };
 
@@ -182,10 +185,15 @@ export const register = async (req: Request, res: Response) => {
   const expires = Date.now() + 3 * 60 * 1000; // 3 phút
   await userModel.saveRegisterOTP(email, otp, expires);
 
+  const emailBody = generateOtpEmail(
+    otp,
+    "Cảm ơn bạn đã đăng ký. Vui lòng sử dụng mã OTP dưới đây để xác minh tài khoản của bạn."
+  );
+
   await sendMail(
     email,
     "[Scriptbies] Mã xác minh đăng ký tài khoản",
-    `Mã OTP đăng ký tài khoản của bạn là: ${otp}`
+    emailBody
   );
 
   res.json({

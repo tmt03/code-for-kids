@@ -1,12 +1,14 @@
 import express from "express";
-import { chapterRoute } from "./chapterRoute";
+import { adminRoute } from "./adminRoute";
 import { authRoute } from "./authRoute";
+import { chapterRoute } from "./chapterRoute";
+import { orderRoute } from "./orderRoute";
+import productRoute from "./productRoutes";
+import { progressRoute } from "./progressRoute";
 import { questRoute } from "./questRoute";
 import { submissionRoute } from "./submissionRoute";
-import { userRoute } from "./userRoute";
-import { progressRoute } from "./progressRoute";
 import { userGameRoute } from "./userGameRoute";
-import { adminRoute } from "./adminRoute";
+import { userRoute } from "./userRoute";
 
 const Router = express.Router();
 
@@ -27,4 +29,7 @@ Router.use("/user-game", userGameRoute);
 
 Router.use("/admin", adminRoute);
 
+Router.use("/orders", orderRoute);
+
+Router.use("/products", productRoute);
 export default Router;

@@ -390,6 +390,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             }
 
             const shareUrl = `${window.location.origin}/play/shared-game/${data.slug}`;
+            console.log(shareLink)
             setShareLink(shareUrl);
             setHintMessage({ smartHints: "Game đã được lưu thành công! Chia sẻ link với bạn bè nhé!" });
             setShowHint(true);
