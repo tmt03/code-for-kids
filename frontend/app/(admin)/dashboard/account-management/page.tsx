@@ -217,28 +217,23 @@ export default function AccountManagementPage() {
                                             <div className="flex items-center justify-center space-x-2">
                                                 <Button
                                                     size="sm"
-                                                    variant="default"
+                                                    variant="pixel"
                                                     onClick={() => handleEditUser(user)}
-                                                    className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                                    className="text-blue-600 hover:bg-blue-50"
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} />
                                                 </Button>
                                                 <Button
                                                     size="sm"
-                                                    variant="default"
+                                                    variant={user.status === "active" ? "pixelDanger" : "pixelGreen"}
                                                     onClick={() => handleStatusToggle(user.id, user.status)}
-                                                    className={`${user.status === "active"
-                                                        ? "text-red-600 border-red-600 hover:bg-red-50"
-                                                        : "text-green-600 border-green-600 hover:bg-green-50"
-                                                        }`}
                                                 >
                                                     <FontAwesomeIcon icon={user.status === "active" ? faLock : faUnlock} />
                                                 </Button>
                                                 <Button
                                                     size="sm"
-                                                    variant="default"
+                                                    variant="pixelDanger"
                                                     onClick={() => handleDeleteUser(user.id)}
-                                                    className="text-red-600 border-red-600 hover:bg-red-50"
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} />
                                                 </Button>
