@@ -3,20 +3,22 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import { faEdit, faLock, faPlus, faSearch, faTrash, faUnlock } from "@fortawesome/free-solid-svg-icons";
+import axiosInstance from "@/lib/utils/axiosInstance";
+import { faEdit, faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface User {
-    id: string;
     username: string;
     displayName: string;
     email: string;
     role: string;
-    status: string;
+    status: string; // "active" | "suspended"
     createdAt: string;
     avatarUrl?: string;
+    isActivated?: boolean;
+    _destroy?: boolean;
 }
 
 export default function AccountManagementPage() {
@@ -28,82 +30,91 @@ export default function AccountManagementPage() {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Mock data for development
-    const mockUsers: User[] = [
-        {
-            id: "1",
-            username: "user1",
-            displayName: "Nguyễn Văn A",
-            email: "user1@example.com",
-            role: "student",
-            status: "active",
-            createdAt: "2024-01-15",
-            avatarUrl: "/assets/mascots/original.png"
-        },
-        {
-            id: "2",
-            username: "user2",
-            displayName: "Trần Thị B",
-            email: "user2@example.com",
-            role: "premium",
-            status: "active",
-            createdAt: "2024-01-20",
-            avatarUrl: "/assets/mascots/original.png"
-        },
-        {
-            id: "3",
-            username: "user3",
-            displayName: "Lê Văn C",
-            email: "user3@example.com",
-            role: "student",
-            status: "suspended",
-            createdAt: "2024-02-01",
-            avatarUrl: "/assets/mascots/original.png"
-        }
-    ];
-
+    // Lấy danh sách user từ backend
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setUsers(mockUsers);
-            setFilteredUsers(mockUsers);
-            setIsLoading(false);
-        }, 1000);
+        const fetchUsers = async () => {
+            setIsLoading(true);
+            try {
+                const res = await axiosInstance.get("v1/admin/users");
+                setUsers(res.data.users);
+                setFilteredUsers(res.data.users);
+            } catch (error) {
+                toast.error("Không thể tải danh sách người dùng");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchUsers();
     }, []);
 
+    // Lọc user theo searchTerm
     useEffect(() => {
         const filtered = users.filter(user =>
-            user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+            (user.displayName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+            (user.username?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+            (user.email?.toLowerCase() || "").includes(searchTerm.toLowerCase())
         );
         setFilteredUsers(filtered);
     }, [searchTerm, users]);
 
-    const handleStatusToggle = async (userId: string, currentStatus: string) => {
-        const newStatus = currentStatus === "active" ? "suspended" : "active";
-
+    // Ban user
+    const handleBanUser = async (username: string) => {
         try {
-            // Simulate API call
-            setUsers(prev => prev.map(user =>
-                user.id === userId ? { ...user, status: newStatus } : user
-            ));
-
-            toast.success(`Đã ${newStatus === "active" ? "mở khóa" : "khóa"} tài khoản thành công`);
+            await axiosInstance.patch(`/v1/admin/ban-user/${username}`);
+            toast.success("Đã ban tài khoản thành công");
+            const res = await axiosInstance.get("/v1/admin/users");
+            setUsers(res.data.users);
         } catch (error) {
-            toast.error("Có lỗi xảy ra khi cập nhật trạng thái");
+            toast.error("Có lỗi xảy ra khi ban tài khoản");
         }
     };
 
-    const handleDeleteUser = async (userId: string) => {
-        if (confirm("Bạn có chắc chắn muốn xóa tài khoản này?")) {
-            try {
-                // Simulate API call
-                setUsers(prev => prev.filter(user => user.id !== userId));
-                toast.success("Đã xóa tài khoản thành công");
-            } catch (error) {
-                toast.error("Có lỗi xảy ra khi xóa tài khoản");
-            }
+    // Mở ban user
+    const handleUnbanUser = async (username: string) => {
+        try {
+            await axiosInstance.patch(`/v1/admin/unban-user/${username}`);
+            toast.success("Đã mở ban tài khoản thành công");
+            const res = await axiosInstance.get("/v1/admin/users");
+            setUsers(res.data.users);
+        } catch (error) {
+            toast.error("Có lỗi xảy ra khi mở ban tài khoản");
+        }
+    };
+
+    // Kích hoạt học (isActivated)
+    const handleActivateAccount = async (username: string) => {
+        try {
+            await axiosInstance.post(`/v1/admin/activate-user/${username}`);
+            toast.success("Đã kích hoạt học thành công");
+            const res = await axiosInstance.get("/v1/admin/users");
+            setUsers(res.data.users);
+        } catch (error) {
+            toast.error("Có lỗi xảy ra khi kích hoạt học");
+        }
+    };
+
+    // Hủy kích hoạt học
+    const handleDeactivateAccount = async (username: string) => {
+        try {
+            await axiosInstance.post(`/v1/admin/deactivate-user/${username}`);
+            toast.success("Đã hủy kích hoạt học thành công");
+            const res = await axiosInstance.get("/v1/admin/users");
+            setUsers(res.data.users);
+        } catch (error) {
+            toast.error("Có lỗi xảy ra khi hủy kích hoạt học");
+        }
+    };
+
+    // Cập nhật thông tin user
+    const handleUpdateUser = async (username: string, updateData: any) => {
+        try {
+            await axiosInstance.patch(`/v1/admin/update-user/${username}`, updateData);
+            toast.success("Cập nhật tài khoản thành công");
+            const res = await axiosInstance.get("/v1/admin/users");
+            setUsers(res.data.users);
+            setIsEditModalOpen(false);
+        } catch (error) {
+            toast.error("Có lỗi xảy ra khi cập nhật tài khoản");
         }
     };
 
@@ -112,7 +123,8 @@ export default function AccountManagementPage() {
         setIsEditModalOpen(true);
     };
 
-    const getStatusColor = (status: string) => {
+    const getStatusColor = (status: string, isBanned?: boolean) => {
+        if (isBanned) return "text-red-600";
         return status === "active" ? "text-green-600" : "text-red-600";
     };
 
@@ -177,21 +189,21 @@ export default function AccountManagementPage() {
                     </div>
                     <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
                         <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">
-                            {users.filter(u => u.status === "active").length}
+                            {users.filter(u => !u._destroy).length}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-600">Đang hoạt động</div>
                     </div>
                     <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
                         <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600">
-                            {users.filter(u => u.role === "premium").length}
+                            {users.filter(u => u.isActivated).length}
                         </div>
-                        <div className="text-xs sm:text-sm text-gray-600">Premium</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Đã mua khóa học</div>
                     </div>
                     <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
                         <div className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600">
-                            {users.filter(u => u.status === "suspended").length}
+                            {users.filter(u => u._destroy).length}
                         </div>
-                        <div className="text-xs sm:text-sm text-gray-600">Đã khóa</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Đã bị ban</div>
                     </div>
                 </div>
 
@@ -211,7 +223,7 @@ export default function AccountManagementPage() {
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50">
+                                    <tr key={user.username} className="hover:bg-gray-50">
                                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <img
@@ -233,9 +245,25 @@ export default function AccountManagementPage() {
                                             </span>
                                         </td>
                                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status)}`}>
-                                                {user.status === "active" ? "Hoạt động" : "Đã khóa"}
+                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status, user._destroy)}`}>
+                                                {user._destroy
+                                                    ? "Đã bị ban"
+                                                    : user.status === "premium"
+                                                        ? "Premium"
+                                                        : user.isActivated
+                                                            ? "Đã mua khóa học"
+                                                            : "Chưa mua khóa học"}
                                             </span>
+                                            {!user.isActivated && !user._destroy && (
+                                                <Button size="sm" variant="pixelGreen" className="ml-2" onClick={() => handleActivateAccount(user.username)}>
+                                                    Kích hoạt học
+                                                </Button>
+                                            )}
+                                            {user.isActivated && !user._destroy && user.status !== "premium" && (
+                                                <Button size="sm" variant="pixelDanger" className="ml-2" onClick={() => handleDeactivateAccount(user.username)}>
+                                                    Hủy kích hoạt học
+                                                </Button>
+                                            )}
                                         </td>
                                         <td className="px-4 sm:px-6 py-4 text-gray-500 whitespace-nowrap text-sm">
                                             {new Date(user.createdAt).toLocaleDateString('vi-VN')}
@@ -250,20 +278,15 @@ export default function AccountManagementPage() {
                                                 >
                                                     <FontAwesomeIcon icon={faEdit} />
                                                 </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant={user.status === "active" ? "pixelDanger" : "pixelGreen"}
-                                                    onClick={() => handleStatusToggle(user.id, user.status)}
-                                                >
-                                                    <FontAwesomeIcon icon={user.status === "active" ? faLock : faUnlock} />
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="pixelDanger"
-                                                    onClick={() => handleDeleteUser(user.id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </Button>
+                                                {user._destroy ? (
+                                                    <Button size="sm" variant="pixelGreen" onClick={() => handleUnbanUser(user.username)}>
+                                                        MỞ BAN
+                                                    </Button>
+                                                ) : (
+                                                    <Button size="sm" variant="pixelDanger" onClick={() => handleBanUser(user.username)}>
+                                                        BAN
+                                                    </Button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -276,7 +299,7 @@ export default function AccountManagementPage() {
                 {/* Users Cards - Mobile/Tablet View */}
                 <div className="lg:hidden space-y-3">
                     {filteredUsers.map((user) => (
-                        <div key={user.id} className="bg-white rounded-lg shadow-lg p-4">
+                        <div key={user.username} className="bg-white rounded-lg shadow-lg p-4">
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center">
                                     <img
@@ -298,20 +321,15 @@ export default function AccountManagementPage() {
                                     >
                                         <FontAwesomeIcon icon={faEdit} />
                                     </Button>
-                                    <Button
-                                        size="sm"
-                                        variant={user.status === "active" ? "pixelDanger" : "pixelGreen"}
-                                        onClick={() => handleStatusToggle(user.id, user.status)}
-                                    >
-                                        <FontAwesomeIcon icon={user.status === "active" ? faLock : faUnlock} />
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="pixelDanger"
-                                        onClick={() => handleDeleteUser(user.id)}
-                                    >
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
+                                    {user._destroy ? (
+                                        <Button size="sm" variant="pixelGreen" onClick={() => handleUnbanUser(user.username)}>
+                                            MỞ BAN
+                                        </Button>
+                                    ) : (
+                                        <Button size="sm" variant="pixelDanger" onClick={() => handleBanUser(user.username)}>
+                                            BAN
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-sm">
@@ -331,9 +349,20 @@ export default function AccountManagementPage() {
                                 <div>
                                     <span className="text-gray-500">Trạng thái:</span>
                                     <div>
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status)}`}>
-                                            {user.status === "active" ? "Hoạt động" : "Đã khóa"}
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status, user._destroy)}`}>
+                                            {user._destroy
+                                                ? "Đã bị ban"
+                                                : user.status === "premium"
+                                                    ? "Premium"
+                                                    : user.isActivated
+                                                        ? "Đã mua khóa học"
+                                                        : "Chưa mua khóa học"}
                                         </span>
+                                        {!user.isActivated && !user._destroy && (
+                                            <Button size="sm" variant="pixelGreen" className="ml-2" onClick={() => handleActivateAccount(user.username)}>
+                                                Kích hoạt học
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
                                 <div>

@@ -3,19 +3,14 @@
 import OrderPopup from "@/components/shop/order-popup";
 import { useAuth } from "@/hooks/useAuth";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Product } from "../../../../../types/product";
 
-interface ProductDetailPageProps {
-    params: {
-        productId: string;
-    };
-}
-
-export default function ProductDetailPage({ params }: ProductDetailPageProps) {
-    const { productId } = params;
+export default function ProductDetailPage() {
+    const params = useParams<{ productId: string }>();
+    const productId = params.productId;
     const { user } = useAuth();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);

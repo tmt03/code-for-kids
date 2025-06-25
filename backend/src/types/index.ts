@@ -21,15 +21,6 @@ export type ChapterWithQuests = {
   quests: Quest[];
 };
 
-// Kiểu dữ liệu lưu tiến độ user
-export type UserProgress = {
-  userId: string;
-  chapterProgress: ChapterProgress[];
-  totalScore: number;
-  badges: number;
-  lastUpdated: Date;
-};
-
 export type ChapterProgress = {
   chapterId: string;
   status: "not-started" | "in-progress" | "completed";

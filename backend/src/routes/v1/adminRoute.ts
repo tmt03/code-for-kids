@@ -3,7 +3,6 @@ import express from "express";
 import { adminController } from "../../controllers/adminController";
 import { verifyToken } from "../../middlewares/authMiddleware";
 import { requirePermission } from "../../middlewares/permissionMiddleware";
-import { orderController } from "../../controllers/orderController";
 
 const Router = express.Router();
 
@@ -42,6 +41,45 @@ Router.get(
   verifyToken,
   requirePermission("manageOrders"),
   adminController.getOrderStats
+);
+
+// Ban user
+Router.patch(
+  "/ban-user/:username",
+  verifyToken,
+  requirePermission("manageUsers"),
+  adminController.banUser
+);
+
+// Update user
+Router.patch(
+  "/update-user/:username",
+  verifyToken,
+  requirePermission("manageUsers"),
+  adminController.updateUser
+);
+
+Router.get(
+  "/users",
+  verifyToken,
+  requirePermission("manageUsers"),
+  adminController.getAllUsers
+);
+
+// Mở ban user
+Router.patch(
+  "/unban-user/:username",
+  verifyToken,
+  requirePermission("manageUsers"),
+  adminController.unbanUser
+);
+
+// Hủy kích hoạt khóa học
+Router.post(
+  "/deactivate-user/:username",
+  verifyToken,
+  requirePermission("manageUsers"),
+  adminController.deactivateUser
 );
 
 export const adminRoute = Router;
