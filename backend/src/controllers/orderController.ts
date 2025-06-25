@@ -1,11 +1,5 @@
 // orderController.ts
 import { Request, Response } from "express";
-import { GET_DB } from "../config/mongoDB";
-import {
-  getAllOrders,
-  getOrderByCode,
-  updateOrderStatus as updateOrderStatusInModel,
-} from "../models/orderModel";
 import {
   checkDuplicateOrder,
   createOrder,
@@ -19,7 +13,7 @@ import {
  * - Gọi service để tạo đơn hàng
  * - Trả về kết quả cho client
  */
-export const createOrderController = async (req: Request, res: Response) => {
+const createOrderController = async (req: Request, res: Response) => {
   try {
     const data = req.body;
     // Lấy thông tin user (nếu có)
@@ -64,10 +58,7 @@ export const createOrderController = async (req: Request, res: Response) => {
  * - Chỉ cho phép user đã đăng nhập và có quyền viewOwnOrders
  * - Gọi service để lấy và sắp xếp đơn hàng
  */
-export const getUserOrderHistoryController = async (
-  req: Request,
-  res: Response
-) => {
+const getUserOrderHistoryController = async (req: Request, res: Response) => {
   const username = (req as any).user?.username;
   if (!username) return res.status(401).json({ error: "Chưa đăng nhập" });
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
+import { usePermission } from "@/hooks/usePermission";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,10 +11,11 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import {
     faArrowLeft,
     faBars,
+    faChartBar,
     faGear,
     faHouse,
     faSignOut,
-    faUser,
+    faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 config.autoAddCss = false;
@@ -24,6 +26,7 @@ export default function Header() {
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
     const { user, logout } = useAuth();
     const router = useRouter();
+    const canViewDashboard = usePermission("viewDashboard");
 
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
@@ -82,6 +85,14 @@ export default function Header() {
                                 className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200 flex items-center"
                             >
                                 <FontAwesomeIcon icon={faHouse} className="mr-2" /> Trang chủ
+                            </Link>
+                        )}
+                        {canViewDashboard && (
+                            <Link
+                                href="/dashboard/order-management"
+                                className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200 flex items-center"
+                            >
+                                <FontAwesomeIcon icon={faChartBar} className="mr-2" /> Trung tâm quản lý
                             </Link>
                         )}
                         <Link
@@ -172,6 +183,14 @@ export default function Header() {
                                 className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200 flex items-center"
                             >
                                 <FontAwesomeIcon icon={faHouse} className="mr-2" /> Trang chủ
+                            </Link>
+                        )}
+                        {canViewDashboard && (
+                            <Link
+                                href="/dashboard/order-management"
+                                className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200 flex items-center"
+                            >
+                                <FontAwesomeIcon icon={faChartBar} className="mr-2" /> Trung tâm quản lý
                             </Link>
                         )}
                         <Link

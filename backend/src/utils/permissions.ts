@@ -19,7 +19,6 @@ export const rolePermissions = {
     "placeOrder",
     "browseProducts",
   ],
-  guest: ["browseProducts", "placeOrder", "lookupOrder"],
 } as const;
 
 // export type Permission = (typeof permissions)["admin"][number];

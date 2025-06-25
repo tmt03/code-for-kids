@@ -137,18 +137,18 @@ export default function AccountManagementPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1] p-6">
+        <div className="min-h-screen bg-gradient-to-b from-[#E8F1F2] to-[#D3E0E1] p-2 sm:p-4 lg:p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="bg-[#0A3D62] border border-white rounded-lg p-6 text-white mb-6">
-                    <h1 className="text-3xl font-bold mb-2">👥 Quản lý tài khoản người dùng</h1>
-                    <p className="text-gray-300">Thêm, sửa, xóa và quản lý quyền truy cập của người dùng</p>
+                <div className="bg-[#0A3D62] border border-white rounded-lg p-4 sm:p-6 text-white mb-4 sm:mb-6">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">👥 Quản lý tài khoản người dùng</h1>
+                    <p className="text-sm sm:text-base text-gray-300">Thêm, sửa, xóa và quản lý quyền truy cập của người dùng</p>
                 </div>
 
                 {/* Search and Add User */}
-                <div className="bg-white rounded-lg p-6 mb-6 shadow-lg">
-                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                        <div className="relative flex-1 max-w-md">
+                <div className="bg-white rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg">
+                    <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
+                        <div className="relative w-full max-w-sm lg:max-w-md">
                             <FontAwesomeIcon
                                 icon={faSearch}
                                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -158,62 +158,89 @@ export default function AccountManagementPage() {
                                 placeholder="Tìm kiếm theo tên, username hoặc email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 border-[#0A3D62] focus:border-[#00A8B5]"
+                                className="pl-10 border-[#0A3D62] focus:border-[#00A8B5] w-full"
                             />
                         </div>
-                        <Button className="bg-[#00A8B5] hover:bg-[#0096A5] text-white">
+                        <Button className="bg-[#00A8B5] hover:bg-[#0096A5] text-white whitespace-nowrap">
                             <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                            Thêm người dùng mới
+                            <span className="hidden sm:inline">Thêm người dùng mới</span>
+                            <span className="sm:hidden">Thêm</span>
                         </Button>
                     </div>
                 </div>
 
-                {/* Users Table */}
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-[#0A3D62] text-white">
+                {/* Stats */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
+                    <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-[#0A3D62]">{users.length}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Tổng người dùng</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">
+                            {users.filter(u => u.status === "active").length}
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-600">Đang hoạt động</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600">
+                            {users.filter(u => u.role === "premium").length}
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-600">Premium</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-lg text-center">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600">
+                            {users.filter(u => u.status === "suspended").length}
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-600">Đã khóa</div>
+                    </div>
+                </div>
+
+                {/* Users Table - Desktop View */}
+                <div className="hidden lg:block bg-white rounded-lg shadow-lg">
+                    <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+                        <table className="w-full min-w-[800px]">
+                            <thead className="bg-[#0A3D62] text-white top-0 z-10">
                                 <tr>
-                                    <th className="px-6 py-3 text-left">Người dùng</th>
-                                    <th className="px-6 py-3 text-left">Email</th>
-                                    <th className="px-6 py-3 text-left">Vai trò</th>
-                                    <th className="px-6 py-3 text-left">Trạng thái</th>
-                                    <th className="px-6 py-3 text-left">Ngày tạo</th>
-                                    <th className="px-6 py-3 text-center">Thao tác</th>
+                                    <th className="px-4 sm:px-6 py-3 text-left">Người dùng</th>
+                                    <th className="px-4 sm:px-6 py-3 text-left">Email</th>
+                                    <th className="px-4 sm:px-6 py-3 text-left">Vai trò</th>
+                                    <th className="px-4 sm:px-6 py-3 text-left">Trạng thái</th>
+                                    <th className="px-4 sm:px-6 py-3 text-left">Ngày tạo</th>
+                                    <th className="px-4 sm:px-6 py-3 text-center">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {filteredUsers.map((user) => (
                                     <tr key={user.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4">
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <img
                                                     src={user.avatarUrl || "/assets/mascots/original.png"}
                                                     alt={user.displayName}
-                                                    className="w-10 h-10 rounded-full mr-3"
+                                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-3"
                                                 />
                                                 <div>
-                                                    <div className="font-semibold text-gray-900">{user.displayName}</div>
-                                                    <div className="text-sm text-gray-500">@{user.username}</div>
+                                                    <div className="font-semibold text-gray-900 text-sm sm:text-base">{user.displayName}</div>
+                                                    <div className="text-xs sm:text-sm text-gray-500">@{user.username}</div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-900">{user.email}</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-4 sm:px-6 py-4 text-gray-900 whitespace-nowrap text-sm sm:text-base">{user.email}</td>
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)}`}>
                                                 {user.role === "admin" ? "Admin" :
                                                     user.role === "premium" ? "Premium" : "Học sinh"}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status)}`}>
                                                 {user.status === "active" ? "Hoạt động" : "Đã khóa"}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500">
+                                        <td className="px-4 sm:px-6 py-4 text-gray-500 whitespace-nowrap text-sm">
                                             {new Date(user.createdAt).toLocaleDateString('vi-VN')}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center justify-center space-x-2">
                                                 <Button
                                                     size="sm"
@@ -244,39 +271,85 @@ export default function AccountManagementPage() {
                             </tbody>
                         </table>
                     </div>
-
-                    {filteredUsers.length === 0 && (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500">Không tìm thấy người dùng nào</p>
-                        </div>
-                    )}
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-                    <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-                        <div className="text-2xl font-bold text-[#0A3D62]">{users.length}</div>
-                        <div className="text-gray-600">Tổng người dùng</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-                        <div className="text-2xl font-bold text-green-600">
-                            {users.filter(u => u.status === "active").length}
+                {/* Users Cards - Mobile/Tablet View */}
+                <div className="lg:hidden space-y-3">
+                    {filteredUsers.map((user) => (
+                        <div key={user.id} className="bg-white rounded-lg shadow-lg p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center">
+                                    <img
+                                        src={user.avatarUrl || "/assets/mascots/original.png"}
+                                        alt={user.displayName}
+                                        className="w-12 h-12 rounded-full mr-3"
+                                    />
+                                    <div>
+                                        <div className="font-semibold text-gray-900">{user.displayName}</div>
+                                        <div className="text-sm text-gray-500">@{user.username}</div>
+                                    </div>
+                                </div>
+                                <div className="flex space-x-1">
+                                    <Button
+                                        size="sm"
+                                        variant="pixel"
+                                        onClick={() => handleEditUser(user)}
+                                        className="text-blue-600 hover:bg-blue-50"
+                                    >
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant={user.status === "active" ? "pixelDanger" : "pixelGreen"}
+                                        onClick={() => handleStatusToggle(user.id, user.status)}
+                                    >
+                                        <FontAwesomeIcon icon={user.status === "active" ? faLock : faUnlock} />
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant="pixelDanger"
+                                        onClick={() => handleDeleteUser(user.id)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div>
+                                    <span className="text-gray-500">Email:</span>
+                                    <div className="font-medium">{user.email}</div>
+                                </div>
+                                <div>
+                                    <span className="text-gray-500">Vai trò:</span>
+                                    <div>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)}`}>
+                                            {user.role === "admin" ? "Admin" :
+                                                user.role === "premium" ? "Premium" : "Học sinh"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span className="text-gray-500">Trạng thái:</span>
+                                    <div>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status)}`}>
+                                            {user.status === "active" ? "Hoạt động" : "Đã khóa"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span className="text-gray-500">Ngày tạo:</span>
+                                    <div className="font-medium">{new Date(user.createdAt).toLocaleDateString('vi-VN')}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="text-gray-600">Đang hoạt động</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-                        <div className="text-2xl font-bold text-purple-600">
-                            {users.filter(u => u.role === "premium").length}
-                        </div>
-                        <div className="text-gray-600">Tài khoản Premium</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-                        <div className="text-2xl font-bold text-red-600">
-                            {users.filter(u => u.status === "suspended").length}
-                        </div>
-                        <div className="text-gray-600">Đã khóa</div>
-                    </div>
+                    ))}
                 </div>
+
+                {filteredUsers.length === 0 && (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500">Không tìm thấy người dùng nào</p>
+                    </div>
+                )}
             </div>
         </div>
     );
