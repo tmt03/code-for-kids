@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ProductData } from "../models/productModel";
 import { ProductService } from "../services/productService";
 
 /**
@@ -92,5 +93,70 @@ export const getAvailableProducts = async (_req: Request, res: Response) => {
       message: error.message || "Lỗi lấy danh sách sản phẩm còn hàng",
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
+  }
+};
+
+/**
+ * Thêm sản phẩm mới
+ * @route POST /v1/products
+ * @access Admin
+ */
+export const addProduct = async (req: Request, res: Response) => {
+  try {
+    const product: Omit<ProductData, "_id"> = req.body;
+    const result = await ProductService.addProduct(product);
+    res.status(201).json({
+      success: true,
+      message: "Tạo sản phẩm thành công",
+      data: result,
+    });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ success: false, message: error.message || "Lỗi tạo sản phẩm" });
+  }
+};
+
+/**
+ * Sửa sản phẩm
+ * @route PUT /v1/products/:pid
+ * @access Admin
+ */
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const { pid } = req.params;
+    const updateData = req.body;
+    const result = await ProductService.updateProduct(pid, updateData);
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật sản phẩm thành công",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Lỗi cập nhật sản phẩm",
+    });
+  }
+};
+
+/**
+ * Xóa sản phẩm
+ * @route DELETE /v1/products/:pid
+ * @access Admin
+ */
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { pid } = req.params;
+    const result = await ProductService.deleteProduct(pid);
+    res.status(200).json({
+      success: true,
+      message: "Xóa sản phẩm thành công",
+      data: result,
+    });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ success: false, message: error.message || "Lỗi xóa sản phẩm" });
   }
 };

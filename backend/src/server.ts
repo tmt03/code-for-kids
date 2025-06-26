@@ -7,7 +7,6 @@ import { corsOptions } from "./config/cors";
 import { env } from "./config/environment";
 import { CLOSE_DB, CONNECT_DB } from "./config/mongoDB";
 import { errorHandlingMiddleware } from "./middlewares/errorHandlingMiddleware";
-import orderRoutes from "./routes/orderRoute";
 import APIs_V1 from "./routes/v1";
 import { OrderCleanupService } from "./services/orderCleanupService";
 import { cleanupUnverifiedUsers } from "./utils/cleanupUnverifiedUsers";

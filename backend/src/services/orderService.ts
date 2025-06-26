@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { GET_DB } from "../config/mongoDB";
-import { OrderData, getOrdersByUsername } from "../models/orderModel";
+import { OrderData, orderModel } from "../models/orderModel";
 
 /**
  * Kiểm tra đơn hàng trùng lặp trong khoảng thời gian nhất định (mặc định 5 phút)
@@ -55,14 +55,13 @@ export const createOrder = async (
 };
 
 /**
- * Lấy danh sách đơn hàng theo filter
- * @param filter MongoDB filter
- * @returns Danh sách đơn hàng
+ * Lấy danh sách đơn hàng theo filter (không phân trang)
  */
-export const getOrdersByFilter = async (filter: any = {}) => {
-  const db = GET_DB();
-  const collection = db.collection("orders");
-  return await collection.find(filter).toArray();
+export const getOrdersWithFilter = async (params: {
+  status?: string;
+  search?: string;
+}) => {
+  return await orderModel.getAll(params);
 };
 
 /**
@@ -72,10 +71,42 @@ export const getOrdersByFilter = async (filter: any = {}) => {
  */
 export const getUserOrderHistoryService = async (username: string) => {
   // Lấy tất cả đơn hàng của user
-  const orders = await getOrdersByUsername(username);
+  const orders = await orderModel.getOrdersByUsername(username);
 
   // Logic nghiệp vụ: sắp xếp theo đơn mới nhất lên đầu
   return orders.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+};
+
+/**
+ * Service: Cập nhật trạng thái đơn hàng.
+ * @param orderCode Mã đơn hàng
+ * @param status Trạng thái mới
+ * @returns Đơn hàng đã được cập nhật
+ */
+export const updateOrderStatus = async (orderCode: string, status: string) => {
+  // Logic nghiệp vụ có thể thêm ở đây. Ví dụ:
+  const validStatuses = ["pending", "approved", "rejected", "done"];
+  if (!validStatuses.includes(status)) {
+    throw new Error("Trạng thái không hợp lệ.");
+  }
+
+  const updatedOrder = await orderModel.updateStatus(
+    orderCode,
+    status as OrderData["status"]
+  );
+
+  if (!updatedOrder) {
+    throw new Error("Không tìm thấy đơn hàng để cập nhật.");
+  }
+  // Logic khác: Gửi email cho khách hàng khi đơn hàng được duyệt, v.v.
+  return updatedOrder;
+};
+
+/**
+ * Service: Lấy thống kê số lượng đơn hàng theo trạng thái.
+ */
+export const getOrderStatusCounts = async () => {
+  return await orderModel.getStatusCounts();
 };

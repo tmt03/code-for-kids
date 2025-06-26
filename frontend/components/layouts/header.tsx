@@ -1,8 +1,9 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
+import { usePermission } from "@/hooks/usePermission";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -10,10 +11,11 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import {
     faArrowLeft,
     faBars,
+    faChartBar,
     faGear,
     faHouse,
     faSignOut,
-    faUser,
+    faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 config.autoAddCss = false;
@@ -24,6 +26,8 @@ export default function Header() {
     const [isMobileProfileDropdownOpen, setIsMobileProfileDropdownOpen] = useState(false);
     const { user, logout } = useAuth();
     const router = useRouter();
+    const canViewDashboard = usePermission("viewDashboard");
+    const pathname = usePathname();
 
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
@@ -68,7 +72,7 @@ export default function Header() {
                         />
                         <Link
                             href="/"
-                            className="text-2xl font-extrabold text-white hover:text-blue-200 transition-colors"
+                            className={`text-2xl font-extrabold text-white hover:text-blue-200 transition-colors ${pathname === "/" ? "bg-white/20 text-blue-300 px-2 rounded" : ""}`}
                         >
                             Scriptbies
                         </Link>
@@ -79,26 +83,34 @@ export default function Header() {
                         {user && (
                             <Link
                                 href="/home"
-                                className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200 flex items-center"
+                                className={`text-md font-semibold px-4 py-2 rounded-lg transition-all duration-200 flex items-center ${pathname === "/home" ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/20 hover:text-blue-300"}`}
                             >
                                 <FontAwesomeIcon icon={faHouse} className="mr-2" /> Trang chủ
                             </Link>
                         )}
+                        {canViewDashboard && (
+                            <Link
+                                href="/dashboard/order-management"
+                                className={`text-md font-semibold px-4 py-2 rounded-lg transition-all duration-200 flex items-center ${pathname.startsWith("/dashboard") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/20 hover:text-blue-300"}`}
+                            >
+                                <FontAwesomeIcon icon={faChartBar} className="mr-2" /> Trung tâm quản lý
+                            </Link>
+                        )}
                         <Link
                             href="/learn/courses"
-                            className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
+                            className={`text-md font-semibold px-4 py-2 rounded-lg transition-all duration-200 ${pathname.startsWith("/learn/courses") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/20 hover:text-blue-300"}`}
                         >
                             Khóa học
                         </Link>
                         <Link
                             href="/community"
-                            className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
+                            className={`text-md font-semibold px-4 py-2 rounded-lg transition-all duration-200 ${pathname.startsWith("/community") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/20 hover:text-blue-300"}`}
                         >
                             Cộng đồng
                         </Link>
                         <Link
                             href="/shop"
-                            className="text-md font-semibold px-4 py-2 rounded-lg hover:bg-[#008080]/20 hover:text-blue-300 transition-all duration-200"
+                            className={`text-md font-semibold px-4 py-2 rounded-lg transition-all duration-200 ${pathname.startsWith("/shop") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/20 hover:text-blue-300"}`}
                         >
                             Cửa hàng
                         </Link>
@@ -109,7 +121,7 @@ export default function Header() {
                         {!user && (
                             <Link
                                 href="/login"
-                                className="hidden lg:block bg-[#00A8B5] font-bold px-4 py-2 rounded-lg hover:bg-[#0096A5] transition-all duration-200"
+                                className={`hidden lg:block bg-[#00A8B5] font-bold px-4 py-2 rounded-lg transition-all duration-200 ${pathname === "/login" ? "bg-white/20 text-blue-300" : "hover:bg-[#0096A5]"}`}
                             >
                                 Đăng nhập
                             </Link>
@@ -169,33 +181,41 @@ export default function Header() {
                         {user && (
                             <Link
                                 href="/home"
-                                className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200 flex items-center"
+                                className={`w-full text-left px-4 py-3 font-semibold transition-all duration-200 flex items-center ${pathname === "/home" ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/40"}`}
                             >
                                 <FontAwesomeIcon icon={faHouse} className="mr-2" /> Trang chủ
                             </Link>
                         )}
+                        {canViewDashboard && (
+                            <Link
+                                href="/dashboard/order-management"
+                                className={`w-full text-left px-4 py-3 font-semibold transition-all duration-200 flex items-center ${pathname.startsWith("/dashboard") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/40"}`}
+                            >
+                                <FontAwesomeIcon icon={faChartBar} className="mr-2" /> Trung tâm quản lý
+                            </Link>
+                        )}
                         <Link
                             href="/learn/courses"
-                            className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                            className={`w-full text-left px-4 py-3 font-semibold transition-all duration-200 ${pathname.startsWith("/learn/courses") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/40"}`}
                         >
                             Khóa học
                         </Link>
                         <Link
                             href="/community"
-                            className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                            className={`w-full text-left px-4 py-3 font-semibold transition-all duration-200 ${pathname.startsWith("/community") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/40"}`}
                         >
                             Cộng đồng
                         </Link>
                         <Link
                             href="/shop"
-                            className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                            className={`w-full text-left px-4 py-3 font-semibold transition-all duration-200 ${pathname.startsWith("/shop") ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/40"}`}
                         >
                             Cửa hàng
                         </Link>
                         {!user ? (
                             <Link
                                 href="/login"
-                                className="w-full text-left px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                                className={`w-full text-left px-4 py-3 font-semibold transition-all duration-200 ${pathname === "/login" ? "bg-white/20 text-blue-300" : "hover:bg-[#008080]/40"}`}
                             >
                                 Đăng nhập
                             </Link>

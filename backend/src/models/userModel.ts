@@ -242,6 +242,74 @@ const deleteByEmail = async (email: string) => {
   return await GET_DB().collection(USER_COLLECTION_NAME).deleteOne({ email });
 };
 
+/**
+ * Ban user (set _destroy = true)
+ */
+const banUser = async (username: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne({ username }, { $set: { _destroy: true } });
+};
+
+/**
+ * Mở ban user (set _destroy = false)
+ */
+const unbanUser = async (username: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne({ username }, { $set: { _destroy: false } });
+};
+
+/**
+ * Update user info (password, displayName, email, ...)
+ * @param username
+ * @param updateData
+ */
+const updateUser = async (username: string, updateData: any) => {
+  // Nếu có password thì hash lại
+  if (updateData.password) {
+    updateData.password = await bcrypt.hash(updateData.password, 10);
+  }
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne({ username }, { $set: updateData });
+};
+
+/**
+ * Lấy danh sách user (loại bỏ admin, bao gồm cả user đã bị ban)
+ */
+const findAllUsers = async () => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .find({ role: { $ne: "admin" } })
+    .project({
+      username: 1,
+      displayName: 1,
+      email: 1,
+      role: 1,
+      avatarUrl: 1,
+      created_at: 1,
+      isActivated: 1,
+      _destroy: 1,
+    })
+    .toArray();
+};
+
+/**
+ * Hủy kích hoạt khóa học (set isActivated: false, trialExpiresAt: null)
+ */
+const deactivateUser = async (username: string) => {
+  return await GET_DB()
+    .collection(USER_COLLECTION_NAME)
+    .updateOne(
+      { username },
+      {
+        $set: { isActivated: false, updated_at: new Date() },
+        $unset: { trialExpiresAt: "" },
+      }
+    );
+};
+
 export const userModel = {
   findByUsername,
   findByEmail,
@@ -264,4 +332,9 @@ export const userModel = {
   updateTrialChapter,
   getTrialUsers,
   deleteByEmail,
+  banUser,
+  unbanUser,
+  updateUser,
+  findAllUsers,
+  deactivateUser,
 };
