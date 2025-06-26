@@ -62,6 +62,7 @@ export class Game_Scene extends Phaser.Scene {
   // Trạng thái và cấu hình game
   private sandbox!: Record<string, any>; // Môi trường sandbox cho code người dùng
   private quest: Quest; // Cấu hình nhiệm vụ hiện tại
+  private userCodeToRun: string | null = null;
   private scaleFactor: number = 1; // Hệ số tỷ lệ cho responsive
   private keys: Record<string, Phaser.Input.Keyboard.Key> = {}; // Theo dõi input bàn phím
   private lastAttackTime: { [refName: string]: number } = {}; // Theo dõi thời gian hồi tấn công
@@ -70,10 +71,21 @@ export class Game_Scene extends Phaser.Scene {
   constructor(quest: Quest) {
     super({ key: "Game_Scene" });
     this.quest = quest;
-    console.log("Game_Scene initialized with quest:", quest);
   }
 
   // ===== Các Phương Thức Vòng Đời Scene =====
+
+  /**
+   * Khởi tạo scene với dữ liệu
+   * Được gọi khi scene bắt đầu hoặc khởi động lại
+   */
+  init(data: { userCode?: string }): void {
+    if (data && data.userCode) {
+      this.userCodeToRun = data.userCode;
+    } else {
+      this.userCodeToRun = null;
+    }
+  }
 
   /**
    * Tải tài nguyên game
@@ -88,17 +100,20 @@ export class Game_Scene extends Phaser.Scene {
    * Được gọi tự động bởi Phaser sau preload()
    */
   create(): void {
-    console.log("Game_Scene create() called");
     setupAnimations(this);
     this.initializeScaleFactor();
     this.initializeSandbox();
     this.setupResizeListener();
-    if (this.quest.id === "shared" && this.quest.code) {
+    // Luôn chạy code preview trước để dựng scene nền.
+    this.runPreviewCodeIfAvailable();
+
+    // Sau đó, nếu có code của người dùng thì chạy nó.
+    if (this.userCodeToRun) {
+      this.runUserCode(this.userCodeToRun);
+      this.userCodeToRun = null; // Reset để lần khởi động lại tiếp theo không chạy lại code cũ
+    } else if (this.quest.id === "shared" && this.quest.code) {
       this.runUserCode(this.quest.code);
-    } else {
-      this.runPreviewCodeIfAvailable();
     }
-    this.setupRunUserCodeListener();
   }
 
   /**
@@ -157,9 +172,6 @@ export class Game_Scene extends Phaser.Scene {
       this.scaleFactor = Math.min(
         gameSize.width / Game_Scene.LOGICAL_WIDTH,
         gameSize.height / Game_Scene.LOGICAL_HEIGHT
-      );
-      console.log(
-        `Canvas đã thay đổi kích thước: ${gameSize.width}x${gameSize.height}, Tỷ lệ: ${this.scaleFactor}`
       );
       this.scaleObjects();
     });
@@ -304,7 +316,6 @@ export class Game_Scene extends Phaser.Scene {
    * @param code - Chuỗi code cần thực thi
    */
   private runUserCode(code: string): void {
-    console.log("Running user code in sandbox");
     try {
       const wrapped = `
         with (sandbox) {
@@ -324,7 +335,6 @@ export class Game_Scene extends Phaser.Scene {
    */
   private setupColliders(): void {
     const platforms = this.sandbox.platforms?.getChildren() || [];
-    console.log("Platforms sau khi chạy code người dùng:", platforms);
     for (const spriteKey in this.sandbox) {
       const spriteOrArray = this.sandbox[spriteKey];
       const sprites = Array.isArray(spriteOrArray)
@@ -382,7 +392,6 @@ export class Game_Scene extends Phaser.Scene {
    */
   private runPreviewCodeIfAvailable(): void {
     const previewCode = getBaseCodeForQuest(this.quest.id);
-    console.log("ID nhiệm vụ:", this.quest.id);
     if (previewCode) {
       try {
         this.runPreviewCode(previewCode);
