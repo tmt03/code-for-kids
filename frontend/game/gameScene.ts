@@ -13,6 +13,7 @@ import { setupAnimations } from "./animationConfigs";
 import { preloadAssets } from "./preloadAssets";
 
 import * as Phaser from "phaser";
+import { setupPostUserCodeInteractions } from "./questPostUserCodeLogic";
 
 // ===== Định Nghĩa Các Kiểu Dữ Liệu =====
 
@@ -80,6 +81,10 @@ export class Game_Scene extends Phaser.Scene {
    * Được gọi khi scene bắt đầu hoặc khởi động lại
    */
   init(data: { userCode?: string }): void {
+    // Reset các biến trạng thái khi scene được khởi tạo lại
+    this.keys = {};
+    this.lastAttackTime = {};
+
     if (data && data.userCode) {
       this.userCodeToRun = data.userCode;
     } else {
@@ -104,15 +109,23 @@ export class Game_Scene extends Phaser.Scene {
     this.initializeScaleFactor();
     this.initializeSandbox();
     this.setupResizeListener();
-    // Luôn chạy code preview trước để dựng scene nền.
+
+    // Clear sandbox before running preview and user code
+    this.clearSandbox(this.sandbox);
+
+    // Xử lý shared game trước
+    if (this.quest.id === "shared" && this.quest.code) {
+      this.runUserCode(this.quest.code);
+      return; // Không chạy preview code cho shared game
+    }
+
+    // Luôn chạy code preview trước để dựng scene nền (chỉ cho quest thường).
     this.runPreviewCodeIfAvailable();
 
     // Sau đó, nếu có code của người dùng thì chạy nó.
     if (this.userCodeToRun) {
       this.runUserCode(this.userCodeToRun);
       this.userCodeToRun = null; // Reset để lần khởi động lại tiếp theo không chạy lại code cũ
-    } else if (this.quest.id === "shared" && this.quest.code) {
-      this.runUserCode(this.quest.code);
     }
   }
 
@@ -264,7 +277,7 @@ export class Game_Scene extends Phaser.Scene {
         state.wasAttackKeyDown = key.isDown;
       });
 
-      sprite.setVelocityX(state.velocityX);
+      // Không áp dụng vận tốc ở đây, để applyVelocities xử lý
     });
   }
 
@@ -304,7 +317,8 @@ export class Game_Scene extends Phaser.Scene {
     for (const refName in spriteStates) {
       const sprite = this.sandbox[refName];
       if (sprite && sprite.body) {
-        sprite.setVelocityX(spriteStates[refName].velocityX);
+        const velocity = spriteStates[refName].velocityX;
+        sprite.setVelocityX(velocity);
       }
     }
   }
@@ -323,11 +337,22 @@ export class Game_Scene extends Phaser.Scene {
         }
       `;
       new Function("sandbox", wrapped)(this.sandbox);
+
       this.scaleObjects();
       this.setupColliders();
+      this.setupPostUserCodeInteractions();
     } catch (err) {
-      console.error("Error in user code execution:", err);
+      console.error("❌ Error in user code execution:", err);
     }
+  }
+
+  /**
+   * Thiết lập các tương tác sau khi code người dùng chạy xong
+   * Được gọi sau khi code người dùng thực thi để thiết lập các tương tác
+   * mà cần các sprite được tạo bởi code người dùng
+   */
+  private setupPostUserCodeInteractions(): void {
+    setupPostUserCodeInteractions(this.quest.id, this.sandbox);
   }
 
   /**
@@ -341,8 +366,14 @@ export class Game_Scene extends Phaser.Scene {
         ? spriteOrArray
         : [spriteOrArray];
       sprites.forEach((sprite: Phaser.GameObjects.Sprite) => {
-        if (sprite && sprite.body && platforms.length > 0) {
+        if (
+          sprite &&
+          sprite.body &&
+          platforms.length > 0 &&
+          !sprite.getData("hasCollider")
+        ) {
           this.physics.add.collider(sprite, this.sandbox.platforms);
+          sprite.setData("hasCollider", true);
         }
       });
     }
@@ -414,5 +445,57 @@ export class Game_Scene extends Phaser.Scene {
         console.error("Lỗi khi chạy code người dùng:", err);
       }
     });
+  }
+
+  // Đảm bảo clearSandbox là method của class
+  private clearSandbox(sandbox: Record<string, any>) {
+    const coreKeys = [
+      "platforms",
+      "controls",
+      "attackControls",
+      "stats",
+      "statTexts",
+    ];
+
+    // Danh sách các hàm API cần giữ lại
+    const apiFunctions = [
+      "setBackground",
+      "setFloor",
+      "setColor",
+      "spawn",
+      "spawnRandom",
+      "setName",
+      "scale",
+      "move",
+      "moveRandom",
+      "onKey",
+      "onAttack",
+      "interact",
+      "autoAttack",
+      "when",
+      "setHealth",
+      "setPower",
+      "setTimer",
+      "setStatDisplay",
+      "endGame",
+    ];
+
+    for (const key in sandbox) {
+      if (coreKeys.includes(key) || apiFunctions.includes(key)) continue;
+      const obj = sandbox[key];
+      if (obj && typeof obj.destroy === "function") {
+        obj.destroy();
+      } else if (Array.isArray(obj)) {
+        obj.forEach(
+          (item) => item && typeof item.destroy === "function" && item.destroy()
+        );
+      }
+      delete sandbox[key];
+    }
+    // Reset controls and attackControls
+    sandbox.controls = [];
+    sandbox.attackControls = [];
+    // Optionally reset statTexts
+    sandbox.statTexts = {};
   }
 }

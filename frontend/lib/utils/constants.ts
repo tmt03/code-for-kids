@@ -78,6 +78,10 @@ export const SPRITES = [
   "laudai_1",
   "cay_1",
   "cay_2",
+  "kiem",
+  "riu",
+  "thuong",
+  "tim",
 ] as const;
 
 // Danh sách background
@@ -116,7 +120,6 @@ export const COLORS = [
   "orange",
   "pink",
   "white",
-  "black",
   "gray",
   "teal",
   "navy",

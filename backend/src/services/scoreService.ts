@@ -169,9 +169,10 @@ const addUserRatingScore = async (
 
   // Lấy baseCode của quest
   const baseCode = await questModel.getBaseCodeByQuestId(questId);
-  if (!baseCode) {
-    throw new Error(`Không tìm thấy baseCode cho quest ${questId}`);
-  }
+  // Cho phép baseCode rỗng (như C07_Q07)
+  // if (!baseCode) {
+  //   throw new Error(`Không tìm thấy baseCode cho quest ${questId}`);
+  // }
 
   // Tìm quest trong progress
   const quest = findQuestInProgress(progress.chapterProgress, questId);
