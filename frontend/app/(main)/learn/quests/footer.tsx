@@ -1,9 +1,10 @@
 "use client";
 
 import { fetchAllChapters } from "@/apis";
+import ChapterListPopup from "@/components/companion/chapter-list-popup";
 import ProgressBar from "@/components/learn/quests/progressbar";
 import { Button } from "@/components/ui/button";
-import { PlayIcon } from "lucide-react";
+import { LayoutListIcon, PlayIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -14,7 +15,7 @@ type Quest = {
     point: number;
     baseCode?: string;
     solution?: string;
-    type: string;
+    type: "quest" | "challenge";
     imageUrl?: string;
     videoUrl?: string;
 };
@@ -33,8 +34,10 @@ export default function FooterChapter() {
     const router = useRouter();
     const params = useParams();
     const { questId } = params as { questId: string };
+    const [chapters, setChapters] = useState<Chapter[]>([]);
     const [quests, setQuests] = useState<Quest[]>([]);
     const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     useEffect(() => {
         const fetchQuests = async () => {
@@ -43,6 +46,8 @@ export default function FooterChapter() {
                 if (!Array.isArray(chapters)) {
                     throw new Error("Dữ liệu từ API không phải là mảng chapters");
                 }
+
+                setChapters(chapters);
 
                 const allQuests = chapters.flatMap((chapter: Chapter) => chapter.quests);
                 setQuests(allQuests);
@@ -87,37 +92,53 @@ export default function FooterChapter() {
     };
 
     return (
-        <div className="lg:block h-20 w-full border-[#006D77] p-2">
-            <div className="max-w-screen-lg flex items-center justify-around h-full mx-auto">
-                <Button
-                    variant="pixel"
-                    className="w-20 bg-[#00A8B5] text-white hover:bg-[#0096A5] transition-colors duration-200"
-                    onClick={() => handleButtonClick("prev")}
-                    disabled={currentIndex === 0 || currentIndex === null}
-                >
-                    Trở Về
-                </Button>
-                <ProgressBar chapters={chaptersFromQuests} /> {/* Truyền chapters giả lập */}
-                <Button
-                    variant="pixel"
-                    className="w-20 bg-[#00A8B5] text-white hover:bg-[#0096A5] transition-colors duration-200"
-                    onClick={() => handleButtonClick("next")}
-                    disabled={currentIndex === quests.length - 1 || currentIndex === null}
-                >
-                    Tiếp Theo
-                </Button>
-                <Button
-                    onClick={() => {
-                        if (currentIndex !== null && quests[currentIndex]?.videoUrl) {
-                            window.open(quests[currentIndex].videoUrl, "_blank");
-                        }
-                    }}
-                    disabled={currentIndex === null || !quests[currentIndex]?.videoUrl}
-                >
-                    <PlayIcon className="w-4 h-4" />
-                    Xem video hướng dẫn
-                </Button>
+        <>
+            <div className="lg:block h-20 w-full p-2">
+                <div className="max-w-screen-lg flex items-center justify-between h-full mx-auto">
+                    <Button
+                        onClick={() => setIsPopupOpen(true)}
+                        variant="pixel"
+                    >
+                        <LayoutListIcon className="w-4 h-4 mr-1" />
+                        Mục lục
+                    </Button>
+                    <Button
+                        variant="pixel"
+                        className="w-20 bg-[#00A8B5] text-white hover:bg-[#0096A5] transition-colors duration-200"
+                        onClick={() => handleButtonClick("prev")}
+                        disabled={currentIndex === 0 || currentIndex === null}
+                    >
+                        Trở Về
+                    </Button>
+                    <ProgressBar chapters={chaptersFromQuests} /> {/* Truyền chapters giả lập */}
+                    <Button
+                        variant="pixel"
+                        className="w-20 bg-[#00A8B5] text-white hover:bg-[#0096A5] transition-colors duration-200"
+                        onClick={() => handleButtonClick("next")}
+                        disabled={currentIndex === quests.length - 1 || currentIndex === null}
+                    >
+                        Tiếp Theo
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (currentIndex !== null && quests[currentIndex]?.videoUrl) {
+                                window.open(quests[currentIndex].videoUrl, "_blank");
+                            }
+                        }}
+                        disabled={currentIndex === null || !quests[currentIndex]?.videoUrl}
+                    >
+                        <PlayIcon className="w-4 h-4" />
+                        Xem video hướng dẫn
+                    </Button>
+                </div>
             </div>
-        </div>
+            {isPopupOpen && (
+                <ChapterListPopup
+                    chapters={chapters}
+                    currentQuestId={questId}
+                    onClose={() => setIsPopupOpen(false)}
+                />
+            )}
+        </>
     );
 }

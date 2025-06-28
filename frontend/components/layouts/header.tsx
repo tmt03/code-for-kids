@@ -72,7 +72,7 @@ export default function Header() {
                         />
                         <Link
                             href="/"
-                            className={`text-2xl font-extrabold text-white hover:text-blue-200 transition-colors ${pathname === "/" ? "bg-white/20 text-blue-300 px-2 rounded" : ""}`}
+                            className={`text-2xl font-extrabold text-white hover:text-blue-200 transition-colors`}
                         >
                             Scriptbies
                         </Link>

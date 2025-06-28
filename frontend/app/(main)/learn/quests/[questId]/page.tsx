@@ -54,6 +54,9 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     // Ẩn nút lưu game nếu là trial
     const showSaveButton = canSaveGame();
 
+    // // Chỉ hiện nút lưu game ở chapter C07-Q07 và chế độ sáng tạo
+    // const showSaveButton = canSaveGame() && (questId === "creative" || questId === "C07_Q07");
+
     const [selectedQuest, setSelectedQuest] = useState<any>(null);
     const [userCode, setUserCode] = useState("");
     const [beResult, setBeResult] = useState<BackendResult | null>(null);
@@ -212,11 +215,15 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             }
             setHintMessage({ smartHints: "Chế độ sáng tạo: Code được chạy trực tiếp trên canvas!" });
             setShowHint(true);
-            window.dispatchEvent(
-                new CustomEvent("run-user-code", {
-                    detail: { code: userCode },
-                })
-            );
+            // Reset canvas trước khi chạy code mới
+            window.dispatchEvent(new CustomEvent("reset-canvas"));
+            setTimeout(() => {
+                window.dispatchEvent(
+                    new CustomEvent("run-user-code", {
+                        detail: { code: userCode },
+                    })
+                );
+            }, 200);
             return;
         }
 
@@ -244,11 +251,15 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
             // 3. Nếu backend pass thì chạy code trong game
             if (result.passed) {
-                window.dispatchEvent(
-                    new CustomEvent("run-user-code", {
-                        detail: { code: userCode },
-                    })
-                );
+                // Reset canvas trước khi chạy code mới
+                window.dispatchEvent(new CustomEvent("reset-canvas"));
+                setTimeout(() => {
+                    window.dispatchEvent(
+                        new CustomEvent("run-user-code", {
+                            detail: { code: userCode },
+                        })
+                    );
+                }, 200);
             }
 
             // Nếu thành công:

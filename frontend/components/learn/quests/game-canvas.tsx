@@ -98,7 +98,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ quest }) => {
       if (gameRef.current) {
         console.log("Emitting run-user-code to scene");
         gameRef.current.scene.scenes.forEach((scene) => {
-          scene.sys.events.emit("run-user-code", event.detail.code);
+          scene.scene.restart({ userCode: event.detail.code });
         });
       } else {
         console.warn("Game not initialized when run-user-code event received");
