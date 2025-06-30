@@ -164,7 +164,7 @@ export class FrontendCodeValidator {
         ? Array.from(quest.baseCode.matchAll(this.API_CALL_REGEX)).map(
             (match) => match[1]
           )
-        : [];
+        : []; 
 
       const missingAPIs = requiredCommands.filter(
         (api) => !userCommands.includes(api)
