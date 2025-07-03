@@ -102,7 +102,7 @@ export default function Footer() {
               <a
                 className="text-gray-200 hover:text-white transition-colors duration-200"
               >
-                Bộ câu lệnh: Phưu lưu ở Vương quốc Code-land
+                Bộ câu lệnh: Phiêu lưu ở Vương quốc Code-land
               </a>
             </li>
           </ul>
@@ -119,7 +119,7 @@ export default function Footer() {
             <FontAwesomeIcon icon={faFacebook} />
           </a>
           <a
-            href="#"
+            href="https://www.youtube.com/@scriptbies-laptrinhcungtre"
             className="text-gray-300 hover:text-white transition-colors duration-200"
           >
             <FontAwesomeIcon icon={faYoutube} />

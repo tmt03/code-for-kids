@@ -11,11 +11,39 @@ import orderRoutes from "./routes/orderRoute";
 import productRoutes from "./routes/productRoutes";
 import APIs_V1 from "./routes/v1";
 import { cleanupUnverifiedUsers } from "./utils/cleanupUnverifiedUsers";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import { onlineUsers } from "./utils/onlineUsers";
 
 // Start server
 const START_SERVER = async () => {
   // Initialize express
   const app: Express = express();
+
+  const server = http.createServer(app);
+
+  const io = new SocketIOServer(server, {
+    cors: {
+      origin: "*",
+      credentials: true,
+    },
+  });
+
+  io.on("connection", (socket) => {
+    socket.on("user-online", (userId: string) => {
+      socket.data.userId = userId;
+      onlineUsers.add(userId);
+      io.emit("online-users", Array.from(onlineUsers));
+    });
+
+    socket.on("disconnect", () => {
+      const userId = socket.data.userId;
+      if (userId) {
+        onlineUsers.delete(userId);
+        io.emit("online-users", Array.from(onlineUsers));
+      }
+    })
+  });
 
   app.use(Cors(corsOptions));
 
@@ -36,11 +64,11 @@ const START_SERVER = async () => {
   cron.schedule("* * * * *", cleanupUnverifiedUsers);
 
   if (env.BUILD_MODE === "production") {
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`Server is running on port ${process.env.PORT}`);
     });
   } else {
-    app.listen(
+    server.listen(
       Number(env.LOCAL_DEV_PORT) || 3000,
       env.LOCAL_DEV_HOST || "localhost",
       () => {

@@ -4,6 +4,7 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 import { TrialInfo, User } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useState } from "react";
+import { useOnlineSocket } from "@/hooks/useOnlineSocket";
 
 export interface AuthContextType {
     user: User | null;
@@ -99,6 +100,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // TRIAL MODE COMPUTED VALUES
     const isTrialMode = !user?.isActivated;
     const trialInfo = user?.trialInfo || null;
+
+    useOnlineSocket(user?.userId);
 
     return (
         <AuthContext.Provider

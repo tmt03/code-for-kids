@@ -1,5 +1,3 @@
-//Layout front
-
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
@@ -21,7 +19,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <Toaster />
-          {children}
+            {children}
           <Analytics />
         </AuthProvider>
       </body>

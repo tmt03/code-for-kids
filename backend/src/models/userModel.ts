@@ -115,13 +115,13 @@ const changePassword = async (username: string, newPassword: string) => {
 const getLeaderboard = async () => {
   return await GET_DB()
     .collection(USER_COLLECTION_NAME)
-    .find({ _destroy: false })
+    .find({ _destroy: false, role: "user", ratingPoints: {$gt: 0}})
     .project({
       username: 1,
       displayName: 1,
       avatarUrl: 1,
       ratingPoints: 1,
-      _id: 0,
+      _id: 1,
     })
     .sort({ ratingPoints: -1 }) // Sắp xếp giảm dần theo điểm
     .toArray();

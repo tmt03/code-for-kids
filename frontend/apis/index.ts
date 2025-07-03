@@ -155,3 +155,13 @@ export const updateQuestVideoUrl = async (
   });
   return res.data;
 };
+
+export const fetchUserOnlineStatus = async (userId: string) => {
+  const res = await axiosInstance.get(`/v1/users/${userId}/online-status`);
+  return res.data.isOnline;
+};
+
+export const fetchUserProfileByUsername = async (username: string) => {
+  const res = await axiosInstance.get(`/v1/users/profile/${username}`);
+  return res.data.user;
+};
