@@ -1,5 +1,5 @@
 // backend/src/middlewares/trialMiddleware.ts
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { userModel } from "../models/userModel";
 
@@ -85,15 +85,18 @@ export const checkTrialChapter = (
   const { questId, chapterId } = req.params;
 
   if (trialMode && trialMode.isTrial) {
-    const isTrialChapter =
-      questId?.startsWith(trialMode.trialChapterId) ||
-      chapterId?.startsWith(trialMode.trialChapterId);
+    const allowedChapters = ["C00", "C01"];
+
+    const isTrialChapter = allowedChapters.some(
+      (chapter) =>
+        questId?.startsWith(chapter) || chapterId?.startsWith(chapter)
+    );
 
     if (!isTrialChapter) {
       return res.status(StatusCodes.FORBIDDEN).json({
         error: "Chỉ có thể học chapter thử nghiệm trong chế độ trial",
         code: "TRIAL_CHAPTER_RESTRICTED",
-        allowedChapter: trialMode.trialChapterId,
+        allowedChapters: allowedChapters,
       });
     }
   }
