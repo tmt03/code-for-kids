@@ -1,11 +1,10 @@
-//Layout front
-
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import OnlineSocketWrapper from "@/components/online-socket-wrapper";
 
 export const metadata: Metadata = {
   title: "Scriptbies",
@@ -37,7 +36,9 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <Toaster />
-          {children}
+          <OnlineSocketWrapper>
+            {children}
+          </OnlineSocketWrapper>
           <Analytics />
         </AuthProvider>
       </body>

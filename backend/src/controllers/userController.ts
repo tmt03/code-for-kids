@@ -103,3 +103,16 @@ export const getLeaderboard = async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getUserProfileByUsername = async (req: Request, res: Response) => {
+  try {
+    const {username} = req.params;
+    const user = await userModel.findByUsername(username);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const { password, refreshToken, resetOTP, resetOTPExpires, email, ...safeUser } = user;
+    res.status(200).json({ user: safeUser});
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};

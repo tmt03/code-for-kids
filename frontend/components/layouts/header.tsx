@@ -127,11 +127,14 @@ export default function Header() {
                             </Link>
                         )}
 
+                        {/* Avatar ở header (desktop) */}
                         {user && (
                             <div className="relative hidden lg:block">
                                 <button
                                     onClick={toggleProfileDropdown}
-                                    className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#00A8B5] hover:border-blue-300 transition-all duration-200"
+                                    className={`w-10 h-10 rounded-full overflow-hidden border-2 transition-all duration-200 ${
+                                        user.isActivated ? "border-yellow-400" : "border-blue-400"
+                                    }`}
                                 >
                                     <img
                                         src={user?.avatarUrl || "/assets/mascots/original.png"}
@@ -139,9 +142,8 @@ export default function Header() {
                                         className="w-full h-full object-cover"
                                     />
                                 </button>
-
                                 {isProfileDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl text-sm font-semibold text-gray-800 z-50">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg overflow-hidden shadow-xl text-sm font-semibold text-gray-800 z-50">
                                         <Link
                                             href="/profile"
                                             className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
@@ -222,13 +224,20 @@ export default function Header() {
                         ) : (
                             <button
                                 onClick={toggleMobileProfileDropdown}
-                                className="w-full flex items-center justify-start gap-3 px-4 py-3 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
+                                className="w-full flex items-center justify-start gap-3 px-4 py-2 font-semibold hover:bg-[#008080]/40 transition-all duration-200"
                             >
-                                <img
-                                    src={user.avatarUrl}
-                                    alt="User Avatar"
-                                    className="h-6 w-6 rounded-full"
-                                />
+                                {/* Avatar ở header (mobile menu) */}
+                                <span
+                                    className={`h-8 w-8 rounded-full overflow-hidden border-2 ${
+                                        user.isActivated ? "border-yellow-400" : "border-blue-400"
+                                    }`}
+                                >
+                                    <img
+                                        src={user.avatarUrl || "/assets/mascots/original.png"}
+                                        alt="User Avatar"
+                                        className="h-full w-full object-cover"
+                                    />
+                                </span>
                                 <span>Tài khoản</span>
                             </button>
                         )}
