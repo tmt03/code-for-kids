@@ -18,7 +18,7 @@ export const fetchSubmitCode = async (userCode: string, questId: string) => {
   try {
     const res = await axiosInstance.post(`/v1/submissions/submit`, {
       code: userCode,
-      questId: questId,
+      questId: questId, 
     });
     return res.data;
   } catch (error: any) {

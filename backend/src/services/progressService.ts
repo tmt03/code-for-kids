@@ -1,4 +1,3 @@
-import { questModel } from "../models/questModel";
 import { userProgressModel } from "../models/userProgressModel";
 import { ChapterWithQuests } from "../types";
 import { extractFunctionNames } from "../utils/codeParser";
@@ -41,7 +40,6 @@ const initProgressIfNotExists = async (
 // Đánh dấu quest là hoàn thành
 const markQuestCompleted = async (userId: string, questId: string) => {
   const progress = await userProgressModel.findByUserId(userId);
-  const score = await questModel.getPointByQuestId(questId);
   if (!progress) return;
 
   const chapter = progress.chapterProgress.find((ch: any) =>
@@ -55,7 +53,6 @@ const markQuestCompleted = async (userId: string, questId: string) => {
 
   quest.status = "completed";
   quest.completedAt = new Date();
-  quest.score = score; //đoạn này lấy điểm  ponit ở
   chapter.status = "in-progress";
   progress.lastUpdated = new Date();
 

@@ -114,13 +114,32 @@ const findQuestInProgress = (
  * Cộng điểm cố định khi hoàn thành quest lần đầu.
  * @param userId ID của người dùng.
  * @param quest Quest trong progress.
+ * @param progress User progress object (optional, để tránh gọi lại database).
  */
 const addFixedScoreForCompletedQuest = async (
   userId: string,
-  quest: any
+  quest: any,
+  progress?: any
 ): Promise<void> => {
+  const score = await questModel.getPointByQuestId(quest.questId);
+
   if (quest.status === "completed" && quest.score === 0) {
-    await userModel.increaseRatingPoint(userId, quest.score);
+    await userModel.increaseRatingPoint(userId, score);
+    quest.score = score; //Đánh dấu đã cộng điểm ratingPoint ở users
+
+    // Cập nhật score vào database
+    if (!progress) {
+      progress = await userProgressModel.findByUserId(userId);
+    }
+
+    if (progress) {
+      await userProgressModel.updateProgress(userId, {
+        $set: {
+          chapterProgress: progress.chapterProgress,
+          lastUpdated: new Date(),
+        },
+      });
+    }
   }
 };
 
@@ -181,7 +200,7 @@ const addUserRatingScore = async (
   }
 
   // Cộng điểm cố định khi hoàn thành quest lần đầu
-  await addFixedScoreForCompletedQuest(userId, quest);
+  await addFixedScoreForCompletedQuest(userId, quest, progress);
 
   // Cộng điểm bonus nếu có hàm mới
   await addBonusScore(userId, currentCode, baseCode, quest);
