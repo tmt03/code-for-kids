@@ -178,7 +178,9 @@ export default function HomePage() {
                             <img
                                 src={user?.avatarUrl || "/assets/mascots/original.png"}
                                 alt="User Avatar"
-                                className="w-14 h-14 rounded-full border-2 border-[#00A8B5] mr-4"
+                                className={`w-14 h-14 rounded-full mr-4 border-2 ${
+                                    user.isActivated ? "border-yellow-400" : "border-blue-400"
+                                }`}
                             />
                             <div>
                                 <h2 className="text-lg font-bold">{user?.displayName}</h2>
@@ -246,9 +248,9 @@ export default function HomePage() {
                     <section className="order-3 md:order-3 md:col-span-2 md:row-start-2 md:row-span-1">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-bold text-gray-800">CÁC TIN TỨC MỚI NHẤT</h2>
-                            <a href="#" className="text-[#00A8B5] hover:text-[#0096A5] text-xl font-bold">
+                            {/* <a href="#" className="text-[#00A8B5] hover:text-[#0096A5] text-xl font-bold">
                                 Xem tất cả <FontAwesomeIcon icon={faArrowRight} />
-                            </a>
+                            </a> */}
                         </div>
                         <div className="text-white grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {[
