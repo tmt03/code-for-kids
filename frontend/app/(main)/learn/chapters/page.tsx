@@ -37,6 +37,7 @@ export default function ChapterPage() {
                         canAccessChapter(chapter.id)
                     );
                 }
+                console.log(filteredChapters)
 
                 // Chỉ load progress nếu không phải trial mode
                 let progress = null;
