@@ -21,7 +21,7 @@ const ChapterLayout = ({ children }: Props) => {
                 <main className="flex-1 w-full overflow-hidden pt-2 pb-1">
                     {children}
                 </main>
-                <div className="relative w-full shadow-md bg-gradient-to-r from-[#4682B4] to-[#1C6CA8] flex flex-row items-center justify-start">
+                <div className="relative w-full shadow-md bg-gradient-to-r from-[#006D77] to-[#0A3D62] flex flex-row items-center justify-start">
                     <FooterChapter />
                 </div>
             </div>

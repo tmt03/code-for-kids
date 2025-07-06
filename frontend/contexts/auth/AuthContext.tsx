@@ -68,7 +68,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem("accessToken", data.accessToken);
             setAccessToken(data.accessToken);
             setUser(data.user);
-            router.push("/home");
+            console.log(data.user.role)
+
+            // Redirect based on user role
+            if (data?.user.role === 'admin') {
+                router.push("/dashboard/order-management");
+            } else {
+                router.push("/home");
+            }
         } catch (err: any) {
             setErrorLogin(err.response?.data?.error || "Đăng nhập thất bại");
         } finally {

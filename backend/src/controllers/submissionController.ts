@@ -53,10 +53,10 @@ const submitCode = async (req: Request, res: Response, next: NextFunction) => {
     } else {
       // Normal mode: Lưu progress thật
       await progressService.markQuestCompleted(userId, questId); // Cập nhật quest completed
-      await progressService.updateTotalScore(userId); //Cập nhật totalScore
       await progressService.checkAndMarkChapterDone(userId, questId); //Cập nhật chapter completed nếu tất cả quest completed
-      await badgeService.checkAndAward(userId); // Kiểm tra và trao badge
       await scoreService.addUserRatingScore(userId, questId, code); // Update ratingScore trong users
+      await progressService.updateTotalScore(userId); //Cập nhật totalScore
+      await badgeService.checkAndAward(userId); // Kiểm tra và trao badge
       await progressService.recordAttempt(userId, questId, code); // lưu code người dung vào attempt trong user_progress
 
       return res.status(StatusCodes.OK).json({

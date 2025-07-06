@@ -1,8 +1,11 @@
 import {
   ProductData,
+  deleteProduct as deleteProductModel,
   getAllProducts,
   getProductById,
   getProductsByFilter,
+  insertProduct,
+  updateProduct as updateProductModel,
 } from "../models/productModel";
 
 /**
@@ -71,5 +74,22 @@ export class ProductService {
     } catch (error) {
       throw new Error("Không thể lấy danh sách sản phẩm có sẵn");
     }
+  }
+
+  static async addProduct(product: Omit<ProductData, "_id">) {
+    return await insertProduct(product);
+  }
+
+  static async updateProduct(pid: string, updateData: Partial<ProductData>) {
+    // Lấy _id từ pid
+    const product = await getProductById(pid);
+    if (!product || !product._id) throw new Error("Không tìm thấy sản phẩm");
+    return await updateProductModel(product._id.toString(), updateData);
+  }
+
+  static async deleteProduct(pid: string) {
+    const product = await getProductById(pid);
+    if (!product || !product._id) throw new Error("Không tìm thấy sản phẩm");
+    return await deleteProductModel(product._id.toString());
   }
 }

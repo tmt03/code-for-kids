@@ -152,7 +152,7 @@ export default function SharedGamePage() {
 
                 {/* Game Canvas */}
                 <div className="w-full aspect-[2/1] min-h-[360px] max-h-[1440px]">
-                    <GameCanvas quest={{ id: "shared", mode: "creative", code: gameData.code }} />
+                    <GameCanvas quest={{ id: "shared", mode: "creative" as const, code: gameData.code }} />
                 </div>
 
                 {/* Actions */}

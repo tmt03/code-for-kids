@@ -54,8 +54,6 @@ export default function LoginPage() {
     try {
       await login(username, password);
     } catch (err) {
-      // Error đã được xử lý trong AuthProvider
-      console.error("Login failed:", err);
     }
   };
 

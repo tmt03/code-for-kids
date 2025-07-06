@@ -126,9 +126,13 @@ export const updateProduct = async (
   );
 };
 
-// Delete product
+// Delete product (soft delete)
 export const deleteProduct = async (id: string) => {
   const db = GET_DB();
   const collection = db.collection<ProductData>(COLLECTION_NAME);
-  return await collection.deleteOne({ _id: new ObjectId(id) });
+  // Xóa mềm: chỉ cập nhật isActive=false
+  return await collection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { isActive: false, updatedAt: new Date() } }
+  );
 };

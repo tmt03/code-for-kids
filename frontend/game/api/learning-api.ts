@@ -99,12 +99,6 @@ export function createStudentAPI(
     floor.body.checkCollision.right = true;
     sandbox[refName] = floor;
     sandbox.platforms.add(floor);
-    console.log(
-      `Floor '${floorKey}' set at (${scaledX}, ${scaledY}) with size (${
-        340 * scaleFactor
-      }, ${40 * scaleFactor})`
-    );
-    console.log("Platforms after setFloor:", sandbox.platforms.getChildren());
     return floor;
   };
 
@@ -112,7 +106,6 @@ export function createStudentAPI(
   sandbox.setColor = (refName: string, colorName: string) => {
     const sprite = sandbox[refName];
     if (!sprite) {
-      console.warn(`Không tìm thấy đối tượng với key '${refName}'`);
       return;
     }
 
@@ -302,16 +295,9 @@ export function createStudentAPI(
   // 7. Scale - Cập nhật hitbox khi scale sprite
   sandbox.scale = (refName: string, factor: number) => {
     const sprite = sandbox[refName] as Phaser.GameObjects.Sprite;
-    if (!sprite) {
-      console.warn(`Không tìm thấy đối tượng với key '${refName}'`);
-      return;
-    }
-    if (factor < 0.5 || factor > 2) {
-      console.warn(
-        `Yêu cầu scale '${factor}' không hợp lệ. Giới hạn từ 0.5 đến 2.`
-      );
-      return;
-    }
+    if (!sprite) return;
+
+    if (factor < 0.5 || factor > 2) return;
 
     // Lưu lại scale factor hiện tại
     sprite.setScale(factor);
@@ -434,14 +420,9 @@ export function createStudentAPI(
     }
     const spriteKey = sprite.texture.key;
     const upperKey = key.toUpperCase();
-    if (!allowedKeys[upperKey]) {
-      console.warn(
-        `Key '${key}' is not allowed. Allowed keys: ${Object.keys(
-          allowedKeys
-        ).join(", ")}`
-      );
-      return;
-    }
+
+    if (!allowedKeys[upperKey]) return;
+
     const keyCode = allowedKeys[upperKey];
     if (!Array.isArray(sandbox.controls)) sandbox.controls = [];
 
@@ -458,6 +439,7 @@ export function createStudentAPI(
       refName: refName,
       isJumpKey: upperKey === "SPACE" || upperKey === "UP" || upperKey === "W",
     });
+
     // Tự động đổi animation idle nếu không bấm phím
     scene.input.keyboard?.on("keyup-" + upperKey, () => {
       const defaultAnim =
@@ -654,10 +636,7 @@ export function createStudentAPI(
     const comparisonRegex = /^(\w+)(?::(\w+))?\s*(>=|<=|==|>|<)\s*(\d+)$/;
     const match = condition.match(comparisonRegex);
 
-    if (!match) {
-      console.error(`[when] Invalid condition format: "${condition}"`);
-      return;
-    }
+    if (!match) return;
 
     const [, statKey, refName, operator, valueStr] = match;
     const value = Number(valueStr);
@@ -673,8 +652,9 @@ export function createStudentAPI(
         let statValue = 0;
 
         if (statKey === "time") {
-          const remainingMs = sandbox.timerEvent?.getRemaining() ?? 0;
-          statValue = Math.floor(remainingMs / 1000);
+          if (!sandbox.timerEvent) return;
+          const remainingMs = sandbox.timerEvent.getRemaining();
+          statValue = remainingMs;
         } else if (refName) {
           statValue = sandbox.stats?.[refName]?.[statKey] ?? 0;
         } else {
@@ -704,15 +684,8 @@ export function createStudentAPI(
             break;
         }
 
-        console.log(
-          `[when] Checking ${statKey}:${
-            refName ?? "*"
-          } ${operator} ${value} => ${statValue} => ${isConditionMet}`
-        );
-
         if (isConditionMet && action === "end") {
           hasEnded = true;
-          console.log(`[when] Triggering endGame(${effect})`);
           sandbox.endGame(effect);
         }
       },
@@ -779,8 +752,9 @@ export function createStudentAPI(
         const secStr = (sec % 60).toString().padStart(2, "0");
         sandbox.timerText.setText(`${min}:${secStr}`);
 
+        // Không tự động endGame nữa, để when xử lý
         if (remaining <= 0) {
-          sandbox.endGame("time");
+          sandbox.timerEvent.remove();
         }
       },
     });
@@ -983,12 +957,7 @@ export function createStudentAPI(
       damage = 15,
       direction = shooter.flipX ? -1 : 1,
     }) => {
-      console.log("🔫 Firing lazer...");
-
-      if (!scene.textures.exists("lazer_anim")) {
-        console.warn("⚠️ lazer_anim not loaded!");
-        return;
-      }
+      if (!scene.textures.exists("lazer_anim")) return;
 
       // Tính tọa độ y cách đáy shooter 20px
       const startY = shooter.getBottomCenter().y - 40;

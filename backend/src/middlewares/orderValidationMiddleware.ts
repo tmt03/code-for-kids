@@ -29,7 +29,7 @@ const orderValidationSchema = Joi.object({
       .required()
       .min(2)
       .max(100)
-      .pattern(/^[a-zA-ZÀ-ỹ\s]+$/),
+      .pattern(/^[a-zA-ZÀ-ỹ0-9\s]+$/),
     phone: Joi.string()
       .required()
       .pattern(/^[0-9]{10,11}$/),
