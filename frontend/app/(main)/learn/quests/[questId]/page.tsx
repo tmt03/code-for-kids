@@ -7,7 +7,7 @@ import InteractionBox from '@/components/learn/quests/interaction-box';
 import { Button } from '@/components/ui/button';
 import { useProgress } from "@/hooks/useProgress";
 import { FrontendCodeValidator } from '@/lib/utils/codeValidatior';
-import { speak } from '@/lib/utils/speak';
+import { playSound } from '@/lib/utils/sound';
 import { HelpCircleIcon, PlayIcon, RefreshCwIcon, SaveIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 
@@ -196,6 +196,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const handleRun = async () => {
         // Nếu là trial mode và không được phép submit code
         if (isTrialMode && !canSubmitCode(questId)) {
+            playSound("fail");
             setHintMessage({
                 error: "Chế độ thử nghiệm",
                 smartHints: "Chỉ có thể học chapter thử nghiệm. Nâng cấp tài khoản để mở khóa tất cả!"
@@ -208,7 +209,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             // Validate creative mode
             const feResult = await FrontendCodeValidator.validate(userCode, { baseCode: "" }, "creative");
             if (!feResult.passed) {
-                speak(`${feResult.error}. ${feResult.smartHints}`);
+                playSound("fail");
                 setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
                 setShowHint(true);
                 return;
@@ -232,8 +233,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             // 1. Kiểm tra frontend trước
             const feResult = await FrontendCodeValidator.validate(userCode, selectedQuest);
             if (!feResult.passed) {
-                // playSound("error");
-                speak(`${feResult.error}. ${feResult.smartHints}`);
+                playSound("fail");
                 setHintMessage({ error: feResult.error, smartHints: feResult.smartHints });
                 return;
             }
@@ -241,8 +241,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             // 2. Gửi lên backend
             const result = await fetchSubmitCode(userCode, questId);
             if (!result.passed) {
-                // playSound("error");
-                speak(`${result.error}. ${result.smartHints}`);
+                playSound("fail");
                 setHintMessage({ error: result.error, smartHints: result.smartHints });
                 return;
             }
@@ -263,9 +262,10 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             }
 
             // Nếu thành công:
-            // playSound("success");
-            speak("Code chạy tốt! Bạn làm rất tuyệt!");
+            playSound("success");
+            // speak("Code chạy tốt! Bạn làm rất tuyệt!");
         } catch (error: any) {
+            playSound("fail");
             setHintMessage({ error: "Lỗi hệ thống", smartHints: "Hãy thử lại nhé!" });
         }
     };
@@ -323,11 +323,12 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             if (isCreativeMode) {
                 setUserCode(CREATIVE_MODE_CODE);
                 setHintMessage({ smartHints: "Đã đặt lại canvas sáng tạo!" });
-                speak("Đã đặt lại canvas sáng tạo!");
+                playSound("success");
                 window.dispatchEvent(new CustomEvent("reset-canvas"));
             } else {
                 const quest = await fetchQuestDetails(questId);
                 if (!quest) {
+                    playSound("fail");
                     setHintMessage({ error: "Không tìm thấy nhiệm vụ", smartHints: "Kiểm tra lại kết nối hoặc thử lại sau!" });
                     setUserCode("");
                     setIsResetting(false);
@@ -337,10 +338,11 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
                 setSelectedQuest(quest);
                 setUserCode(quest?.baseCode || "");
                 setHintMessage({ smartHints: "Đã làm mới nhiệm vụ và đặt lại code về trạng thái ban đầu!" });
-                speak("Đã làm mới nhiệm vụ và đặt lại code về trạng thái ban đầu!");
+                playSound("success");
                 window.dispatchEvent(new CustomEvent("reset-canvas"));
             }
         } catch (error) {
+            playSound("fail");
             setHintMessage({ error: "Lỗi khi làm mới dữ liệu", smartHints: "Hãy thử lại!" });
             setUserCode("");
         } finally {
@@ -352,6 +354,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     const handleSaveGame = async () => {
         // Validate title
         if (!gameTitle.trim() || gameTitle.length < 3 || gameTitle.length > 100) {
+            playSound("fail");
             setHintMessage({
                 error: "Tiêu đề game phải từ 3 đến 100 ký tự!",
                 smartHints: ""
@@ -362,6 +365,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
         // Validate code
         if (!userCode || userCode.length < 10) {
+            playSound("fail");
             setHintMessage({
                 error: "Code game phải có ít nhất 10 ký tự!",
                 smartHints: ""
@@ -372,6 +376,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
 
         // Validate description
         if (gameDescription && gameDescription.length > 500) {
+            playSound("fail");
             setHintMessage({
                 error: "Mô tả game không được quá 500 ký tự!",
                 smartHints: ""
@@ -381,6 +386,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
         }
 
         if (!user?.userId) {
+            playSound("fail");
             setHintMessage({ error: "Vui lòng đăng nhập để lưu game!", smartHints: "" });
             setShowHint(true);
             return;
@@ -403,9 +409,11 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
             const shareUrl = `${window.location.origin}/play/shared-game/${data.slug}`;
             console.log(shareLink)
             setShareLink(shareUrl);
+            playSound("success");
             setHintMessage({ smartHints: "Game đã được lưu thành công! Chia sẻ link với bạn bè nhé!" });
             setShowHint(true);
         } catch (error: any) {
+            playSound("fail");
             setHintMessage({
                 error: "Lỗi khi lưu game",
                 smartHints: error.response?.data?.details?.join(", ") || error.message
@@ -419,6 +427,7 @@ export default function ChapterPage({ params }: { params: Promise<{ questId: str
     // Sao chép link chia sẻ
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareLink);
+        playSound("success");
         setHintMessage({ smartHints: "Đã sao chép link chia sẻ!" });
         setShowHint(true);
     };
