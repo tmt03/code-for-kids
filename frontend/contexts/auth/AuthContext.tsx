@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 router.push("/home");
             }
         } catch (err: any) {
-            setErrorLogin(err.response?.data?.error || "Đăng nhập thất bại");
+            setErrorLogin(err.response?.data?.error || "Đăng nhập thất bại, server đang quá tải!");
         } finally {
             setIsLoading(false);
         }

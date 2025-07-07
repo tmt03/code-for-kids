@@ -56,8 +56,15 @@ const findByUserId = async (userId: string) => {
   return await userGames.find({ userId: new ObjectId(userId) }).toArray();
 };
 
+const findByUsername = async (username: string) => {
+  const db = GET_DB();
+  const userGames = db.collection<UserGame>(USER_GAME_COLLECTION);
+  return await userGames.find({ username }).toArray();
+};
+
 export const userGameModel = {
   upsertUserGame,
   findBySlug,
   findByUserId,
+  findByUsername,
 };

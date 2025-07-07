@@ -36,8 +36,13 @@ const getGamesByUserId = async (userId: string) => {
   return await userGameModel.findByUserId(userId);
 };
 
+const getGamesByUsername = async (username: string) => {
+  return await userGameModel.findByUsername(username);
+};
+
 export const gameService = {
   saveGame,
   getGameBySlug,
   getGamesByUserId,
+  getGamesByUsername,
 };

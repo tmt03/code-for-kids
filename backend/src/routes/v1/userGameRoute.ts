@@ -2,11 +2,11 @@ import express from "express";
 import { gameController } from "../../controllers/gameController";
 import { verifyToken } from "../../middlewares/authMiddleware";
 import { requirePermission } from "../../middlewares/permissionMiddleware";
-import { validateSaveGame } from "../../middlewares/validateRequest";
 import {
   blockTrialMode,
   checkTrialMode,
 } from "../../middlewares/trialMiddleware";
+import { validateSaveGame } from "../../middlewares/validateRequest";
 
 const Router = express.Router();
 Router.post(
@@ -27,5 +27,7 @@ Router.get(
   requirePermission("userGame"),
   gameController.getMySharedGames
 );
+
+Router.get("/shared-games/:username", gameController.getSharedGamesByUsername);
 
 export const userGameRoute = Router;
