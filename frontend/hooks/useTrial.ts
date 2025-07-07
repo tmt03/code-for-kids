@@ -6,21 +6,21 @@ export function useTrial() {
 
   const isExpired = trialInfo?.isExpired || false;
   const daysLeft = trialInfo?.daysLeft || 0;
-  const allowedChapter = user?.trialChapterId || "C00";
+  const allowedChapters = ["C00", "C01"];
 
   const canAccessChapter = (chapterId: string) => {
     if (!isTrialMode) return true;
-    return chapterId.startsWith(allowedChapter);
+    return allowedChapters.some((chapter) => chapterId.startsWith(chapter));
   };
 
   const canAccessQuest = (questId: string) => {
     if (!isTrialMode) return true;
-    return questId.startsWith(allowedChapter);
+    return allowedChapters.some((chapter) => questId.startsWith(chapter));
   };
 
   const canSubmitCode = (questId: string) => {
     if (!isTrialMode) return true;
-    return questId.startsWith(allowedChapter);
+    return allowedChapters.some((chapter) => questId.startsWith(chapter));
   };
 
   const canSaveGame = () => {
@@ -32,7 +32,7 @@ export function useTrial() {
     trialInfo,
     isExpired,
     daysLeft,
-    allowedChapter,
+    allowedChapters,
     canAccessChapter,
     canSubmitCode,
     canSaveGame,

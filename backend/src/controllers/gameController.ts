@@ -67,8 +67,27 @@ const getMySharedGames = async (req: Request, res: Response) => {
   }
 };
 
+const getSharedGamesByUsername = async (req: Request, res: Response) => {
+  try {
+    const { username } = req.params;
+    const games = await gameService.getGamesByUsername(username);
+    return res.status(200).json(
+      games.map((game) => ({
+        slug: game.slug,
+        title: game.title,
+        description: game.description,
+        updatedAt: game.data.updatedAt,
+      }))
+    );
+  } catch (error) {
+    console.error("getSharedGamesByUsername error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const gameController = {
   saveGame,
   getSharedGame,
   getMySharedGames,
+  getSharedGamesByUsername,
 };

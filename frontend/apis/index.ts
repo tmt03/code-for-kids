@@ -18,7 +18,7 @@ export const fetchSubmitCode = async (userCode: string, questId: string) => {
   try {
     const res = await axiosInstance.post(`/v1/submissions/submit`, {
       code: userCode,
-      questId: questId,
+      questId: questId, 
     });
     return res.data;
   } catch (error: any) {
@@ -154,4 +154,14 @@ export const updateQuestVideoUrl = async (
     videoUrl,
   });
   return res.data;
+};
+
+export const fetchUserOnlineStatus = async (userId: string) => {
+  const res = await axiosInstance.get(`/v1/users/${userId}/online-status`);
+  return res.data.isOnline;
+};
+
+export const fetchUserProfileByUsername = async (username: string) => {
+  const res = await axiosInstance.get(`/v1/users/profile/${username}`);
+  return res.data.user;
 };
